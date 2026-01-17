@@ -1,1131 +1,1262 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Evergrowth Org Views</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Evergrowth Org Views</title>
 
-  <!-- Favicon -->
-  <link rel="icon" href="https://cdn.prod.website-files.com/67de9a786ff9ec4a82a4453a/67f6be889df4d0a86c22e5d1_favicon.svg" type="image/svg+xml">
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="https://cdn.prod.website-files.com/67de9a786ff9ec4a82a4453a/67f6be889df4d0a86c22e5d1_favicon.svg"
+      type="image/svg+xml"
+    />
 
-  <style>
-    :root{
-      --bg:#0b0c10;
-      --text:#e8eaf0;
-      --muted:#a9afbf;
+    <style>
+      :root {
+        --bg: #0b0c10;
+        --text: #e8eaf0;
+        --muted: #a9afbf;
 
-      --wireRadius: 14;
+        --wireRadius: 14;
 
-      --card:#141824;
-      --card2: rgba(20,24,36,.92);
-      --border:#2b3244;
+        --card: #141824;
+        --card2: rgba(20, 24, 36, 0.96);
+        --border: #2b3244;
 
-      --accent:#6ee7ff;
-      --agent:#a855f7;
+        --accent: #6ee7ff;
+        --agent: #a855f7;
 
-      --wire: rgba(170,180,200,.38);
-      --wireDash: 6 6;
+        --wire: rgba(170, 180, 200, 0.38);
+        --wireDash: 6 6;
 
-      --shadow: 0 12px 30px rgba(0,0,0,.35);
-      --radius: 14px;
+        --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        --radius: 14px;
 
-      --deptGap: 84px;
-      --nodeGap: 34px;
-      --levelGap: 52px;
-    }
+        --deptGap: 84px;
+        --nodeGap: 34px;
+        --levelGap: 52px;
+      }
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background:
-        radial-gradient(1200px 800px at 30% -10%, rgba(110,231,255,.10), transparent 60%),
-        radial-gradient(900px 600px at 90% 0%, rgba(168,85,247,.10), transparent 55%),
-        var(--bg);
-      color:var(--text);
-    }
+      * {
+        box-sizing: border-box;
+      }
 
-    header{
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(10px);
-      background: rgba(11,12,16,.65);
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-    .wrap{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 18px 18px;
-    }
-    h1{
-      font-size: 18px;
-      margin: 0 0 10px 0;
-      letter-spacing: .2px;
-    }
-    .sub{
-      margin:0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.4;
-    }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+          "Apple Color Emoji", "Segoe UI Emoji";
+        background:
+          radial-gradient(1200px 800px at 30% -10%, rgba(110, 231, 255, 0.10), transparent 60%),
+          radial-gradient(900px 600px at 90% 0%, rgba(168, 85, 247, 0.10), transparent 55%),
+          var(--bg);
+        color: var(--text);
+      }
 
-    .toolbar{
-      display:flex;
-      gap: 12px;
-      align-items:center;
-      justify-content: space-between;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+        background: rgba(11, 12, 16, 0.65);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
 
-    /* Segmented control */
-    .seg{
-      display: inline-flex;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 999px;
-      padding: 4px;
-      gap: 4px;
-    }
-    .seg button{
-      appearance:none;
-      border:0;
-      background: transparent;
-      color: var(--muted);
-      padding: 8px 12px;
-      border-radius: 999px;
-      cursor:pointer;
-      font-size: 13px;
-      transition: background .15s ease, color .15s ease, transform .05s ease;
-      white-space: nowrap;
-    }
-    .seg button:hover{ color: var(--text); }
-    .seg button:active{ transform: translateY(1px); }
-    .seg button[aria-pressed="true"]{
-      background: rgba(110,231,255,.14);
-      color: var(--text);
-      box-shadow: inset 0 0 0 1px rgba(110,231,255,.25);
-    }
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 18px 18px;
+      }
 
-    .legend{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      color: var(--muted);
-      font-size: 12px;
-      flex-wrap: wrap;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap: 8px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 999px;
-      padding: 6px 10px;
-    }
-    .dot{
-      width: 10px; height: 10px; border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(110,231,255,.12);
-    }
-    .dot.agent{
-      background: var(--agent);
-      box-shadow: 0 0 0 3px rgba(168,85,247,.12);
-    }
+      h1 {
+        font-size: 18px;
+        margin: 0 0 10px 0;
+        letter-spacing: 0.2px;
+      }
 
-    main .wrap{
-      padding-top: 22px;
-      padding-bottom: 34px;
-    }
+      .sub {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
 
-    .board{
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px;
-      overflow: auto;
-      overscroll-behavior: contain;
-    }
+      .toolbar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 14px;
+        flex-wrap: wrap;
+      }
 
-    /* Chart container */
-    .chart{
-      position: relative;
-      width: max-content;
-      min-width: 100%;
-      padding: 18px 22px 28px;
-    }
+      /* Segmented control */
+      .seg {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        padding: 4px;
+        gap: 4px;
+      }
 
-    /* SVG wires layer */
-    .wires{
-      position:absolute;
-      inset:0;
-      width: 100%;
-      height: 100%;
-      pointer-events:none;
-    }
-    .wires path{
-      fill: none;
-      stroke: var(--wire);
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: var(--wireDash);
-    }
+      .seg button {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        padding: 8px 12px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: background 0.15s ease, color 0.15s ease, transform 0.05s ease;
+        white-space: nowrap;
+      }
 
-    /* Level: CEO */
-    .level-0{
-      display:flex;
-      justify-content: center;
-      margin-bottom: var(--levelGap);
-    }
+      .seg button:hover {
+        color: var(--text);
+      }
 
-    /* Departments row (like your reference) */
-    .departments{
-      display:flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: var(--deptGap);
-      width: 100%;
-      min-width: 1100px; /* forces nice spread like your reference; board scroll handles smaller screens */
-    }
+      .seg button:active {
+        transform: translateY(1px);
+      }
 
-    .dept{
-      display:flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      min-width: 200px;
-      flex: 1 1 0;
-    }
+      .seg button[aria-pressed="true"] {
+        background: rgba(110, 231, 255, 0.14);
+        color: var(--text);
+        box-shadow: inset 0 0 0 1px rgba(110, 231, 255, 0.25);
+      }
 
-    .dept-pill{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: rgba(255,255,255,.90);
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      white-space: nowrap;
-      margin-top: 10px;
-    }
+      .legend {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 12px;
+        flex-wrap: wrap;
+      }
 
-    /* Node + subtree */
-    .node-wrap{
-      display:flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        padding: 6px 10px;
+      }
 
-    .children{
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      gap: var(--nodeGap);
-    }
-    .children.column{
-      flex-direction: column;
-      gap: 18px;
-    }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 3px rgba(110, 231, 255, 0.12);
+      }
 
-    /* Person/agent card */
-    .node{
-      width: 240px;
-      background: var(--card2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.22);
-      padding: 12px 12px;
-      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
-      cursor: default;
-    }
-    .node:hover{
-      transform: translateY(-2px);
-      border-color: rgba(110,231,255,.45);
-      box-shadow: 0 12px 26px rgba(0,0,0,.35);
-    }
-    .node.agent:hover{
-      border-color: rgba(168,85,247,.55);
-    }
+      .dot.agent {
+        background: var(--agent);
+        box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+      }
 
-    /* Small label node (used optionally in combined view for “Agents”) */
-    .node.label{
-      width: auto;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px dashed rgba(255,255,255,.18);
-      box-shadow: none;
-    }
-    .node.label:hover{ transform:none; box-shadow:none; border-color: rgba(255,255,255,.22); }
+      main .wrap {
+        padding-top: 22px;
+        padding-bottom: 34px;
+      }
 
-    .row{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
+      .board {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px;
+        overflow: auto;
+        overscroll-behavior: contain;
+      }
 
-    /* Avatar placeholder */
-    .avatar{
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(12px 12px at 30% 25%, rgba(255,255,255,.12), transparent 60%),
-        rgba(255,255,255,.05);
-      overflow:hidden;
-      display:grid;
-      place-items:center;
-      flex: 0 0 auto;
-      user-select:none;
-    }
-    .avatar img{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-    }
-    .avatar .ph{
-      font-weight: 700;
-      font-size: 12px;
-      letter-spacing: .3px;
-      color: rgba(255,255,255,.85);
-    }
-    .avatar.agent{
-      border-color: rgba(168,85,247,.25);
-      background:
-        radial-gradient(12px 12px at 30% 25%, rgba(168,85,247,.18), transparent 60%),
-        rgba(168,85,247,.10);
-    }
+      /* Chart container */
+      .chart {
+        position: relative;
+        width: max-content;
+        min-width: 100%;
+        padding: 18px 22px 28px;
+      }
 
-    .text{
-      min-width: 0;
-      display:flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .name{
-      font-weight: 650;
-      font-size: 13px;
-      letter-spacing: .2px;
-      line-height: 1.15;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
-    .title{
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
-    }
+      /* SVG wires layer */
+      .wires {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
 
-    .meta{
-      margin-top: 10px;
-      display:flex;
-      justify-content:flex-start;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap: 6px;
-      border-radius: 999px;
-      padding: 4px 9px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      font-size: 11px;
-      color: rgba(255,255,255,.78);
-    }
-    .badge .mini{
-      width: 7px; height: 7px; border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 2px rgba(110,231,255,.12);
-    }
-    .badge.agent .mini{
-      background: var(--agent);
-      box-shadow: 0 0 0 2px rgba(168,85,247,.12);
-    }
+      .wires path {
+        fill: none;
+        stroke: var(--wire);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: var(--wireDash);
+      }
 
-    /* Tooltip */
-    .tooltip{
-      position: fixed;
-      z-index: 1000;
-      pointer-events: none;
-      max-width: 360px;
-      background: rgba(18,20,27,.95);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 14px;
-      box-shadow: 0 16px 40px rgba(0,0,0,.45);
-      padding: 12px 12px;
-      transform: translate(12px, 12px);
-      opacity: 0;
-      transition: opacity .12s ease;
-    }
-    .tooltip.show{ opacity: 1; }
-    .tooltip h3{
-      margin:0 0 6px 0;
-      font-size: 13px;
-      letter-spacing: .2px;
-    }
-    .tooltip .tt-title{
-      margin:0 0 8px 0;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .tooltip .tt-label{
-      color: rgba(255,255,255,.85);
-      font-size: 11px;
-      letter-spacing: .18px;
-      text-transform: uppercase;
-      margin: 10px 0 4px 0;
-    }
-    .tooltip .tt-body{
-      margin:0;
-      color: rgba(255,255,255,.85);
-      font-size: 12px;
-      line-height: 1.45;
-      white-space: pre-line;
-    }
-  </style>
-</head>
+      /* Ensure UI blocks mask wires behind them */
+      .dept-pill,
+      .node {
+        position: relative;
+        z-index: 2;
+      }
 
-<body>
-<header>
-  <div class="wrap">
-    <h1>Evergrowth Org Views</h1>
-    <p class="sub">Aligned like your reference: CEO → department pills row → teams. Hover nodes for responsibilities + bio.</p>
+      /* Level: CEO */
+      .level-0 {
+        display: flex;
+        justify-content: center;
+        margin-bottom: var(--levelGap);
+      }
 
-    <div class="toolbar">
-      <div class="seg" role="group" aria-label="Org chart view toggle">
-        <button id="btn-humans" aria-pressed="true">1 — Humans only</button>
-        <button id="btn-agents" aria-pressed="false">2 — Agents only</button>
-        <button id="btn-combined" aria-pressed="false">3 — Combined</button>
+      /* Departments row */
+      .departments {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--deptGap);
+        width: 100%;
+        min-width: 1100px;
+      }
+
+      .dept {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        min-width: 200px;
+        flex: 1 1 0;
+      }
+
+      .dept-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(20, 24, 36, 0.78); /* more opaque to hide wires */
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        white-space: nowrap;
+        margin-top: 10px;
+        backdrop-filter: blur(6px);
+      }
+
+      /* Node + subtree */
+      .node-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .children {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: var(--nodeGap);
+      }
+
+      .children.column {
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      /* Person/agent card */
+      .node {
+        width: 240px;
+        background: var(--card2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+        padding: 12px 12px;
+        transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+        cursor: default;
+        backdrop-filter: blur(8px);
+      }
+
+      .node:hover {
+        transform: translateY(-2px);
+        border-color: rgba(110, 231, 255, 0.45);
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
+      }
+
+      .node.agent:hover {
+        border-color: rgba(168, 85, 247, 0.55);
+      }
+
+      /* Label node */
+      .node.label {
+        width: auto;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px dashed rgba(255, 255, 255, 0.18);
+        box-shadow: none;
+      }
+
+      .node.label:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Avatar placeholder */
+      .avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background:
+          radial-gradient(12px 12px at 30% 25%, rgba(255, 255, 255, 0.12), transparent 60%),
+          rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+        user-select: none;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .avatar .ph {
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .avatar.agent {
+        border-color: rgba(168, 85, 247, 0.25);
+        background:
+          radial-gradient(12px 12px at 30% 25%, rgba(168, 85, 247, 0.18), transparent 60%),
+          rgba(168, 85, 247, 0.10);
+      }
+
+      .text {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .name {
+        font-weight: 650;
+        font-size: 13px;
+        letter-spacing: 0.2px;
+        line-height: 1.15;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .title {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .meta {
+        margin-top: 10px;
+        display: flex;
+        justify-content: flex-start;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 4px 9px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: rgba(255, 255, 255, 0.04);
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .badge .mini {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 2px rgba(110, 231, 255, 0.12);
+      }
+
+      .badge.agent .mini {
+        background: var(--agent);
+        box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+      }
+
+      /* Tooltip */
+      .tooltip {
+        position: fixed;
+        z-index: 1000;
+        pointer-events: none;
+        max-width: 360px;
+        background: rgba(18, 20, 27, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        border-radius: 14px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+        padding: 12px 12px;
+        transform: translate(12px, 12px);
+        opacity: 0;
+        transition: opacity 0.12s ease;
+      }
+
+      .tooltip.show {
+        opacity: 1;
+      }
+
+      .tooltip h3 {
+        margin: 0 0 6px 0;
+        font-size: 13px;
+        letter-spacing: 0.2px;
+      }
+
+      .tooltip .tt-title {
+        margin: 0 0 8px 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .tooltip .tt-label {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 11px;
+        letter-spacing: 0.18px;
+        text-transform: uppercase;
+        margin: 10px 0 4px 0;
+      }
+
+      .tooltip .tt-body {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 12px;
+        line-height: 1.45;
+        white-space: pre-line;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>Evergrowth Org Views</h1>
+        <p class="sub">
+          Aligned like your reference: CEO → department pills row → teams. Hover nodes for responsibilities + bio.
+        </p>
+
+        <div class="toolbar">
+          <div class="seg" role="group" aria-label="Org chart view toggle">
+            <button id="btn-humans" aria-pressed="true">1 — Humans only</button>
+            <button id="btn-agents" aria-pressed="false">2 — Agents only</button>
+            <button id="btn-combined" aria-pressed="false">3 — Combined</button>
+          </div>
+
+          <div class="legend" aria-label="Legend">
+            <span class="pill"><span class="dot"></span> Human</span>
+            <span class="pill"><span class="dot agent"></span> Agent</span>
+            <span class="pill">Tip: Hover nodes</span>
+          </div>
+        </div>
       </div>
+    </header>
 
-      <div class="legend" aria-label="Legend">
-        <span class="pill"><span class="dot"></span> Human</span>
-        <span class="pill"><span class="dot agent"></span> Agent</span>
-        <span class="pill">Tip: Hover nodes</span>
+    <main>
+      <div class="wrap">
+        <div class="board" id="board">
+          <div class="chart" id="chart">
+            <svg class="wires" id="wires"></svg>
+            <div class="level-0" id="ceoMount"></div>
+            <div class="departments" id="deptMount"></div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</header>
+    </main>
 
-<main>
-  <div class="wrap">
-    <div class="board" id="board">
-      <div class="chart" id="chart">
-        <svg class="wires" id="wires"></svg>
+    <div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
 
-        <div class="level-0" id="ceoMount"></div>
-        <div class="departments" id="deptMount"></div>
-      </div>
-    </div>
-  </div>
-</main>
+    <script>
+      /**
+       * ==========================
+       * DATA — EDIT THIS SECTION
+       * ==========================
+       */
 
-<div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
-
-<script>
-/**
- * ==========================
- * DATA — EDIT THIS SECTION
- * ==========================
- * Node:
- * {
- *   id, kind: "human"|"agent"|"label",
- *   name, title,
- *   avatarUrl?, responsibilities?, bio?,
- *   children?: Node[],
- *   layout?: "row"|"column"   // how THIS node lays out its children
- * }
- *
- * Chart:
- * { ceo: Node, departments: [{ id, name, members: Node[] }] }
- */
-
-const HUMANS = {
-  ceo: {
-    id: "ceo",
-    kind: "human",
-    name: "JB Daguené",
-    title: "CEO",
-    responsibilities: "Company strategy, exec decisions, prioritization, hiring.",
-    bio: "Founder/CEO. Owns vision and overall execution."
-  },
-  departments: [
-    {
-  id: "dept-pe",
-  name: "Product & Engineering",
-  members: [
-    {
-      id: "nauris",
-      kind: "human",
-      name: "Nauris Dorbe",
-      title: "CTO",
-      responsibilities: "Engineering leadership, technical strategy, architecture.",
-      bio: "Leads Product & Engineering delivery and technical direction.",
-      layout: "column",
-      children: [
-        {
-          id: "donatas",
+      const HUMANS = {
+        ceo: {
+          id: "ceo",
           kind: "human",
-          name: "Donatas Mašlėktėnas",
-          title: "Front-end Engineer",
-          responsibilities: "UI implementation, performance, component systems.",
-          bio: "Builds user-facing features and improves UX quality.",
-          layout: "column",
-          children: [
-            {
-              id: "marks",
-              kind: "human",
-              name: "Marks Leidemans",
-              title: "Senior Software Engineer",
-              responsibilities: "Backend systems, reliability, core services.",
-              bio: "Builds and maintains key platform capabilities.",
-              layout: "column",
-              children: [
-                {
-                  id: "cosmin",
-                  kind: "human",
-                  name: "Cosmin Romeo Tanase",
-                  title: "Full-stack Engineer",
-                  responsibilities: "End-to-end feature delivery across stack.",
-                  bio: "Ships features across frontend + backend.",
-                  layout: "column",
-                  children: [
-                    {
-                      id: "edvinas",
-                      kind: "human",
-                      name: "Edvinas Rabikis",
-                      title: "Full Stack Engineer",
-                      responsibilities: "Product features, integrations, platform improvements.",
-                      bio: "Delivers full-stack work across the product."
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: "monika",
-      kind: "human",
-      name: "Monika Staponkutė",
-      title: "Head of Product",
-      responsibilities: "Product strategy, roadmap, discovery, requirements.",
-      bio: "Owns the product direction and cross-functional alignment.",
-      layout: "column",
-      children: [
-        {
-          id: "chirag",
-          kind: "human",
-          name: "Chirag Patel",
-          title: "UX Design Lead",
-          responsibilities: "Design systems, user research, interaction design.",
-          bio: "Leads product design and user experience."
-        }
-      ]
-    }
-  ]
-},
-    {
-      id: "dept-ops",
-      name: "Operations",
-      members: [
-        {
-          id: "beatrise",
-          kind: "human",
-          name: "Beatrise Pociute-Daguené",
-          title: "Head of Business Operations",
-          responsibilities: "Company ops, finance ops, systems/processes.",
-          bio: "Keeps the business running smoothly.",
-          layout: "column",
-          children: [
-            {
-              id: "ruta",
-              kind: "human",
-              name: "Rūta Dorofejevaitė",
-              title: "Senior Accountant",
-              responsibilities: "Accounting operations, close, reporting, compliance.",
-              bio: "Owns day-to-day accounting and financial hygiene."
-            }
-          ]
-        }
-      ]
-    },
-    {
-  id: "dept-cs",
-  name: "Customer Success",
-  members: [
-    {
-      id: "diana",
-      kind: "human",
-      name: "Diana Heisler",
-      title: "Head of CS",
-      responsibilities: "Customer onboarding, renewals, support, outcomes.",
-      bio: "Owns customer success and retention motions."
-    },
-    {
-      id: "mert",
-      kind: "human",
-      name: "Mert Gencer",
-      title: "Solutions Engineer",
-      responsibilities: "Technical onboarding, implementations, support escalation.",
-      bio: "Bridges product + customer technical needs.",
-      layout: "column",
-      children: [
-        {
-          id: "suleman",
-          kind: "human",
-          name: "Suleman Mahmud",
-          title: "GTM Ops",
-          responsibilities: "Rev ops support, systems, reporting, process.",
-          bio: "Keeps GTM operations tight and measurable."
+          name: "JB Daguené",
+          title: "CEO",
+          responsibilities: "Company strategy, exec decisions, prioritization, hiring.",
+          bio: "Founder/CEO. Owns vision and overall execution."
         },
-        {
-          id: "rudolfs",
-          kind: "human",
-          name: "Rudolfs Selga",
-          title: "GTM Ops",
-          responsibilities: "Ops support, tooling, data hygiene, process.",
-          bio: "Supports GTM systems and execution."
-        }
-      ]
-    }
-  ]
-}
-,
-    {
-  id: "dept-sales",
-  name: "Sales",
-  members: [
-    {
-      id: "justin",
-      kind: "human",
-      name: "Justas Rodzevičius",
-      title: "Head of RevOps and Client Consulting",
-      responsibilities: "RevOps strategy, client consulting delivery, enablement.",
-      bio: "Owns RevOps + consulting engagements."
-    },
-    {
-      id: "cody",
-      kind: "human",
-      name: "Cody Ayres",
-      title: "Head of GTM",
-      responsibilities: "GTM strategy, pipeline, sales execution.",
-      bio: "Owns revenue outcomes and GTM performance."
-    },
-    {
-      id: "magnus",
-      kind: "human",
-      name: "Magnus Thomsen",
-      title: "Senior AE",
-      responsibilities: "Pipeline creation, deal execution, customer development.",
-      bio: "Drives new business and expansions."
-    }
-  ]
-}
-,
-    {
-      id: "dept-mktg",
-      name: "Marketing",
-      members: [
-        {
-          id: "james",
-          kind: "human",
-          name: "James Ince",
-          title: "Head of Product Marketing",
-          responsibilities: "Messaging, positioning, launches, enablement, competitive.",
-          bio: "Owns product marketing strategy and execution."
-        }
-      ]
-    }
-  ]
-};
+        departments: [
+          {
+            id: "dept-pe",
+            name: "Product & Engineering",
+            members: [
+              {
+                id: "nauris",
+                kind: "human",
+                name: "Nauris Dorbe",
+                title: "CTO",
+                responsibilities: "Engineering leadership, technical strategy, architecture.",
+                bio: "Leads Product & Engineering delivery and technical direction.",
+                layout: "column",
+                children: [
+                  {
+                    id: "donatas",
+                    kind: "human",
+                    name: "Donatas Mašlėktėnas",
+                    title: "Front-end Engineer",
+                    responsibilities: "UI implementation, performance, component systems.",
+                    bio: "Builds user-facing features and improves UX quality.",
+                    layout: "column",
+                    children: [
+                      {
+                        id: "marks",
+                        kind: "human",
+                        name: "Marks Leidemans",
+                        title: "Senior Software Engineer",
+                        responsibilities: "Backend systems, reliability, core services.",
+                        bio: "Builds and maintains key platform capabilities.",
+                        layout: "column",
+                        children: [
+                          {
+                            id: "cosmin",
+                            kind: "human",
+                            name: "Cosmin Romeo Tanase",
+                            title: "Full-stack Engineer",
+                            responsibilities: "End-to-end feature delivery across stack.",
+                            bio: "Ships features across frontend + backend.",
+                            layout: "column",
+                            children: [
+                              {
+                                id: "edvinas",
+                                kind: "human",
+                                name: "Edvinas Rabikis",
+                                title: "Full Stack Engineer",
+                                responsibilities: "Product features, integrations, platform improvements.",
+                                bio: "Delivers full-stack work across the product."
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "monika",
+                kind: "human",
+                name: "Monika Staponkutė",
+                title: "Head of Product",
+                responsibilities: "Product strategy, roadmap, discovery, requirements.",
+                bio: "Owns the product direction and cross-functional alignment.",
+                layout: "column",
+                children: [
+                  {
+                    id: "chirag",
+                    kind: "human",
+                    name: "Chirag Patel",
+                    title: "UX Design Lead",
+                    responsibilities: "Design systems, user research, interaction design.",
+                    bio: "Leads product design and user experience."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "dept-ops",
+            name: "Operations",
+            members: [
+              {
+                id: "beatrise",
+                kind: "human",
+                name: "Beatrise Pociute-Daguené",
+                title: "Head of Business Operations",
+                responsibilities: "Company ops, finance ops, systems/processes.",
+                bio: "Keeps the business running smoothly.",
+                layout: "column",
+                children: [
+                  {
+                    id: "ruta",
+                    kind: "human",
+                    name: "Rūta Dorofejevaitė",
+                    title: "Senior Accountant",
+                    responsibilities: "Accounting operations, close, reporting, compliance.",
+                    bio: "Owns day-to-day accounting and financial hygiene."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "dept-cs",
+            name: "Customer Success",
+            members: [
+              {
+                id: "diana",
+                kind: "human",
+                name: "Diana Heisler",
+                title: "Head of CS",
+                responsibilities: "Customer onboarding, renewals, support, outcomes.",
+                bio: "Owns customer success and retention motions."
+              },
+              {
+                id: "mert",
+                kind: "human",
+                name: "Mert Gencer",
+                title: "Solutions Engineer",
+                responsibilities: "Technical onboarding, implementations, support escalation.",
+                bio: "Bridges product + customer technical needs.",
+                layout: "column",
+                children: [
+                  {
+                    id: "suleman",
+                    kind: "human",
+                    name: "Suleman Mahmud",
+                    title: "GTM Ops",
+                    responsibilities: "Rev ops support, systems, reporting, process.",
+                    bio: "Keeps GTM operations tight and measurable."
+                  },
+                  {
+                    id: "rudolfs",
+                    kind: "human",
+                    name: "Rudolfs Selga",
+                    title: "GTM Ops",
+                    responsibilities: "Ops support, tooling, data hygiene, process.",
+                    bio: "Supports GTM systems and execution."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "dept-sales",
+            name: "Sales",
+            members: [
+              {
+                id: "justin",
+                kind: "human",
+                name: "Justas Rodzevičius",
+                title: "Head of RevOps and Client Consulting",
+                responsibilities: "RevOps strategy, client consulting delivery, enablement.",
+                bio: "Owns RevOps + consulting engagements."
+              },
+              {
+                id: "cody",
+                kind: "human",
+                name: "Cody Ayres",
+                title: "Head of GTM",
+                responsibilities: "GTM strategy, pipeline, sales execution.",
+                bio: "Owns revenue outcomes and GTM performance."
+              },
+              {
+                id: "magnus",
+                kind: "human",
+                name: "Magnus Thomsen",
+                title: "Senior AE",
+                responsibilities: "Pipeline creation, deal execution, customer development.",
+                bio: "Drives new business and expansions."
+              }
+            ]
+          },
+          {
+            id: "dept-mktg",
+            name: "Marketing",
+            members: [
+              {
+                id: "james",
+                kind: "human",
+                name: "James Ince",
+                title: "Head of Product Marketing",
+                responsibilities: "Messaging, positioning, launches, enablement, competitive.",
+                bio: "Owns product marketing strategy and execution."
+              }
+            ]
+          }
+        ]
+      };
 
-const AGENTS = {
-  ceo: {
-    id: "a-ceo",
-    kind: "agent",
-    name: "Exec Ops Agent",
-    title: "Company Orchestrator",
-    responsibilities: "Summarizes key metrics, surfaces risks, drafts exec updates.",
-    bio: "Supports leadership cadence and decision-making."
-  },
-  departments: [
-    {
-      id: "a-dept-pe",
-      name: "Product & Engineering",
-      members: [
-        {
-          id: "a-nauris",
+      const AGENTS = {
+        ceo: {
+          id: "a-ceo",
           kind: "agent",
-          name: "Eng Manager Agent",
-          title: "P&E Orchestrator",
-          responsibilities: "Triage, PR summaries, release notes, QA prompts.",
-          bio: "Keeps engineering throughput high.",
-          layout: "row",
-          children: [
-            {
-              id: "a-devstack",
-              kind: "agent",
-              name: "Dev Support Agent",
-              title: "Engineering Support",
-              responsibilities: "Investigations, checklists, docs.",
-              bio: "Assists dev execution.",
-              layout: "column",
-              children: [
-                { id: "a-relnote", kind: "agent", name: "Release Notes Agent", title: "Comms", responsibilities: "Drafts changelogs + notes.", bio: "Speeds releases." },
-                { id: "a-qa", kind: "agent", name: "QA Checklist Agent", title: "Quality", responsibilities: "Generates test prompts.", bio: "Reduces regressions." }
-              ]
-            },
-            { id: "a-ux", kind: "agent", name: "UX Research Agent", title: "Design Support", responsibilities: "Synthesizes research + insights.", bio: "Accelerates product understanding." }
-          ]
+          name: "Exec Ops Agent",
+          title: "Company Orchestrator",
+          responsibilities: "Summarizes key metrics, surfaces risks, drafts exec updates.",
+          bio: "Supports leadership cadence and decision-making."
         },
-        { id: "a-pm", kind: "agent", name: "Product Insights Agent", title: "Discovery", responsibilities: "Themes feedback, drafts PRDs.", bio: "Turns input into decisions." }
-      ]
-    },
-    {
-      id: "a-dept-ops",
-      name: "Operations",
-      members: [
-        { id: "a-ops", kind: "agent", name: "BizOps Agent", title: "Ops Support", responsibilities: "SOPs, policies, vendor comps.", bio: "Keeps ops scalable.", layout:"column",
-          children: [{ id:"a-close", kind:"agent", name:"Close Checklist Agent", title:"Accounting", responsibilities:"Close checklists + anomaly flags.", bio:"Reduces finance busywork." }]
+        departments: [
+          {
+            id: "a-dept-pe",
+            name: "Product & Engineering",
+            members: [
+              {
+                id: "a-nauris",
+                kind: "agent",
+                name: "Eng Manager Agent",
+                title: "P&E Orchestrator",
+                responsibilities: "Triage, PR summaries, release notes, QA prompts.",
+                bio: "Keeps engineering throughput high.",
+                layout: "row",
+                children: [
+                  {
+                    id: "a-devstack",
+                    kind: "agent",
+                    name: "Dev Support Agent",
+                    title: "Engineering Support",
+                    responsibilities: "Investigations, checklists, docs.",
+                    bio: "Assists dev execution.",
+                    layout: "column",
+                    children: [
+                      {
+                        id: "a-relnote",
+                        kind: "agent",
+                        name: "Release Notes Agent",
+                        title: "Comms",
+                        responsibilities: "Drafts changelogs + notes.",
+                        bio: "Speeds releases."
+                      },
+                      {
+                        id: "a-qa",
+                        kind: "agent",
+                        name: "QA Checklist Agent",
+                        title: "Quality",
+                        responsibilities: "Generates test prompts.",
+                        bio: "Reduces regressions."
+                      }
+                    ]
+                  },
+                  {
+                    id: "a-ux",
+                    kind: "agent",
+                    name: "UX Research Agent",
+                    title: "Design Support",
+                    responsibilities: "Synthesizes research + insights.",
+                    bio: "Accelerates product understanding."
+                  }
+                ]
+              },
+              {
+                id: "a-pm",
+                kind: "agent",
+                name: "Product Insights Agent",
+                title: "Discovery",
+                responsibilities: "Themes feedback, drafts PRDs.",
+                bio: "Turns input into decisions."
+              }
+            ]
+          },
+          {
+            id: "a-dept-ops",
+            name: "Operations",
+            members: [
+              {
+                id: "a-ops",
+                kind: "agent",
+                name: "BizOps Agent",
+                title: "Ops Support",
+                responsibilities: "SOPs, policies, vendor comps.",
+                bio: "Keeps ops scalable.",
+                layout: "column",
+                children: [
+                  {
+                    id: "a-close",
+                    kind: "agent",
+                    name: "Close Checklist Agent",
+                    title: "Accounting",
+                    responsibilities: "Close checklists + anomaly flags.",
+                    bio: "Reduces finance busywork."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "a-dept-cs",
+            name: "Customer Success",
+            members: [
+              {
+                id: "a-cs",
+                kind: "agent",
+                name: "CS Lead Agent",
+                title: "CS Orchestrator",
+                responsibilities: "Call summaries, action items, risk flags.",
+                bio: "Improves retention.",
+                layout: "column",
+                children: [
+                  {
+                    id: "a-impl",
+                    kind: "agent",
+                    name: "Implementation Agent",
+                    title: "Solutions",
+                    responsibilities: "Setup guides + troubleshooting.",
+                    bio: "Speeds time-to-value."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "a-dept-sales",
+            name: "Sales",
+            members: [
+              {
+                id: "a-revops",
+                kind: "agent",
+                name: "RevOps Agent",
+                title: "Ops Support",
+                responsibilities: "CRM hygiene + reporting drafts.",
+                bio: "Keeps data clean."
+              },
+              {
+                id: "a-gtm",
+                kind: "agent",
+                name: "GTM Strategy Agent",
+                title: "GTM",
+                responsibilities: "Account research, call prep, pipeline summaries.",
+                bio: "Increases seller output."
+              },
+              {
+                id: "a-deal",
+                kind: "agent",
+                name: "Deal Desk Agent",
+                title: "AE Support",
+                responsibilities: "Objection docs, MAPs, next-step emails.",
+                bio: "Helps deals move forward."
+              }
+            ]
+          },
+          {
+            id: "a-dept-mktg",
+            name: "Marketing",
+            members: [
+              {
+                id: "a-pmm",
+                kind: "agent",
+                name: "PMM Agent",
+                title: "PMM Support",
+                responsibilities: "Positioning drafts, launches, enablement.",
+                bio: "Accelerates go-to-market."
+              }
+            ]
+          }
+        ]
+      };
+
+      const COMBINED = deepClone(HUMANS);
+      injectAgentsIntoCombined(COMBINED, AGENTS);
+
+      /**
+       * ==========================
+       * RENDERING
+       * ==========================
+       */
+      const ceoMount = document.getElementById("ceoMount");
+      const deptMount = document.getElementById("deptMount");
+      const wires = document.getElementById("wires");
+      const chart = document.getElementById("chart");
+      const board = document.getElementById("board");
+
+      const tooltip = document.getElementById("tooltip");
+
+      const btnHumans = document.getElementById("btn-humans");
+      const btnAgents = document.getElementById("btn-agents");
+      const btnCombined = document.getElementById("btn-combined");
+
+      const VIEWS = { humans: HUMANS, agents: AGENTS, combined: COMBINED };
+      let currentView = "humans";
+
+      btnHumans.addEventListener("click", () => setView("humans"));
+      btnAgents.addEventListener("click", () => setView("agents"));
+      btnCombined.addEventListener("click", () => setView("combined"));
+
+      function setView(view) {
+        currentView = view;
+        btnHumans.setAttribute("aria-pressed", view === "humans");
+        btnAgents.setAttribute("aria-pressed", view === "agents");
+        btnCombined.setAttribute("aria-pressed", view === "combined");
+        render(VIEWS[view]);
+      }
+
+      render(VIEWS[currentView]);
+
+      window.addEventListener("resize", () => scheduleWires());
+      board.addEventListener("scroll", () => scheduleWires(), { passive: true });
+
+      let raf = null;
+      function scheduleWires() {
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(drawWires);
+      }
+
+      function render(model) {
+        ceoMount.innerHTML = "";
+        deptMount.innerHTML = "";
+        wires.innerHTML = "";
+
+        const edges = [];
+
+        // CEO node
+        ceoMount.appendChild(renderNode(model.ceo));
+
+        // Departments row
+        for (const dept of model.departments) {
+          const deptEl = document.createElement("div");
+          deptEl.className = "dept";
+
+          const pill = document.createElement("div");
+          pill.className = "dept-pill";
+          pill.textContent = dept.name;
+          pill.dataset.nodeId = dept.id;
+          deptEl.appendChild(pill);
+
+          // CEO -> dept pill edge
+          edges.push([model.ceo.id, dept.id]);
+
+          // Dept members row
+          const members = document.createElement("div");
+          members.className = "children";
+
+          for (const m of dept.members) {
+            members.appendChild(renderSubtree(m, edges));
+            // Dept pill -> member edge
+            edges.push([dept.id, m.id]);
+          }
+
+          deptEl.appendChild(members);
+          deptMount.appendChild(deptEl);
         }
-      ]
-    },
-    {
-      id: "a-dept-cs",
-      name: "Customer Success",
-      members: [
-        { id:"a-cs", kind:"agent", name:"CS Lead Agent", title:"CS Orchestrator", responsibilities:"Call summaries, action items, risk flags.", bio:"Improves retention.", layout:"column",
-          children: [{ id:"a-impl", kind:"agent", name:"Implementation Agent", title:"Solutions", responsibilities:"Setup guides + troubleshooting.", bio:"Speeds time-to-value." }]
+
+        bindTooltips();
+
+        chart.__edges = edges;
+
+        sizeSvgToContent();
+        requestAnimationFrame(() => requestAnimationFrame(drawWires));
+      }
+
+      function renderSubtree(node, edges) {
+        const wrap = document.createElement("div");
+        wrap.className = "node-wrap";
+
+        wrap.appendChild(renderNode(node));
+
+        if (node.children && node.children.length) {
+          const kids = document.createElement("div");
+          kids.className = "children" + (node.layout === "column" ? " column" : "");
+
+          for (const child of node.children) {
+            kids.appendChild(renderSubtree(child, edges));
+            edges.push([node.id, child.id]);
+          }
+
+          wrap.appendChild(kids);
         }
-      ]
-    },
-    {
-      id: "a-dept-sales",
-      name: "Sales",
-      members: [
-        { id:"a-revops", kind:"agent", name:"RevOps Agent", title:"Ops Support", responsibilities:"CRM hygiene + reporting drafts.", bio:"Keeps data clean." },
-        { id:"a-gtm", kind:"agent", name:"GTM Strategy Agent", title:"GTM", responsibilities:"Account research, call prep, pipeline summaries.", bio:"Increases seller output." },
-        { id:"a-deal", kind:"agent", name:"Deal Desk Agent", title:"AE Support", responsibilities:"Objection docs, MAPs, next-step emails.", bio:"Helps deals move forward." }
-      ]
-    },
-    {
-      id: "a-dept-mktg",
-      name: "Marketing",
-      members: [
-        { id:"a-pmm", kind:"agent", name:"PMM Agent", title:"PMM Support", responsibilities:"Positioning drafts, launches, enablement.", bio:"Accelerates go-to-market." }
-      ]
-    }
-  ]
-};
-
-const COMBINED = deepClone(HUMANS);
-injectAgentsIntoCombined(COMBINED, AGENTS);
-
-/**
- * ==========================
- * RENDERING
- * ==========================
- */
-const ceoMount = document.getElementById("ceoMount");
-const deptMount = document.getElementById("deptMount");
-const wires = document.getElementById("wires");
-const chart = document.getElementById("chart");
-const board = document.getElementById("board");
-
-const tooltip = document.getElementById("tooltip");
-
-const btnHumans = document.getElementById("btn-humans");
-const btnAgents = document.getElementById("btn-agents");
-const btnCombined = document.getElementById("btn-combined");
-
-const VIEWS = { humans: HUMANS, agents: AGENTS, combined: COMBINED };
-let currentView = "humans";
-
-btnHumans.addEventListener("click", () => setView("humans"));
-btnAgents.addEventListener("click", () => setView("agents"));
-btnCombined.addEventListener("click", () => setView("combined"));
-
-function setView(view){
-  currentView = view;
-  btnHumans.setAttribute("aria-pressed", view === "humans");
-  btnAgents.setAttribute("aria-pressed", view === "agents");
-  btnCombined.setAttribute("aria-pressed", view === "combined");
-  render(VIEWS[view]);
-}
-
-render(VIEWS[currentView]);
-
-window.addEventListener("resize", () => scheduleWires());
-board.addEventListener("scroll", () => scheduleWires(), { passive: true });
-
-let raf = null;
-function scheduleWires(){
-  if (raf) cancelAnimationFrame(raf);
-  raf = requestAnimationFrame(drawWires);
-}
-
-function render(model){
-  ceoMount.innerHTML = "";
-  deptMount.innerHTML = "";
-  wires.innerHTML = "";
-
-  const edges = [];
-
-  // CEO node
-  ceoMount.appendChild(renderNode(model.ceo, edges));
-
-  // Departments row
-  for (const dept of model.departments){
-    const deptEl = document.createElement("div");
-    deptEl.className = "dept";
-
-    const pill = document.createElement("div");
-    pill.className = "dept-pill";
-    pill.textContent = dept.name;
-    pill.dataset.nodeId = dept.id;
-    deptEl.appendChild(pill);
-
-    // CEO -> dept pill edge
-    edges.push([model.ceo.id, dept.id]);
-
-    // Dept members row
-    const members = document.createElement("div");
-    members.className = "children"; // row
-    for (const m of dept.members){
-      const subTree = renderSubtree(m, edges);
-      members.appendChild(subTree);
-      // Dept pill -> member edge
-      edges.push([dept.id, m.id]);
-    }
-    deptEl.appendChild(members);
-
-    deptMount.appendChild(deptEl);
-  }
-
-  // Bind tooltips
-  bindTooltips();
-
-  // Store edges on chart for wire drawing
-  chart.__edges = edges;
-
-  // Ensure SVG covers full chart content
-  sizeSvgToContent();
-
-  // Draw wires after layout settles
-  requestAnimationFrame(() => requestAnimationFrame(drawWires));
-}
-
-function renderSubtree(node, edges){
-  const wrap = document.createElement("div");
-  wrap.className = "node-wrap";
-
-  wrap.appendChild(renderNode(node, edges));
-
-  if (node.children && node.children.length){
-    const kids = document.createElement("div");
-    kids.className = "children" + (node.layout === "column" ? " column" : "");
-    for (const child of node.children){
-      kids.appendChild(renderSubtree(child, edges));
-      edges.push([node.id, child.id]);
-    }
-    wrap.appendChild(kids);
-  }
-  return wrap;
-}
-
-function renderNode(node){
-  const kind = node.kind || "human";
-
-  // Label nodes (optional, used in combined)
-  if (kind === "label"){
-    const label = document.createElement("div");
-    label.className = "node label";
-    label.dataset.nodeId = node.id;
-    label.textContent = node.name || "";
-    // no tooltip
-    return label;
-  }
-
-  const card = document.createElement("div");
-  card.className = "node" + (kind === "agent" ? " agent" : "");
-  card.dataset.nodeId = node.id;
-
-  // tooltip data
-  card.dataset.name = node.name || "";
-  card.dataset.title = node.title || "";
-  card.dataset.responsibilities = node.responsibilities || "";
-  card.dataset.bio = node.bio || "";
-
-  const row = document.createElement("div");
-  row.className = "row";
-
-  const avatar = document.createElement("div");
-  avatar.className = "avatar" + (kind === "agent" ? " agent" : "");
-
-  if (node.avatarUrl){
-    const img = document.createElement("img");
-    img.src = node.avatarUrl;
-    img.alt = node.name || "Avatar";
-    img.loading = "lazy";
-    avatar.appendChild(img);
-  } else {
-    const ph = document.createElement("div");
-    ph.className = "ph";
-    ph.textContent = (kind === "agent") ? "🤖" : initials(node.name || "");
-    avatar.appendChild(ph);
-  }
-
-  const text = document.createElement("div");
-  text.className = "text";
-
-  const name = document.createElement("div");
-  name.className = "name";
-  name.textContent = node.name || "(Unnamed)";
-
-  const title = document.createElement("div");
-  title.className = "title";
-  title.textContent = node.title || "";
-
-  text.appendChild(name);
-  if (node.title) text.appendChild(title);
-
-  row.appendChild(avatar);
-  row.appendChild(text);
-
-  const meta = document.createElement("div");
-  meta.className = "meta";
-
-  const badge = document.createElement("span");
-  badge.className = "badge" + (kind === "agent" ? " agent" : "");
-  badge.innerHTML = `<span class="mini"></span><span>${kind === "agent" ? "Agent" : "Human"}</span>`;
-
-  meta.appendChild(badge);
-
-  card.appendChild(row);
-  card.appendChild(meta);
-
-  return card;
-}
-
-/**
- * ==========================
- * WIRES (SVG)
- * ==========================
- */
-function sizeSvgToContent(){
-  // Make SVG match scrollable content size so paths aren't clipped.
-  const w = chart.scrollWidth;
-  const h = chart.scrollHeight;
-  wires.setAttribute("width", w);
-  wires.setAttribute("height", h);
-  wires.setAttribute("viewBox", `0 0 ${w} ${h}`);
-}
-
-function drawWires(){
-  if (!chart.__edges) return;
-
-  sizeSvgToContent();
-  wires.innerHTML = "";
-
-  const chartRect = chart.getBoundingClientRect();
-  const idToEl = {};
-  chart.querySelectorAll("[data-node-id]").forEach(el => {
-    idToEl[el.dataset.nodeId] = el;
-  });
-
-  // Pull corner radius from CSS var if set
-  const cssR = getComputedStyle(document.documentElement).getPropertyValue("--wireRadius").trim();
-  const baseR = Number(cssR) || 14;
-
-  for (const [fromId, toId] of chart.__edges){
-    const a = idToEl[fromId];
-    const b = idToEl[toId];
-    if (!a || !b) continue;
-
-    const ar = a.getBoundingClientRect();
-    const br = b.getBoundingClientRect();
-
-    // Anchor points (bottom center -> top center), in chart coords
-    const x1 = (ar.left + ar.right) / 2 - chartRect.left;
-    const y1 = (ar.bottom) - chartRect.top;
-
-    const x2 = (br.left + br.right) / 2 - chartRect.left;
-
-    // If target is a department pill, land slightly ABOVE it
-    const isDeptPill = b.classList && b.classList.contains("dept-pill");
-    const topPad = isDeptPill ? 16 : 0; // how far above the pill to end the main line
-    const y2 = (br.top - topPad) - chartRect.top;
-
-    // Manhattan routing: vertical -> horizontal -> vertical with rounded corners
-    // Place the horizontal run somewhat below y1
-    const midY = y1 + Math.max(34, Math.min(86, (y2 - y1) * 0.55));
-
-    // Clamp radius so it can’t exceed segment lengths
-    const v1 = Math.max(0, midY - y1);
-    const v2 = Math.max(0, y2 - midY);
-    const hh = Math.abs(x2 - x1);
-    const rr = Math.max(0, Math.min(baseR, v1/2, v2/2, hh/2));
-
-    let d;
-
-    // If x is basically aligned, just draw a single vertical
-    if (Math.abs(x2 - x1) < 6) {
-      d = `M ${x1} ${y1} V ${y2}`;
-    } else {
-      const dir = x2 > x1 ? 1 : -1;
-
-      d = `
-        M ${x1} ${y1}
-        V ${midY - rr}
-        Q ${x1} ${midY} ${x1 + rr*dir} ${midY}
-        H ${x2 - rr*dir}
-        Q ${x2} ${midY} ${x2} ${midY + rr}
-        V ${y2}
-      `;
-    }
-
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", d);
-    wires.appendChild(path);
-
-    // Optional short drop to the pill (keeps dashes off the pill itself)
-    if (isDeptPill){
-      const drop = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      const yTop = (br.top - topPad) - chartRect.top; // chart-local
-      const yPill = br.top - chartRect.top;           // chart-local
-      drop.setAttribute("d", `M ${x2} ${yTop} V ${yPill}`);
-      wires.appendChild(drop);
-    }
-  }
-}
-
-
-  
-
-/**
- * ==========================
- * TOOLTIPS
- * ==========================
- */
-function bindTooltips(){
-  chart.querySelectorAll(".node:not(.label)").forEach(el => {
-    // dept pills should NOT tooltip
-    if (el.classList.contains("dept-pill")) return;
-    el.addEventListener("mouseenter", (e) => showTooltip(e.currentTarget, e));
-    el.addEventListener("mousemove", (e) => moveTooltip(e));
-    el.addEventListener("mouseleave", hideTooltip);
-  });
-}
-
-function showTooltip(el, e){
-  const name = el.dataset.name || "";
-  const title = el.dataset.title || "";
-  const responsibilities = el.dataset.responsibilities || "";
-  const bio = el.dataset.bio || "";
-
-  if (!responsibilities && !bio) return;
-
-  tooltip.innerHTML = `
-    <h3>${escapeHtml(name)}</h3>
-    ${title ? `<div class="tt-title">${escapeHtml(title)}</div>` : ""}
-    ${responsibilities ? `<div class="tt-label">Responsibilities</div><p class="tt-body">${escapeHtml(responsibilities)}</p>` : ""}
-    ${bio ? `<div class="tt-label">Bio</div><p class="tt-body">${escapeHtml(bio)}</p>` : ""}
-  `;
-  tooltip.classList.add("show");
-  tooltip.setAttribute("aria-hidden", "false");
-  moveTooltip(e);
-}
-
-function moveTooltip(e){
-  const pad = 14;
-  const rect = tooltip.getBoundingClientRect();
-  let x = e.clientX + 14;
-  let y = e.clientY + 14;
-
-  if (x + rect.width + pad > window.innerWidth) x = e.clientX - rect.width - 14;
-  if (y + rect.height + pad > window.innerHeight) y = e.clientY - rect.height - 14;
-
-  tooltip.style.left = x + "px";
-  tooltip.style.top = y + "px";
-}
-
-function hideTooltip(){
-  tooltip.classList.remove("show");
-  tooltip.setAttribute("aria-hidden", "true");
-}
-
-/**
- * ==========================
- * COMBINED VIEW (inject agents)
- * ==========================
- * For combined: add each department’s agents under the first (lead) member.
- * You can change this logic later to map agents to specific trainers.
- */
-function injectAgentsIntoCombined(humans, agents){
-  const deptByName = new Map();
-  for (const d of agents.departments) deptByName.set(d.name, d);
-
-  for (const dept of humans.departments){
-    const aDept = deptByName.get(dept.name);
-    if (!aDept || !aDept.members?.length) continue;
-
-    // Put agents under the first department member (assumed dept lead)
-    const lead = dept.members[0];
-    if (!lead) continue;
-
-    lead.children = lead.children || [];
-
-    // Add a label to separate humans vs agents
-    lead.children.push({
-      id: `${lead.id}-agents-label`,
-      kind: "label",
-      name: "Agents",
-      layout: "row",
-      children: aDept.members
-    });
-
-    // Ensure label lays out agents in a row (like “extra people under lead”)
-    lead.layout = lead.layout || "row";
-  }
-}
-
-/**
- * ==========================
- * UTIL
- * ==========================
- */
-function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
-function escapeHtml(str){
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-function initials(name){
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) return "•";
-  const first = parts[0][0] || "";
-  const last = parts.length > 1 ? (parts[parts.length-1][0] || "") : "";
-  return (first + last).toUpperCase();
-}
-</script>
-</body>
+
+        return wrap;
+      }
+
+      function renderNode(node) {
+        const kind = node.kind || "human";
+
+        if (kind === "label") {
+          const label = document.createElement("div");
+          label.className = "node label";
+          label.dataset.nodeId = node.id;
+          label.textContent = node.name || "";
+          return label;
+        }
+
+        const card = document.createElement("div");
+        card.className = "node" + (kind === "agent" ? " agent" : "");
+        card.dataset.nodeId = node.id;
+
+        // Tooltip data
+        card.dataset.name = node.name || "";
+        card.dataset.title = node.title || "";
+        card.dataset.responsibilities = node.responsibilities || "";
+        card.dataset.bio = node.bio || "";
+
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const avatar = document.createElement("div");
+        avatar.className = "avatar" + (kind === "agent" ? " agent" : "");
+
+        if (node.avatarUrl) {
+          const img = document.createElement("img");
+          img.src = node.avatarUrl;
+          img.alt = node.name || "Avatar";
+          img.loading = "lazy";
+          avatar.appendChild(img);
+        } else {
+          const ph = document.createElement("div");
+          ph.className = "ph";
+          ph.textContent = kind === "agent" ? "🤖" : initials(node.name || "");
+          avatar.appendChild(ph);
+        }
+
+        const text = document.createElement("div");
+        text.className = "text";
+
+        const name = document.createElement("div");
+        name.className = "name";
+        name.textContent = node.name || "(Unnamed)";
+
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = node.title || "";
+
+        text.appendChild(name);
+        if (node.title) text.appendChild(title);
+
+        row.appendChild(avatar);
+        row.appendChild(text);
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+
+        const badge = document.createElement("span");
+        badge.className = "badge" + (kind === "agent" ? " agent" : "");
+        badge.innerHTML = `<span class="mini"></span><span>${kind === "agent" ? "Agent" : "Human"}</span>`;
+
+        meta.appendChild(badge);
+
+        card.appendChild(row);
+        card.appendChild(meta);
+
+        return card;
+      }
+
+      /**
+       * ==========================
+       * WIRES (SVG)
+       * ==========================
+       */
+      function sizeSvgToContent() {
+        const w = chart.scrollWidth;
+        const h = chart.scrollHeight;
+        wires.setAttribute("width", w);
+        wires.setAttribute("height", h);
+        wires.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      }
+
+      function drawWires() {
+        if (!chart.__edges) return;
+
+        sizeSvgToContent();
+        wires.innerHTML = "";
+
+        const chartRect = chart.getBoundingClientRect();
+        const idToEl = {};
+        chart.querySelectorAll("[data-node-id]").forEach((el) => {
+          idToEl[el.dataset.nodeId] = el;
+        });
+
+        const cssR = getComputedStyle(document.documentElement).getPropertyValue("--wireRadius").trim();
+        const baseR = Number(cssR) || 14;
+
+        for (const [fromId, toId] of chart.__edges) {
+          const a = idToEl[fromId];
+          const b = idToEl[toId];
+          if (!a || !b) continue;
+
+          const ar = a.getBoundingClientRect();
+          const br = b.getBoundingClientRect();
+
+          // chart-local anchors
+          const x1 = (ar.left + ar.right) / 2 - chartRect.left;
+          const y1 = ar.bottom - chartRect.top;
+
+          const x2 = (br.left + br.right) / 2 - chartRect.left;
+
+          // Prevent wires showing "through" pills/cards by ending ABOVE them,
+          // then adding a short vertical drop to the top edge.
+          const isDeptPill = b.classList && b.classList.contains("dept-pill");
+          const isNodeCard = b.classList && b.classList.contains("node") && !b.classList.contains("label");
+
+          const endPad = isDeptPill ? 18 : isNodeCard ? 14 : 0;
+          const y2 = (br.top - endPad) - chartRect.top;
+
+          // Place bus high enough to avoid crossing behind the target element.
+          // Rule: keep it close to the source, but ALSO at least 36px above y2 (when possible).
+          const preferredBus = y1 + 28;
+          const avoidTarget = y2 - 36;
+          let midY = Math.min(preferredBus, avoidTarget);
+
+          // Clamp midY between endpoints (with room for rounded corners)
+          const hh = Math.abs(x2 - x1);
+          const v1 = Math.max(0, midY - y1);
+          const v2 = Math.max(0, y2 - midY);
+
+          const rr = Math.max(0, Math.min(baseR, hh / 2, v1 / 2, v2 / 2));
+          const minMid = y1 + rr + 4;
+          const maxMid = y2 - rr - 4;
+          midY = Math.max(minMid, Math.min(maxMid, midY));
+
+          let d;
+
+          if (Math.abs(x2 - x1) < 6) {
+            d = `M ${x1} ${y1} V ${y2}`;
+          } else {
+            const dir = x2 > x1 ? 1 : -1;
+            d = `
+              M ${x1} ${y1}
+              V ${midY - rr}
+              Q ${x1} ${midY} ${x1 + rr * dir} ${midY}
+              H ${x2 - rr * dir}
+              Q ${x2} ${midY} ${x2} ${midY + rr}
+              V ${y2}
+            `;
+          }
+
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", d);
+          wires.appendChild(path);
+
+          // Drop line onto the element's top edge (dept pill OR node card)
+          if (endPad > 0) {
+            const drop = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const yTop = (br.top - endPad) - chartRect.top;
+            const yEdge = br.top - chartRect.top;
+            drop.setAttribute("d", `M ${x2} ${yTop} V ${yEdge}`);
+            wires.appendChild(drop);
+          }
+        }
+      }
+
+      /**
+       * ==========================
+       * TOOLTIPS
+       * ==========================
+       */
+      function bindTooltips() {
+        chart.querySelectorAll(".node:not(.label)").forEach((el) => {
+          el.addEventListener("mouseenter", (e) => showTooltip(e.currentTarget, e));
+          el.addEventListener("mousemove", (e) => moveTooltip(e));
+          el.addEventListener("mouseleave", hideTooltip);
+        });
+      }
+
+      function showTooltip(el, e) {
+        const name = el.dataset.name || "";
+        const title = el.dataset.title || "";
+        const responsibilities = el.dataset.responsibilities || "";
+        const bio = el.dataset.bio || "";
+
+        if (!responsibilities && !bio) return;
+
+        tooltip.innerHTML = `
+          <h3>${escapeHtml(name)}</h3>
+          ${title ? `<div class="tt-title">${escapeHtml(title)}</div>` : ""}
+          ${responsibilities ? `<div class="tt-label">Responsibilities</div><p class="tt-body">${escapeHtml(responsibilities)}</p>` : ""}
+          ${bio ? `<div class="tt-label">Bio</div><p class="tt-body">${escapeHtml(bio)}</p>` : ""}
+        `;
+        tooltip.classList.add("show");
+        tooltip.setAttribute("aria-hidden", "false");
+        moveTooltip(e);
+      }
+
+      function moveTooltip(e) {
+        const pad = 14;
+        const rect = tooltip.getBoundingClientRect();
+        let x = e.clientX + 14;
+        let y = e.clientY + 14;
+
+        if (x + rect.width + pad > window.innerWidth) x = e.clientX - rect.width - 14;
+        if (y + rect.height + pad > window.innerHeight) y = e.clientY - rect.height - 14;
+
+        tooltip.style.left = x + "px";
+        tooltip.style.top = y + "px";
+      }
+
+      function hideTooltip() {
+        tooltip.classList.remove("show");
+        tooltip.setAttribute("aria-hidden", "true");
+      }
+
+      /**
+       * ==========================
+       * COMBINED VIEW (inject agents)
+       * ==========================
+       */
+      function injectAgentsIntoCombined(humans, agents) {
+        const deptByName = new Map();
+        for (const d of agents.departments) deptByName.set(d.name, d);
+
+        for (const dept of humans.departments) {
+          const aDept = deptByName.get(dept.name);
+          if (!aDept || !aDept.members?.length) continue;
+
+          const lead = dept.members[0];
+          if (!lead) continue;
+
+          lead.children = lead.children || [];
+
+          lead.children.push({
+            id: `${lead.id}-agents-label`,
+            kind: "label",
+            name: "Agents",
+            layout: "row",
+            children: aDept.members
+          });
+
+          lead.layout = lead.layout || "row";
+        }
+      }
+
+      /**
+       * ==========================
+       * UTIL
+       * ==========================
+       */
+      function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function initials(name) {
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return "•";
+        const first = parts[0][0] || "";
+        const last = parts.length > 1 ? parts[parts.length - 1][0] || "" : "";
+        return (first + last).toUpperCase();
+      }
+    </script>
+  </body>
 </html>
