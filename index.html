@@ -31,7 +31,7 @@
 
       --deptGap: 84px;
       --nodeGap: 34px;
-      --levelGap: 34px;
+      --levelGap: 52px;
     }
 
     *{ box-sizing:border-box; }
@@ -212,6 +212,7 @@
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.12);
       white-space: nowrap;
+      margin-top: 10px;
     }
 
     /* Node + subtree */
@@ -948,6 +949,10 @@ function drawWires(){
     idToEl[el.dataset.nodeId] = el;
   });
 
+  // Pull corner radius from CSS var if set
+  const cssR = getComputedStyle(document.documentElement).getPropertyValue("--wireRadius").trim();
+  const baseR = Number(cssR) || 14;
+
   for (const [fromId, toId] of chart.__edges){
     const a = idToEl[fromId];
     const b = idToEl[toId];
@@ -961,52 +966,57 @@ function drawWires(){
     const y1 = (ar.bottom) - chartRect.top;
 
     const x2 = (br.left + br.right) / 2 - chartRect.left;
-    const y2 = (br.top) - chartRect.top;
 
-    // Curve strength based on vertical distance
-    const dy = Math.max(24, Math.min(70, (y2 - y1) * 0.45));
+    // If target is a department pill, land slightly ABOVE it
+    const isDeptPill = b.classList && b.classList.contains("dept-pill");
+    const topPad = isDeptPill ? 12 : 0; // how far above the pill to end the main line
+    const y2 = (br.top - topPad) - chartRect.top;
 
     // Manhattan routing: vertical -> horizontal -> vertical with rounded corners
-const r = 14; // corner radius in px (tweak 10–18)
-const midY = y1 + Math.max(26, Math.min(70, (y2 - y1) * 0.45)); // where the horizontal run happens
+    // Place the horizontal run somewhat below y1
+    const midY = y1 + Math.max(34, Math.min(86, (y2 - y1) * 0.55));
 
-// Clamp radius so it can’t exceed segment lengths
-const v1 = Math.max(0, midY - y1);
-const v2 = Math.max(0, y2 - midY);
-const h  = Math.abs(x2 - x1);
-const rr = Math.max(0, Math.min(r, v1/2, v2/2, h/2));
+    // Clamp radius so it can’t exceed segment lengths
+    const v1 = Math.max(0, midY - y1);
+    const v2 = Math.max(0, y2 - midY);
+    const hh = Math.abs(x2 - x1);
+    const rr = Math.max(0, Math.min(baseR, v1/2, v2/2, hh/2));
 
-let d;
+    let d;
 
-// If x is basically aligned, just draw a single vertical
-if (Math.abs(x2 - x1) < 6) {
-  d = `M ${x1} ${y1} L ${x2} ${y2}`;
-} else {
-  const dir = x2 > x1 ? 1 : -1;
+    // If x is basically aligned, just draw a single vertical
+    if (Math.abs(x2 - x1) < 6) {
+      d = `M ${x1} ${y1} V ${y2}`;
+    } else {
+      const dir = x2 > x1 ? 1 : -1;
 
-  // Path:
-  // M (x1,y1)
-  // V to (x1, midY-rr)
-  // Q corner to start horizontal: (x1+rr*dir, midY)
-  // H to (x2-rr*dir)
-  // Q corner to go vertical: (x2, midY+rr)
-  // V to (x2,y2)
-  d = `
-    M ${x1} ${y1}
-    V ${midY - rr}
-    Q ${x1} ${midY} ${x1 + rr*dir} ${midY}
-    H ${x2 - rr*dir}
-    Q ${x2} ${midY} ${x2} ${midY + rr}
-    V ${y2}
-  `;
-}
-
+      d = `
+        M ${x1} ${y1}
+        V ${midY - rr}
+        Q ${x1} ${midY} ${x1 + rr*dir} ${midY}
+        H ${x2 - rr*dir}
+        Q ${x2} ${midY} ${x2} ${midY + rr}
+        V ${y2}
+      `;
+    }
 
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute("d", d);
     wires.appendChild(path);
+
+    // Optional short drop to the pill (keeps dashes off the pill itself)
+    if (isDeptPill){
+      const drop = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const yTop = (br.top - topPad) - chartRect.top; // chart-local
+      const yPill = br.top - chartRect.top;           // chart-local
+      drop.setAttribute("d", `M ${x2} ${yTop} V ${yPill}`);
+      wires.appendChild(drop);
+    }
   }
 }
+
+
+  
 
 /**
  * ==========================
