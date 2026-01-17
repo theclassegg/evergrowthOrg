@@ -969,7 +969,7 @@ function drawWires(){
 
     // If target is a department pill, land slightly ABOVE it
     const isDeptPill = b.classList && b.classList.contains("dept-pill");
-    const topPad = isDeptPill ? 12 : 0; // how far above the pill to end the main line
+    const topPad = isDeptPill ? 16 : 0; // how far above the pill to end the main line
     const y2 = (br.top - topPad) - chartRect.top;
 
     // Manhattan routing: vertical -> horizontal -> vertical with rounded corners
