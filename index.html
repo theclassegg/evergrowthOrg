@@ -666,6 +666,7 @@
             members: [
               {
                 id: "justin",
+                extraDeptIds: ["dept-cs"],
                 kind: "human",
                 name: "Justas Rodzevičius",
                 title: "Head of RevOps and Client Consulting",
@@ -949,10 +950,19 @@
           members.className = "children";
 
           for (const m of dept.members) {
-            members.appendChild(renderSubtree(m, edges));
-            // Dept pill -> member edge
-            edges.push([dept.id, m.id]);
-          }
+  members.appendChild(renderSubtree(m, edges));
+
+  // Primary dept pill -> member edge
+  edges.push([dept.id, m.id]);
+
+  // Extra dept pill(s) -> member edge(s)
+  if (Array.isArray(m.extraDeptIds)) {
+    for (const extraDeptId of m.extraDeptIds) {
+      edges.push([extraDeptId, m.id]);
+    }
+  }
+}
+
 
           deptEl.appendChild(members);
           deptMount.appendChild(deptEl);
