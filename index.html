@@ -3,18 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Evergrowth Org Charts</title>
-  <link rel="alternate icon" href="https://cdn.prod.website-files.com/67de9a786ff9ec4a82a4453a/67f6be889df4d0a86c22e5d1_favicon.svg">
-<meta name="theme-color" content="#0b0c10">
+  <title>Evergrowth Org Views</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://cdn.prod.website-files.com/67de9a786ff9ec4a82a4453a/67f6be889df4d0a86c22e5d1_favicon.svg" type="image/svg+xml">
+
   <style>
     :root{
       --bg:#0b0c10;
       --panel:#12141b;
-      --panel2:#0f1117;
       --text:#e8eaf0;
       --muted:#a9afbf;
       --line:#2a2f3d;
       --accent:#6ee7ff;
+      --agent:#a855f7;
       --node:#161a22;
       --nodeBorder:#2b3244;
       --shadow: 0 10px 30px rgba(0,0,0,.35);
@@ -116,7 +118,7 @@
       box-shadow: 0 0 0 3px rgba(110,231,255,.12);
     }
     .dot.agent{
-      background: #a855f7;
+      background: var(--agent);
       box-shadow: 0 0 0 3px rgba(168,85,247,.12);
     }
 
@@ -132,30 +134,40 @@
       box-shadow: var(--shadow);
       padding: 18px;
       overflow: auto;
+
+      /* nicer scrolling behavior for wide charts */
+      overscroll-behavior: contain;
+      scroll-padding-left: 30px;
+      scroll-padding-right: 30px;
     }
 
     /* Org chart structure */
     .org{
-      min-width: 980px; /* so it doesn’t crush on smaller screens */
-      padding: 8px 8px 18px;
+      /* KEY FIX #1: chart becomes as wide as it needs to be, enabling full horizontal scroll */
+      width: max-content;
+      min-width: 100%;
+      padding: 8px 26px 18px;
     }
     .org ul{
       padding-top: 20px;
       position: relative;
       display:flex;
-      justify-content: center;
+      justify-content: flex-start; /* KEY FIX #1: no centering that can “steal” scroll range */
+      align-items: flex-start;
       gap: 22px;
       padding-left: 0;
       margin: 0;
       list-style: none;
+      width: max-content; /* ensures true content width is used for scrolling */
     }
     .org li{
       text-align:center;
       position: relative;
       padding: 20px 10px 0 10px;
+      flex: 0 0 auto;
     }
 
-    /* Connector lines */
+    /* Connector lines (horizontal sibling layout) */
     .org li::before,
     .org li::after{
       content:"";
@@ -201,13 +213,43 @@
       height: 20px;
     }
 
+    /* KEY FIX #2: vertical stacking mode for children */
+    .org ul.stack-vertical{
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: max-content;
+    }
+    .org ul.stack-vertical > li{
+      padding-top: 20px;
+    }
+    /* remove horizontal sibling connectors */
+    .org ul.stack-vertical > li::after{
+      display:none !important;
+    }
+    .org ul.stack-vertical > li::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:50%;
+      width:0;
+      height: 20px;
+      border-left: 1px solid var(--line);
+      transform: translateX(-50%);
+    }
+    .org ul.stack-vertical > li:first-child::before,
+    .org ul.stack-vertical > li:last-child::before{
+      border-radius: 0;
+      border-right: 0;
+    }
+
     /* Node card */
     .node{
-      display:inline-flex;
+      display:flex;
       flex-direction: column;
-      gap: 6px;
-      min-width: 190px;
-      max-width: 240px;
+      gap: 10px;
+      min-width: 210px;
+      max-width: 270px;
       padding: 12px 12px;
       background: rgba(22,26,34,.9);
       border: 1px solid rgba(255,255,255,.10);
@@ -226,23 +268,106 @@
       border-color: rgba(168,85,247,.55);
     }
 
+    /* Group node styling (for “Engineering” bucket) */
+    .node.group{
+      background: rgba(18,20,27,.65);
+      border-style: dashed;
+      cursor: default;
+    }
+    .node.group:hover{
+      transform: none;
+      border-color: rgba(255,255,255,.16);
+      box-shadow: 0 8px 18px rgba(0,0,0,.22);
+    }
+
+    .row{
+      display:flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    /* KEY FIX #4: avatar placeholder circle */
+    .avatar{
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: radial-gradient(12px 12px at 30% 25%, rgba(255,255,255,.12), transparent 60%),
+                  rgba(255,255,255,.05);
+      overflow: hidden;
+      flex: 0 0 auto;
+      display:grid;
+      place-items:center;
+      user-select:none;
+    }
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .avatar .ph{
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: .3px;
+      color: rgba(255,255,255,.85);
+    }
+    .avatar.agent{
+      background: radial-gradient(12px 12px at 30% 25%, rgba(168,85,247,.18), transparent 60%),
+                  rgba(168,85,247,.10);
+      border-color: rgba(168,85,247,.25);
+    }
+
+    .text{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    /* KEY FIX #3: department pill */
+    .dept-pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      width: fit-content;
+      max-width: 100%;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: .2px;
+      color: rgba(255,255,255,.85);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .name{
       font-weight: 650;
       font-size: 13px;
       letter-spacing: .2px;
       line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .title{
       color: var(--muted);
       font-size: 12px;
       line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .meta{
       display:flex;
       gap: 10px;
-      justify-content: center;
+      justify-content: flex-start;
       align-items:center;
-      margin-top: 2px;
       color: rgba(255,255,255,.75);
       font-size: 11px;
     }
@@ -261,8 +386,12 @@
       box-shadow: 0 0 0 2px rgba(110,231,255,.12);
     }
     .badge.agent .mini{
-      background:#a855f7;
+      background: var(--agent);
       box-shadow: 0 0 0 2px rgba(168,85,247,.12);
+    }
+    .badge.group .mini{
+      background: rgba(255,255,255,.45);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.10);
     }
 
     /* Tooltip */
@@ -287,7 +416,7 @@
       letter-spacing: .2px;
     }
     .tooltip .tt-title{
-      margin:0 0 10px 0;
+      margin:0 0 8px 0;
       color: var(--muted);
       font-size: 12px;
     }
@@ -306,12 +435,12 @@
       white-space: pre-line;
     }
 
-    /* Mobile: allow horizontal scroll */
     @media (max-width: 900px){
-      .org{ min-width: 900px; }
+      .board{ padding: 14px; }
     }
   </style>
 </head>
+
 <body>
 <header>
   <div class="wrap">
@@ -336,7 +465,7 @@
 
 <main>
   <div class="wrap">
-    <div class="board">
+    <div class="board" id="board">
       <div id="orgRoot" class="org" aria-live="polite"></div>
     </div>
   </div>
@@ -355,14 +484,13 @@
  *   kind: "human" | "agent" | "group",
  *   name: "Display Name",
  *   title: "Role/Title",
- *   responsibilities: "Short, punchy bullets or sentence.\nUse \\n for new lines.",
- *   bio: "1–2 lines. Keep it scannable.",
+ *   department?: "Department Name",  // shows as a pill (children inherit)
+ *   avatarUrl?: "https://....png",   // optional; otherwise placeholder circle
+ *   responsibilities: "...",
+ *   bio: "...",
+ *   stackChildren?: true,            // makes that node's children render vertically
  *   children: [ ...nodes ]
  * }
- *
- * Notes:
- * - "group" is handy for buckets like "Agents" to avoid clutter.
- * - The CSS will still render group nodes like normal nodes; you can restyle if you want.
  */
 
 const HUMANS_ONLY = {
@@ -370,6 +498,7 @@ const HUMANS_ONLY = {
   kind: "human",
   name: "JB Daguené",
   title: "CEO",
+  department: "Executive",
   responsibilities: "Company strategy, exec decisions, prioritization, hiring.",
   bio: "Founder/CEO. Owns vision and overall execution.",
   children: [
@@ -378,6 +507,7 @@ const HUMANS_ONLY = {
       kind: "human",
       name: "Nauris Dorbe",
       title: "CTO",
+      department: "Product & Engineering",
       responsibilities: "Engineering leadership, technical strategy, architecture.",
       bio: "Leads Product & Engineering delivery and technical direction.",
       children: [
@@ -390,14 +520,6 @@ const HUMANS_ONLY = {
           bio: "Owns the product direction and cross-functional alignment."
         },
         {
-          id: "donatas",
-          kind: "human",
-          name: "Donatas Mašlėktėnas",
-          title: "Front-end Engineer",
-          responsibilities: "UI implementation, performance, component systems.",
-          bio: "Builds user-facing features and improves UX quality."
-        },
-        {
           id: "chirag",
           kind: "human",
           name: "Chirag Patel",
@@ -405,29 +527,50 @@ const HUMANS_ONLY = {
           responsibilities: "Design systems, user research, interaction design.",
           bio: "Leads product design and user experience."
         },
+
+        /* KEY FIX #2: Developers are grouped and stacked vertically */
         {
-          id: "marks",
-          kind: "human",
-          name: "Marks Leidemans",
-          title: "Senior Software Engineer",
-          responsibilities: "Backend systems, reliability, core services.",
-          bio: "Builds and maintains key platform capabilities."
-        },
-        {
-          id: "cosmin",
-          kind: "human",
-          name: "Cosmin Romeo Tanase",
-          title: "Full-stack Engineer",
-          responsibilities: "End-to-end feature delivery across stack.",
-          bio: "Ships features across frontend + backend."
-        },
-        {
-          id: "edvinas",
-          kind: "human",
-          name: "Edvinas Rabikis",
-          title: "Full Stack Engineer",
-          responsibilities: "Product features, integrations, platform improvements.",
-          bio: "Delivers full-stack work across the product."
+          id: "eng-group",
+          kind: "group",
+          name: "Engineering",
+          title: "Developers",
+          responsibilities: "Development team members reporting into Product & Engineering.",
+          bio: "Grouped + stacked vertically to keep the org readable.",
+          stackChildren: true,
+          children: [
+            {
+              id: "donatas",
+              kind: "human",
+              name: "Donatas Mašlėktėnas",
+              title: "Front-end Engineer",
+              responsibilities: "UI implementation, performance, component systems.",
+              bio: "Builds user-facing features and improves UX quality."
+            },
+            {
+              id: "marks",
+              kind: "human",
+              name: "Marks Leidemans",
+              title: "Senior Software Engineer",
+              responsibilities: "Backend systems, reliability, core services.",
+              bio: "Builds and maintains key platform capabilities."
+            },
+            {
+              id: "cosmin",
+              kind: "human",
+              name: "Cosmin Romeo Tanase",
+              title: "Full-stack Engineer",
+              responsibilities: "End-to-end feature delivery across stack.",
+              bio: "Ships features across frontend + backend."
+            },
+            {
+              id: "edvinas",
+              kind: "human",
+              name: "Edvinas Rabikis",
+              title: "Full Stack Engineer",
+              responsibilities: "Product features, integrations, platform improvements.",
+              bio: "Delivers full-stack work across the product."
+            }
+          ]
         }
       ]
     },
@@ -436,6 +579,7 @@ const HUMANS_ONLY = {
       kind: "human",
       name: "Beatrise Pociute-Daguené",
       title: "Head of Business Operations",
+      department: "Operations",
       responsibilities: "Company ops, finance ops, systems/processes.",
       bio: "Keeps the business running smoothly.",
       children: [
@@ -454,6 +598,7 @@ const HUMANS_ONLY = {
       kind: "human",
       name: "Diana Heisler",
       title: "Head of CS",
+      department: "Customer Success",
       responsibilities: "Customer onboarding, renewals, support, outcomes.",
       bio: "Owns customer success and retention motions.",
       children: [
@@ -480,6 +625,7 @@ const HUMANS_ONLY = {
       kind: "human",
       name: "Cody Ayres",
       title: "Head of GTM",
+      department: "Sales",
       responsibilities: "GTM strategy, pipeline, sales execution.",
       bio: "Owns revenue outcomes and GTM performance.",
       children: [
@@ -516,19 +662,19 @@ const HUMANS_ONLY = {
       kind: "human",
       name: "James Ince",
       title: "Head of Product Marketing",
+      department: "Marketing",
       responsibilities: "Messaging, positioning, launches, enablement, competitive.",
       bio: "Owns product marketing strategy and execution."
     }
   ]
 };
 
-// Agents-only: same “shape” as the humans view, but with agents in place of humans.
-// Edit names/purposes to match what you actually have.
 const AGENTS_ONLY = {
   id: "agent-ceo",
   kind: "agent",
   name: "Exec Ops Agent",
   title: "Company Orchestrator",
+  department: "Executive",
   responsibilities: "Summarizes key metrics, surfaces risks, drafts exec updates.",
   bio: "Supports leadership cadence and decision-making.",
   children: [
@@ -537,11 +683,11 @@ const AGENTS_ONLY = {
       kind: "agent",
       name: "Eng Manager Agent",
       title: "Product & Engineering",
+      department: "Product & Engineering",
       responsibilities: "Ticket triage, PR summaries, release notes, QA checklists.",
       bio: "Keeps engineering throughput high with low friction.",
       children: [
         { id: "agent-pm", kind: "agent", name: "Product Insights Agent", title: "Discovery / Roadmap", responsibilities: "Synthesizes feedback, drafts PRDs, identifies themes.", bio: "Turns input into actionable product direction." },
-        { id: "agent-fe", kind: "agent", name: "UI Quality Agent", title: "Front-end Support", responsibilities: "Finds UI regressions, suggests fixes, documents components.", bio: "Improves UI consistency and polish." },
         { id: "agent-ux", kind: "agent", name: "UX Research Agent", title: "Design Support", responsibilities: "Interview summaries, persona drafts, usability test analysis.", bio: "Accelerates customer understanding." },
         { id: "agent-be", kind: "agent", name: "Reliability Agent", title: "Backend Support", responsibilities: "Monitors logs, proposes alerts, drafts incident postmortems.", bio: "Supports stability and reliability." }
       ]
@@ -551,6 +697,7 @@ const AGENTS_ONLY = {
       kind: "agent",
       name: "BizOps Agent",
       title: "Operations",
+      department: "Operations",
       responsibilities: "Policy drafts, SOP updates, vendor comparisons, finance reminders.",
       bio: "Makes ops work repeatable and documented.",
       children: [
@@ -562,6 +709,7 @@ const AGENTS_ONLY = {
       kind: "agent",
       name: "CS Lead Agent",
       title: "Customer Success",
+      department: "Customer Success",
       responsibilities: "Call summaries, action items, success plans, risk flags.",
       bio: "Improves retention by operationalizing outcomes.",
       children: [
@@ -574,20 +722,11 @@ const AGENTS_ONLY = {
       kind: "agent",
       name: "GTM Strategy Agent",
       title: "Sales",
+      department: "Sales",
       responsibilities: "Account research, email drafts, call prep, pipeline summaries.",
       bio: "Increases seller output per hour.",
       children: [
-        {
-          id: "agent-revops",
-          kind: "agent",
-          name: "RevOps Agent",
-          title: "RevOps / Consulting Support",
-          responsibilities: "CRM hygiene prompts, reporting drafts, enablement snippets.",
-          bio: "Keeps data clean and playbooks current.",
-          children: [
-            { id: "agent-gtmops2", kind: "agent", name: "Data Hygiene Agent", title: "GTM Ops", responsibilities: "Deduping suggestions, enrichment prompts, missing field alerts.", bio: "Reduces pipeline fog." }
-          ]
-        },
+        { id: "agent-revops", kind: "agent", name: "RevOps Agent", title: "RevOps / Consulting Support", responsibilities: "CRM hygiene prompts, reporting drafts, enablement snippets.", bio: "Keeps data clean and playbooks current." },
         { id: "agent-ae", kind: "agent", name: "Deal Desk Agent", title: "AE Support", responsibilities: "Objection handling docs, mutual action plans, next-step emails.", bio: "Helps deals move forward." }
       ]
     },
@@ -596,21 +735,19 @@ const AGENTS_ONLY = {
       kind: "agent",
       name: "PMM Agent",
       title: "Marketing",
+      department: "Marketing",
       responsibilities: "Positioning drafts, competitive briefs, launch checklists, enablement.",
       bio: "Accelerates messaging and launch execution."
     }
   ]
 };
 
-// Combined: humans-only tree, but each department lead gets a bucket of agents.
-// You can move agents directly under the lead (instead of under a group) if you prefer.
 const COMBINED = deepClone(HUMANS_ONLY);
 injectAgents(COMBINED);
 
 /** ==========================
  * RENDERING
  * ========================== */
-
 const orgRoot = document.getElementById("orgRoot");
 const tooltip = document.getElementById("tooltip");
 
@@ -618,11 +755,7 @@ const btnHumans = document.getElementById("btn-humans");
 const btnAgents = document.getElementById("btn-agents");
 const btnCombined = document.getElementById("btn-combined");
 
-const VIEWS = {
-  humans: HUMANS_ONLY,
-  agents: AGENTS_ONLY,
-  combined: COMBINED
-};
+const VIEWS = { humans: HUMANS_ONLY, agents: AGENTS_ONLY, combined: COMBINED };
 
 let currentView = "humans";
 render(VIEWS[currentView]);
@@ -642,55 +775,99 @@ function setView(view){
 function render(tree){
   orgRoot.innerHTML = "";
   const ul = document.createElement("ul");
-  ul.appendChild(renderNode(tree));
+  ul.appendChild(renderNode(tree, tree.department || ""));
   orgRoot.appendChild(ul);
-
-  // Re-bind tooltip listeners after rerender
   bindTooltips();
 }
 
-function renderNode(node){
+function renderNode(node, inheritedDept){
+  const kind = node.kind || "human";
+  const dept = node.department || inheritedDept || "";
+
   const li = document.createElement("li");
 
   const card = document.createElement("div");
-  card.className = "node" + (node.kind === "agent" ? " agent" : "");
+  card.className = "node" + (kind === "agent" ? " agent" : "") + (kind === "group" ? " group" : "");
+
+  // tooltip data
   card.dataset.name = node.name || "";
   card.dataset.title = node.title || "";
+  card.dataset.department = dept || "";
   card.dataset.responsibilities = node.responsibilities || "";
   card.dataset.bio = node.bio || "";
+
+  // Top row: avatar + text
+  const row = document.createElement("div");
+  row.className = "row";
+
+  if (kind !== "group"){
+    const avatar = document.createElement("div");
+    avatar.className = "avatar" + (kind === "agent" ? " agent" : "");
+    if (node.avatarUrl){
+      const img = document.createElement("img");
+      img.src = node.avatarUrl;
+      img.alt = `${node.name || "Avatar"}`;
+      img.loading = "lazy";
+      avatar.appendChild(img);
+    } else {
+      const ph = document.createElement("div");
+      ph.className = "ph";
+      ph.textContent = kind === "agent" ? "🤖" : initials(node.name || "");
+      avatar.appendChild(ph);
+    }
+    row.appendChild(avatar);
+  }
+
+  const text = document.createElement("div");
+  text.className = "text";
+
+  if (dept){
+    const deptPill = document.createElement("div");
+    deptPill.className = "dept-pill";
+    deptPill.textContent = dept;
+    text.appendChild(deptPill);
+  }
 
   const name = document.createElement("div");
   name.className = "name";
   name.textContent = node.name || "(Unnamed)";
+  text.appendChild(name);
 
-  const title = document.createElement("div");
-  title.className = "title";
-  title.textContent = node.title || "";
+  if (node.title){
+    const title = document.createElement("div");
+    title.className = "title";
+    title.textContent = node.title || "";
+    text.appendChild(title);
+  }
 
+  row.appendChild(text);
+  card.appendChild(row);
+
+  // Meta badges
   const meta = document.createElement("div");
   meta.className = "meta";
 
   const badge = document.createElement("span");
-  badge.className = "badge" + (node.kind === "agent" ? " agent" : "");
+  badge.className = "badge" + (kind === "agent" ? " agent" : "") + (kind === "group" ? " group" : "");
+
   const mini = document.createElement("span");
   mini.className = "mini";
+
   const label = document.createElement("span");
-  label.textContent = node.kind === "agent" ? "Agent" : "Human";
+  label.textContent = kind === "agent" ? "Agent" : (kind === "group" ? "Group" : "Human");
+
   badge.appendChild(mini);
   badge.appendChild(label);
-
   meta.appendChild(badge);
 
-  card.appendChild(name);
-  if (node.title) card.appendChild(title);
   card.appendChild(meta);
-
   li.appendChild(card);
 
   if (node.children && node.children.length){
     const childUL = document.createElement("ul");
+    if (node.stackChildren) childUL.classList.add("stack-vertical");
     for (const child of node.children){
-      childUL.appendChild(renderNode(child));
+      childUL.appendChild(renderNode(child, dept));
     }
     li.appendChild(childUL);
   }
@@ -710,15 +887,16 @@ function bindTooltips(){
 function showTooltip(el, e){
   const name = el.dataset.name || "";
   const title = el.dataset.title || "";
+  const dept = el.dataset.department || "";
   const responsibilities = el.dataset.responsibilities || "";
   const bio = el.dataset.bio || "";
 
-  // If nothing to show, don’t pop a tooltip
-  if (!responsibilities && !bio) return;
+  if (!responsibilities && !bio && !dept) return;
 
   tooltip.innerHTML = `
     <h3>${escapeHtml(name)}</h3>
-    <div class="tt-title">${escapeHtml(title)}</div>
+    ${title ? `<div class="tt-title">${escapeHtml(title)}</div>` : ""}
+    ${dept ? `<div class="tt-label">Department</div><p class="tt-body">${escapeHtml(dept)}</p>` : ""}
     ${responsibilities ? `<div class="tt-label">Responsibilities</div><p class="tt-body">${escapeHtml(responsibilities)}</p>` : ""}
     ${bio ? `<div class="tt-label">Bio</div><p class="tt-body">${escapeHtml(bio)}</p>` : ""}
   `;
@@ -734,7 +912,6 @@ function moveTooltip(e){
   let x = e.clientX + 14;
   let y = e.clientY + 14;
 
-  // Keep on screen
   if (x + ttRect.width + pad > window.innerWidth) x = e.clientX - ttRect.width - 14;
   if (y + ttRect.height + pad > window.innerHeight) y = e.clientY - ttRect.height - 14;
 
@@ -750,10 +927,7 @@ function hideTooltip(){
 /** ==========================
  * COMBINED VIEW HELPERS
  * ========================== */
-
 function injectAgents(tree){
-  // For combined: add an "Agents" group under each top-level department lead (CEO’s direct reports).
-  // You can change targeting logic as needed.
   if (!tree || !tree.children) return;
 
   for (const deptLead of tree.children){
@@ -762,29 +936,28 @@ function injectAgents(tree){
 
     const groupNode = {
       id: deptLead.id + "-agents-group",
-      kind: "agent",
+      kind: "group",
       name: "Agents",
       title: "Trained / Owned Agents",
       responsibilities: "Operational support agents aligned to this function.",
       bio: "Grouped to keep the chart readable.",
+      stackChildren: true,
       children: agentsForDept
     };
 
-    // Put the group at the bottom of the dept lead’s children
     deptLead.children = deptLead.children || [];
     deptLead.children.push(groupNode);
   }
 }
 
 function agentsForDepartment(deptLeadId){
-  // Customize this mapping as you build out real agents.
   const map = {
     prodeng: [
       { id:"c-agent-1", kind:"agent", name:"Release Notes Agent", title:"Engineering Support", responsibilities:"Drafts release notes, changelog entries, PR summaries.", bio:"Speeds up shipping comms." },
       { id:"c-agent-2", kind:"agent", name:"QA Checklist Agent", title:"Quality Support", responsibilities:"Generates test checklists and edge-case prompts.", bio:"Reduces regressions." }
     ],
     ops: [
-      { id:"c-agent-3", kind:"agent", name:"SOP Agent", title:"Ops Support", responsibilities:"Drafts SOPs, policy templates, and process docs.", bio:"Keeps ops scalable." }
+      { id:"c-agent-3", kind:"agent", name:"SOP Agent", title:"Ops Support", responsibilities:"Drafts SOPs, policy templates, process docs.", bio:"Keeps ops scalable." }
     ],
     cs: [
       { id:"c-agent-4", kind:"agent", name:"Call Summary Agent", title:"CS Support", responsibilities:"Summarizes calls, creates action items, flags risks.", bio:"Improves follow-through." }
@@ -798,18 +971,12 @@ function agentsForDepartment(deptLeadId){
       { id:"c-agent-8", kind:"agent", name:"Launch Copy Agent", title:"PMM Support", responsibilities:"Drafts launch messaging, web copy variants, FAQs.", bio:"Speeds launches." }
     ]
   };
-
-  return (map[deptLeadId] || []).map(a => ({
-    ...a,
-    // ensure agent nodes look like agents
-    kind: "agent"
-  }));
+  return (map[deptLeadId] || []).map(a => ({ ...a, kind: "agent" }));
 }
 
 /** ==========================
  * UTIL
  * ========================== */
-
 function deepClone(obj){
   return JSON.parse(JSON.stringify(obj));
 }
@@ -818,8 +985,15 @@ function escapeHtml(str){
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
     .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
+    .replaceAll('"',"quot;")
     .replaceAll("'","&#039;");
+}
+function initials(name){
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "•";
+  const first = parts[0][0] || "";
+  const last = parts.length > 1 ? (parts[parts.length-1][0] || "") : "";
+  return (first + last).toUpperCase();
 }
 </script>
 </body>
