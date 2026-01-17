@@ -463,79 +463,82 @@ const HUMANS = {
   },
   departments: [
     {
-      id: "dept-pe",
-      name: "Product & Engineering",
-      members: [
+  id: "dept-pe",
+  name: "Product & Engineering",
+  members: [
+    {
+      id: "nauris",
+      kind: "human",
+      name: "Nauris Dorbe",
+      title: "CTO",
+      responsibilities: "Engineering leadership, technical strategy, architecture.",
+      bio: "Leads Product & Engineering delivery and technical direction.",
+      layout: "column",
+      children: [
         {
-          id: "nauris",
+          id: "donatas",
           kind: "human",
-          name: "Nauris Dorbe",
-          title: "CTO",
-          responsibilities: "Engineering leadership, technical strategy, architecture.",
-          bio: "Leads Product & Engineering delivery and technical direction.",
-          layout: "row",
+          name: "Donatas Mašlėktėnas",
+          title: "Front-end Engineer",
+          responsibilities: "UI implementation, performance, component systems.",
+          bio: "Builds user-facing features and improves UX quality.",
+          layout: "column",
           children: [
             {
-              id: "donatas",
+              id: "marks",
               kind: "human",
-              name: "Donatas Mašlėktėnas",
-              title: "Front-end Engineer",
-              responsibilities: "UI implementation, performance, component systems.",
-              bio: "Builds user-facing features and improves UX quality.",
+              name: "Marks Leidemans",
+              title: "Senior Software Engineer",
+              responsibilities: "Backend systems, reliability, core services.",
+              bio: "Builds and maintains key platform capabilities.",
               layout: "column",
               children: [
                 {
-                  id: "marks",
+                  id: "cosmin",
                   kind: "human",
-                  name: "Marks Leidemans",
-                  title: "Senior Software Engineer",
-                  responsibilities: "Backend systems, reliability, core services.",
-                  bio: "Builds and maintains key platform capabilities.",
+                  name: "Cosmin Romeo Tanase",
+                  title: "Full-stack Engineer",
+                  responsibilities: "End-to-end feature delivery across stack.",
+                  bio: "Ships features across frontend + backend.",
                   layout: "column",
                   children: [
                     {
-                      id: "cosmin",
+                      id: "edvinas",
                       kind: "human",
-                      name: "Cosmin Romeo Tanase",
-                      title: "Full-stack Engineer",
-                      responsibilities: "End-to-end feature delivery across stack.",
-                      bio: "Ships features across frontend + backend.",
-                      layout: "column",
-                      children: [
-                        {
-                          id: "edvinas",
-                          kind: "human",
-                          name: "Edvinas Rabikis",
-                          title: "Full Stack Engineer",
-                          responsibilities: "Product features, integrations, platform improvements.",
-                          bio: "Delivers full-stack work across the product."
-                        }
-                      ]
+                      name: "Edvinas Rabikis",
+                      title: "Full Stack Engineer",
+                      responsibilities: "Product features, integrations, platform improvements.",
+                      bio: "Delivers full-stack work across the product."
                     }
                   ]
                 }
               ]
-            },
-            {
-              id: "chirag",
-              kind: "human",
-              name: "Chirag Patel",
-              title: "UX Design Lead",
-              responsibilities: "Design systems, user research, interaction design.",
-              bio: "Leads product design and user experience."
             }
           ]
-        },
-        {
-          id: "monika",
-          kind: "human",
-          name: "Monika Staponkutė",
-          title: "Head of Product",
-          responsibilities: "Product strategy, roadmap, discovery, requirements.",
-          bio: "Owns the product direction and cross-functional alignment."
         }
       ]
     },
+    {
+      id: "monika",
+      kind: "human",
+      name: "Monika Staponkutė",
+      title: "Head of Product",
+      responsibilities: "Product strategy, roadmap, discovery, requirements.",
+      bio: "Owns the product direction and cross-functional alignment.",
+      layout: "column",
+      children: [
+        {
+          id: "chirag",
+          kind: "human",
+          name: "Chirag Patel",
+          title: "UX Design Lead",
+          responsibilities: "Design systems, user research, interaction design.",
+          bio: "Leads product design and user experience."
+        }
+      ]
+    }
+  ]
+},
     {
       id: "dept-ops",
       name: "Operations",
@@ -562,79 +565,78 @@ const HUMANS = {
       ]
     },
     {
-      id: "dept-cs",
-      name: "Customer Success",
-      members: [
-        {
-          id: "diana",
-          kind: "human",
-          name: "Diana Heisler",
-          title: "Head of CS",
-          responsibilities: "Customer onboarding, renewals, support, outcomes.",
-          bio: "Owns customer success and retention motions.",
-          layout: "column",
-          children: [
-            {
-              id: "suleman",
-              kind: "human",
-              name: "Suleman Mahmud",
-              title: "GTM Ops",
-              responsibilities: "Rev ops support, systems, reporting, process.",
-              bio: "Keeps GTM operations tight and measurable."
-            }
-          ]
-        },
-        {
-          id: "mert",
-          kind: "human",
-          name: "Mert Gencer",
-          title: "Solutions Engineer",
-          responsibilities: "Technical onboarding, implementations, support escalation.",
-          bio: "Bridges product + customer technical needs."
-        }
-      ]
+  id: "dept-cs",
+  name: "Customer Success",
+  members: [
+    {
+      id: "diana",
+      kind: "human",
+      name: "Diana Heisler",
+      title: "Head of CS",
+      responsibilities: "Customer onboarding, renewals, support, outcomes.",
+      bio: "Owns customer success and retention motions."
     },
     {
-      id: "dept-sales",
-      name: "Sales",
-      members: [
+      id: "mert",
+      kind: "human",
+      name: "Mert Gencer",
+      title: "Solutions Engineer",
+      responsibilities: "Technical onboarding, implementations, support escalation.",
+      bio: "Bridges product + customer technical needs.",
+      layout: "column",
+      children: [
         {
-          id: "justin",
+          id: "suleman",
           kind: "human",
-          name: "Justas Rodzevičius",
-          title: "Head of RevOps and Client Consulting",
-          responsibilities: "RevOps strategy, client consulting delivery, enablement.",
-          bio: "Owns RevOps + consulting engagements.",
-          layout: "column",
-          children: [
-            {
-              id: "rudolfs",
-              kind: "human",
-              name: "Rudolfs Selga",
-              title: "GTM Ops",
-              responsibilities: "Ops support, tooling, data hygiene, process.",
-              bio: "Supports GTM systems and execution."
-            }
-          ]
+          name: "Suleman Mahmud",
+          title: "GTM Ops",
+          responsibilities: "Rev ops support, systems, reporting, process.",
+          bio: "Keeps GTM operations tight and measurable."
         },
         {
-          id: "cody",
+          id: "rudolfs",
           kind: "human",
-          name: "Cody Ayres",
-          title: "Head of GTM",
-          responsibilities: "GTM strategy, pipeline, sales execution.",
-          bio: "Owns revenue outcomes and GTM performance."
-        },
-        {
-          id: "magnus",
-          kind: "human",
-          name: "Magnus Thomsen",
-          title: "Senior AE",
-          responsibilities: "Pipeline creation, deal execution, customer development.",
-          bio: "Drives new business and expansions."
+          name: "Rudolfs Selga",
+          title: "GTM Ops",
+          responsibilities: "Ops support, tooling, data hygiene, process.",
+          bio: "Supports GTM systems and execution."
         }
       ]
+    }
+  ]
+}
+,
+    {
+  id: "dept-sales",
+  name: "Sales",
+  members: [
+    {
+      id: "justin",
+      kind: "human",
+      name: "Justas Rodzevičius",
+      title: "Head of RevOps and Client Consulting",
+      responsibilities: "RevOps strategy, client consulting delivery, enablement.",
+      bio: "Owns RevOps + consulting engagements."
     },
+    {
+      id: "cody",
+      kind: "human",
+      name: "Cody Ayres",
+      title: "Head of GTM",
+      responsibilities: "GTM strategy, pipeline, sales execution.",
+      bio: "Owns revenue outcomes and GTM performance."
+    },
+    {
+      id: "magnus",
+      kind: "human",
+      name: "Magnus Thomsen",
+      title: "Senior AE",
+      responsibilities: "Pipeline creation, deal execution, customer development.",
+      bio: "Drives new business and expansions."
+    }
+  ]
+}
+,
     {
       id: "dept-mktg",
       name: "Marketing",
