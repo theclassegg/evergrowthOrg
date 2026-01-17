@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Evergrowth Org Charts</title>
+  <style>
+    :root{
+      --bg:#0b0c10;
+      --panel:#12141b;
+      --panel2:#0f1117;
+      --text:#e8eaf0;
+      --muted:#a9afbf;
+      --line:#2a2f3d;
+      --accent:#6ee7ff;
+      --node:#161a22;
+      --nodeBorder:#2b3244;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 30% -10%, rgba(110,231,255,.10), transparent 60%),
+                  radial-gradient(900px 600px at 90% 0%, rgba(168,85,247,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(11,12,16,.65);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .wrap{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 18px;
+    }
+    h1{
+      font-size: 18px;
+      margin: 0 0 10px 0;
+      letter-spacing: .2px;
+    }
+    .sub{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .toolbar{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content: space-between;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* Segmented control */
+    .seg{
+      display: inline-flex;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 999px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .seg button{
+      appearance:none;
+      border:0;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-size: 13px;
+      transition: background .15s ease, color .15s ease, transform .05s ease;
+      white-space: nowrap;
+    }
+    .seg button:hover{ color: var(--text); }
+    .seg button:active{ transform: translateY(1px); }
+    .seg button[aria-pressed="true"]{
+      background: rgba(110,231,255,.14);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(110,231,255,.25);
+    }
+
+    .legend{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      color: var(--muted);
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 999px;
+      padding: 6px 10px;
+    }
+    .dot{
+      width: 10px; height: 10px; border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(110,231,255,.12);
+    }
+    .dot.agent{
+      background: #a855f7;
+      box-shadow: 0 0 0 3px rgba(168,85,247,.12);
+    }
+
+    main .wrap{
+      padding-top: 22px;
+      padding-bottom: 34px;
+    }
+
+    .board{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      overflow: auto;
+    }
+
+    /* Org chart structure */
+    .org{
+      min-width: 980px; /* so it doesn’t crush on smaller screens */
+      padding: 8px 8px 18px;
+    }
+    .org ul{
+      padding-top: 20px;
+      position: relative;
+      display:flex;
+      justify-content: center;
+      gap: 22px;
+      padding-left: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .org li{
+      text-align:center;
+      position: relative;
+      padding: 20px 10px 0 10px;
+    }
+
+    /* Connector lines */
+    .org li::before,
+    .org li::after{
+      content:"";
+      position:absolute;
+      top:0;
+      right:50%;
+      border-top: 1px solid var(--line);
+      width:50%;
+      height: 20px;
+    }
+    .org li::after{
+      right:auto;
+      left:50%;
+      border-left: 1px solid var(--line);
+      width:50%;
+    }
+    .org li:only-child::after,
+    .org li:only-child::before{
+      display:none;
+    }
+    .org li:only-child{
+      padding-top: 0;
+    }
+    .org li:first-child::before,
+    .org li:last-child::after{
+      border:0 none;
+    }
+    .org li:last-child::before{
+      border-right: 1px solid var(--line);
+      border-radius: 0 10px 0 0;
+    }
+    .org li:first-child::after{
+      border-radius: 10px 0 0 0;
+    }
+
+    .org ul ul::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:50%;
+      border-left: 1px solid var(--line);
+      width:0;
+      height: 20px;
+    }
+
+    /* Node card */
+    .node{
+      display:inline-flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 190px;
+      max-width: 240px;
+      padding: 12px 12px;
+      background: rgba(22,26,34,.9);
+      border: 1px solid rgba(255,255,255,.10);
+      border-color: var(--nodeBorder);
+      border-radius: 14px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.22);
+      cursor: default;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+    }
+    .node:hover{
+      transform: translateY(-2px);
+      border-color: rgba(110,231,255,.45);
+      box-shadow: 0 12px 26px rgba(0,0,0,.35);
+    }
+    .node.agent:hover{
+      border-color: rgba(168,85,247,.55);
+    }
+
+    .name{
+      font-weight: 650;
+      font-size: 13px;
+      letter-spacing: .2px;
+      line-height: 1.15;
+    }
+    .title{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+    .meta{
+      display:flex;
+      gap: 10px;
+      justify-content: center;
+      align-items:center;
+      margin-top: 2px;
+      color: rgba(255,255,255,.75);
+      font-size: 11px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 4px 9px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .badge .mini{
+      width: 7px; height: 7px; border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px rgba(110,231,255,.12);
+    }
+    .badge.agent .mini{
+      background:#a855f7;
+      box-shadow: 0 0 0 2px rgba(168,85,247,.12);
+    }
+
+    /* Tooltip */
+    .tooltip{
+      position: fixed;
+      z-index: 1000;
+      pointer-events: none;
+      max-width: 340px;
+      background: rgba(18,20,27,.95);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.45);
+      padding: 12px 12px;
+      transform: translate(12px, 12px);
+      opacity: 0;
+      transition: opacity .12s ease;
+    }
+    .tooltip.show{ opacity: 1; }
+    .tooltip h3{
+      margin:0 0 6px 0;
+      font-size: 13px;
+      letter-spacing: .2px;
+    }
+    .tooltip .tt-title{
+      margin:0 0 10px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tooltip .tt-label{
+      color: rgba(255,255,255,.85);
+      font-size: 11px;
+      letter-spacing: .18px;
+      text-transform: uppercase;
+      margin: 10px 0 4px 0;
+    }
+    .tooltip .tt-body{
+      margin:0;
+      color: rgba(255,255,255,.85);
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
+
+    /* Mobile: allow horizontal scroll */
+    @media (max-width: 900px){
+      .org{ min-width: 900px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Evergrowth Org Views</h1>
+    <p class="sub">Three switchable org charts. Hover any node to see responsibilities + bio. Edit the <code>DATA</code> section in the script to match your real people/agents.</p>
+
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="Org chart view toggle">
+        <button id="btn-humans" aria-pressed="true">1 — Humans only</button>
+        <button id="btn-agents" aria-pressed="false">2 — Agents only</button>
+        <button id="btn-combined" aria-pressed="false">3 — Combined</button>
+      </div>
+
+      <div class="legend" aria-label="Legend">
+        <span class="pill"><span class="dot"></span> Human</span>
+        <span class="pill"><span class="dot agent"></span> Agent</span>
+        <span class="pill">Tip: Hover nodes</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="board">
+      <div id="orgRoot" class="org" aria-live="polite"></div>
+    </div>
+  </div>
+</main>
+
+<div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+/**
+ * ==========================
+ * DATA — EDIT THIS SECTION
+ * ==========================
+ * Each node:
+ * {
+ *   id: "unique",
+ *   kind: "human" | "agent" | "group",
+ *   name: "Display Name",
+ *   title: "Role/Title",
+ *   responsibilities: "Short, punchy bullets or sentence.\nUse \\n for new lines.",
+ *   bio: "1–2 lines. Keep it scannable.",
+ *   children: [ ...nodes ]
+ * }
+ *
+ * Notes:
+ * - "group" is handy for buckets like "Agents" to avoid clutter.
+ * - The CSS will still render group nodes like normal nodes; you can restyle if you want.
+ */
+
+const HUMANS_ONLY = {
+  id: "ceo",
+  kind: "human",
+  name: "JB Daguené",
+  title: "CEO",
+  responsibilities: "Company strategy, exec decisions, prioritization, hiring.",
+  bio: "Founder/CEO. Owns vision and overall execution.",
+  children: [
+    {
+      id: "prodeng",
+      kind: "human",
+      name: "Nauris Dorbe",
+      title: "CTO",
+      responsibilities: "Engineering leadership, technical strategy, architecture.",
+      bio: "Leads Product & Engineering delivery and technical direction.",
+      children: [
+        {
+          id: "monika",
+          kind: "human",
+          name: "Monika Staponkutė",
+          title: "Head of Product",
+          responsibilities: "Product strategy, roadmap, discovery, requirements.",
+          bio: "Owns the product direction and cross-functional alignment."
+        },
+        {
+          id: "donatas",
+          kind: "human",
+          name: "Donatas Mašlėktėnas",
+          title: "Front-end Engineer",
+          responsibilities: "UI implementation, performance, component systems.",
+          bio: "Builds user-facing features and improves UX quality."
+        },
+        {
+          id: "chirag",
+          kind: "human",
+          name: "Chirag Patel",
+          title: "UX Design Lead",
+          responsibilities: "Design systems, user research, interaction design.",
+          bio: "Leads product design and user experience."
+        },
+        {
+          id: "marks",
+          kind: "human",
+          name: "Marks Leidemans",
+          title: "Senior Software Engineer",
+          responsibilities: "Backend systems, reliability, core services.",
+          bio: "Builds and maintains key platform capabilities."
+        },
+        {
+          id: "cosmin",
+          kind: "human",
+          name: "Cosmin Romeo Tanase",
+          title: "Full-stack Engineer",
+          responsibilities: "End-to-end feature delivery across stack.",
+          bio: "Ships features across frontend + backend."
+        },
+        {
+          id: "edvinas",
+          kind: "human",
+          name: "Edvinas Rabikis",
+          title: "Full Stack Engineer",
+          responsibilities: "Product features, integrations, platform improvements.",
+          bio: "Delivers full-stack work across the product."
+        }
+      ]
+    },
+    {
+      id: "ops",
+      kind: "human",
+      name: "Beatrise Pociute-Daguené",
+      title: "Head of Business Operations",
+      responsibilities: "Company ops, finance ops, systems/processes.",
+      bio: "Keeps the business running smoothly.",
+      children: [
+        {
+          id: "ruta",
+          kind: "human",
+          name: "Rūta Dorofejevaitė",
+          title: "Senior Accountant",
+          responsibilities: "Accounting operations, close, reporting, compliance.",
+          bio: "Owns day-to-day accounting and financial hygiene."
+        }
+      ]
+    },
+    {
+      id: "cs",
+      kind: "human",
+      name: "Diana Heisler",
+      title: "Head of CS",
+      responsibilities: "Customer onboarding, renewals, support, outcomes.",
+      bio: "Owns customer success and retention motions.",
+      children: [
+        {
+          id: "matt",
+          kind: "human",
+          name: "Matt Gencer",
+          title: "Solutions Engineer",
+          responsibilities: "Technical onboarding, implementations, support escalation.",
+          bio: "Bridges product + customer technical needs."
+        },
+        {
+          id: "suleman",
+          kind: "human",
+          name: "Suleman Mahmud",
+          title: "GTM Ops",
+          responsibilities: "Rev ops support, systems, reporting, process.",
+          bio: "Keeps GTM operations tight and measurable."
+        }
+      ]
+    },
+    {
+      id: "sales",
+      kind: "human",
+      name: "Cody Ayres",
+      title: "Head of GTM",
+      responsibilities: "GTM strategy, pipeline, sales execution.",
+      bio: "Owns revenue outcomes and GTM performance.",
+      children: [
+        {
+          id: "justin",
+          kind: "human",
+          name: "Justin Rodzviello",
+          title: "Head of RevOps and Client Consulting",
+          responsibilities: "RevOps strategy, client consulting delivery, enablement.",
+          bio: "Owns RevOps + consulting engagements.",
+          children: [
+            {
+              id: "rudolfs",
+              kind: "human",
+              name: "Rudolfs Selga",
+              title: "GTM Ops",
+              responsibilities: "Ops support, tooling, data hygiene, process.",
+              bio: "Supports GTM systems and execution."
+            }
+          ]
+        },
+        {
+          id: "magnus",
+          kind: "human",
+          name: "Magnus Thomsen",
+          title: "Senior AE",
+          responsibilities: "Pipeline creation, deal execution, customer development.",
+          bio: "Drives new business and expansions."
+        }
+      ]
+    },
+    {
+      id: "mktg",
+      kind: "human",
+      name: "James Ince",
+      title: "Head of Product Marketing",
+      responsibilities: "Messaging, positioning, launches, enablement, competitive.",
+      bio: "Owns product marketing strategy and execution."
+    }
+  ]
+};
+
+// Agents-only: same “shape” as the humans view, but with agents in place of humans.
+// Edit names/purposes to match what you actually have.
+const AGENTS_ONLY = {
+  id: "agent-ceo",
+  kind: "agent",
+  name: "Exec Ops Agent",
+  title: "Company Orchestrator",
+  responsibilities: "Summarizes key metrics, surfaces risks, drafts exec updates.",
+  bio: "Supports leadership cadence and decision-making.",
+  children: [
+    {
+      id: "agent-prodeng",
+      kind: "agent",
+      name: "Eng Manager Agent",
+      title: "Product & Engineering",
+      responsibilities: "Ticket triage, PR summaries, release notes, QA checklists.",
+      bio: "Keeps engineering throughput high with low friction.",
+      children: [
+        { id: "agent-pm", kind: "agent", name: "Product Insights Agent", title: "Discovery / Roadmap", responsibilities: "Synthesizes feedback, drafts PRDs, identifies themes.", bio: "Turns input into actionable product direction." },
+        { id: "agent-fe", kind: "agent", name: "UI Quality Agent", title: "Front-end Support", responsibilities: "Finds UI regressions, suggests fixes, documents components.", bio: "Improves UI consistency and polish." },
+        { id: "agent-ux", kind: "agent", name: "UX Research Agent", title: "Design Support", responsibilities: "Interview summaries, persona drafts, usability test analysis.", bio: "Accelerates customer understanding." },
+        { id: "agent-be", kind: "agent", name: "Reliability Agent", title: "Backend Support", responsibilities: "Monitors logs, proposes alerts, drafts incident postmortems.", bio: "Supports stability and reliability." }
+      ]
+    },
+    {
+      id: "agent-ops",
+      kind: "agent",
+      name: "BizOps Agent",
+      title: "Operations",
+      responsibilities: "Policy drafts, SOP updates, vendor comparisons, finance reminders.",
+      bio: "Makes ops work repeatable and documented.",
+      children: [
+        { id: "agent-acct", kind: "agent", name: "Close Checklist Agent", title: "Accounting Support", responsibilities: "Monthly close checklist, anomaly detection, categorization drafts.", bio: "Reduces finance busywork." }
+      ]
+    },
+    {
+      id: "agent-cs",
+      kind: "agent",
+      name: "CS Lead Agent",
+      title: "Customer Success",
+      responsibilities: "Call summaries, action items, success plans, risk flags.",
+      bio: "Improves retention by operationalizing outcomes.",
+      children: [
+        { id: "agent-sol", kind: "agent", name: "Implementation Agent", title: "Solutions Support", responsibilities: "Integration checklists, setup guides, troubleshooting steps.", bio: "Speeds time-to-value." },
+        { id: "agent-gtmops1", kind: "agent", name: "CS Ops Agent", title: "Ops Support", responsibilities: "Health scoring drafts, dashboards, renewal reminders.", bio: "Makes CS measurable." }
+      ]
+    },
+    {
+      id: "agent-sales",
+      kind: "agent",
+      name: "GTM Strategy Agent",
+      title: "Sales",
+      responsibilities: "Account research, email drafts, call prep, pipeline summaries.",
+      bio: "Increases seller output per hour.",
+      children: [
+        {
+          id: "agent-revops",
+          kind: "agent",
+          name: "RevOps Agent",
+          title: "RevOps / Consulting Support",
+          responsibilities: "CRM hygiene prompts, reporting drafts, enablement snippets.",
+          bio: "Keeps data clean and playbooks current.",
+          children: [
+            { id: "agent-gtmops2", kind: "agent", name: "Data Hygiene Agent", title: "GTM Ops", responsibilities: "Deduping suggestions, enrichment prompts, missing field alerts.", bio: "Reduces pipeline fog." }
+          ]
+        },
+        { id: "agent-ae", kind: "agent", name: "Deal Desk Agent", title: "AE Support", responsibilities: "Objection handling docs, mutual action plans, next-step emails.", bio: "Helps deals move forward." }
+      ]
+    },
+    {
+      id: "agent-mktg",
+      kind: "agent",
+      name: "PMM Agent",
+      title: "Marketing",
+      responsibilities: "Positioning drafts, competitive briefs, launch checklists, enablement.",
+      bio: "Accelerates messaging and launch execution."
+    }
+  ]
+};
+
+// Combined: humans-only tree, but each department lead gets a bucket of agents.
+// You can move agents directly under the lead (instead of under a group) if you prefer.
+const COMBINED = deepClone(HUMANS_ONLY);
+injectAgents(COMBINED);
+
+/** ==========================
+ * RENDERING
+ * ========================== */
+
+const orgRoot = document.getElementById("orgRoot");
+const tooltip = document.getElementById("tooltip");
+
+const btnHumans = document.getElementById("btn-humans");
+const btnAgents = document.getElementById("btn-agents");
+const btnCombined = document.getElementById("btn-combined");
+
+const VIEWS = {
+  humans: HUMANS_ONLY,
+  agents: AGENTS_ONLY,
+  combined: COMBINED
+};
+
+let currentView = "humans";
+render(VIEWS[currentView]);
+
+btnHumans.addEventListener("click", () => setView("humans"));
+btnAgents.addEventListener("click", () => setView("agents"));
+btnCombined.addEventListener("click", () => setView("combined"));
+
+function setView(view){
+  currentView = view;
+  btnHumans.setAttribute("aria-pressed", view === "humans");
+  btnAgents.setAttribute("aria-pressed", view === "agents");
+  btnCombined.setAttribute("aria-pressed", view === "combined");
+  render(VIEWS[view]);
+}
+
+function render(tree){
+  orgRoot.innerHTML = "";
+  const ul = document.createElement("ul");
+  ul.appendChild(renderNode(tree));
+  orgRoot.appendChild(ul);
+
+  // Re-bind tooltip listeners after rerender
+  bindTooltips();
+}
+
+function renderNode(node){
+  const li = document.createElement("li");
+
+  const card = document.createElement("div");
+  card.className = "node" + (node.kind === "agent" ? " agent" : "");
+  card.dataset.name = node.name || "";
+  card.dataset.title = node.title || "";
+  card.dataset.responsibilities = node.responsibilities || "";
+  card.dataset.bio = node.bio || "";
+
+  const name = document.createElement("div");
+  name.className = "name";
+  name.textContent = node.name || "(Unnamed)";
+
+  const title = document.createElement("div");
+  title.className = "title";
+  title.textContent = node.title || "";
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+
+  const badge = document.createElement("span");
+  badge.className = "badge" + (node.kind === "agent" ? " agent" : "");
+  const mini = document.createElement("span");
+  mini.className = "mini";
+  const label = document.createElement("span");
+  label.textContent = node.kind === "agent" ? "Agent" : "Human";
+  badge.appendChild(mini);
+  badge.appendChild(label);
+
+  meta.appendChild(badge);
+
+  card.appendChild(name);
+  if (node.title) card.appendChild(title);
+  card.appendChild(meta);
+
+  li.appendChild(card);
+
+  if (node.children && node.children.length){
+    const childUL = document.createElement("ul");
+    for (const child of node.children){
+      childUL.appendChild(renderNode(child));
+    }
+    li.appendChild(childUL);
+  }
+
+  return li;
+}
+
+function bindTooltips(){
+  const nodes = orgRoot.querySelectorAll(".node");
+  nodes.forEach(n => {
+    n.addEventListener("mouseenter", (e) => showTooltip(e.currentTarget, e));
+    n.addEventListener("mousemove", (e) => moveTooltip(e));
+    n.addEventListener("mouseleave", hideTooltip);
+  });
+}
+
+function showTooltip(el, e){
+  const name = el.dataset.name || "";
+  const title = el.dataset.title || "";
+  const responsibilities = el.dataset.responsibilities || "";
+  const bio = el.dataset.bio || "";
+
+  // If nothing to show, don’t pop a tooltip
+  if (!responsibilities && !bio) return;
+
+  tooltip.innerHTML = `
+    <h3>${escapeHtml(name)}</h3>
+    <div class="tt-title">${escapeHtml(title)}</div>
+    ${responsibilities ? `<div class="tt-label">Responsibilities</div><p class="tt-body">${escapeHtml(responsibilities)}</p>` : ""}
+    ${bio ? `<div class="tt-label">Bio</div><p class="tt-body">${escapeHtml(bio)}</p>` : ""}
+  `;
+
+  tooltip.classList.add("show");
+  tooltip.setAttribute("aria-hidden", "false");
+  moveTooltip(e);
+}
+
+function moveTooltip(e){
+  const pad = 14;
+  const ttRect = tooltip.getBoundingClientRect();
+  let x = e.clientX + 14;
+  let y = e.clientY + 14;
+
+  // Keep on screen
+  if (x + ttRect.width + pad > window.innerWidth) x = e.clientX - ttRect.width - 14;
+  if (y + ttRect.height + pad > window.innerHeight) y = e.clientY - ttRect.height - 14;
+
+  tooltip.style.left = x + "px";
+  tooltip.style.top = y + "px";
+}
+
+function hideTooltip(){
+  tooltip.classList.remove("show");
+  tooltip.setAttribute("aria-hidden", "true");
+}
+
+/** ==========================
+ * COMBINED VIEW HELPERS
+ * ========================== */
+
+function injectAgents(tree){
+  // For combined: add an "Agents" group under each top-level department lead (CEO’s direct reports).
+  // You can change targeting logic as needed.
+  if (!tree || !tree.children) return;
+
+  for (const deptLead of tree.children){
+    const agentsForDept = agentsForDepartment(deptLead.id);
+    if (!agentsForDept.length) continue;
+
+    const groupNode = {
+      id: deptLead.id + "-agents-group",
+      kind: "agent",
+      name: "Agents",
+      title: "Trained / Owned Agents",
+      responsibilities: "Operational support agents aligned to this function.",
+      bio: "Grouped to keep the chart readable.",
+      children: agentsForDept
+    };
+
+    // Put the group at the bottom of the dept lead’s children
+    deptLead.children = deptLead.children || [];
+    deptLead.children.push(groupNode);
+  }
+}
+
+function agentsForDepartment(deptLeadId){
+  // Customize this mapping as you build out real agents.
+  const map = {
+    prodeng: [
+      { id:"c-agent-1", kind:"agent", name:"Release Notes Agent", title:"Engineering Support", responsibilities:"Drafts release notes, changelog entries, PR summaries.", bio:"Speeds up shipping comms." },
+      { id:"c-agent-2", kind:"agent", name:"QA Checklist Agent", title:"Quality Support", responsibilities:"Generates test checklists and edge-case prompts.", bio:"Reduces regressions." }
+    ],
+    ops: [
+      { id:"c-agent-3", kind:"agent", name:"SOP Agent", title:"Ops Support", responsibilities:"Drafts SOPs, policy templates, and process docs.", bio:"Keeps ops scalable." }
+    ],
+    cs: [
+      { id:"c-agent-4", kind:"agent", name:"Call Summary Agent", title:"CS Support", responsibilities:"Summarizes calls, creates action items, flags risks.", bio:"Improves follow-through." }
+    ],
+    sales: [
+      { id:"c-agent-5", kind:"agent", name:"Account Research Agent", title:"Sales Support", responsibilities:"Account briefs, trigger events, stakeholder mapping.", bio:"Improves meeting prep." },
+      { id:"c-agent-6", kind:"agent", name:"Outbound Copy Agent", title:"Sales Support", responsibilities:"Personalized email drafts by persona and ICP.", bio:"Increases outbound velocity." }
+    ],
+    mktg: [
+      { id:"c-agent-7", kind:"agent", name:"Competitive Intel Agent", title:"PMM Support", responsibilities:"Tracks competitors, drafts battlecards, highlights changes.", bio:"Keeps enablement current." },
+      { id:"c-agent-8", kind:"agent", name:"Launch Copy Agent", title:"PMM Support", responsibilities:"Drafts launch messaging, web copy variants, FAQs.", bio:"Speeds launches." }
+    ]
+  };
+
+  return (map[deptLeadId] || []).map(a => ({
+    ...a,
+    // ensure agent nodes look like agents
+    kind: "agent"
+  }));
+}
+
+/** ==========================
+ * UTIL
+ * ========================== */
+
+function deepClone(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+</script>
+</body>
+</html>
