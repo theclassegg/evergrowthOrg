@@ -592,6 +592,34 @@
       // ==========================
       // Helpers
       // ==========================
+
+      function getMultiplier(node) {
+  const s = `${node.name || ""} ${node.title || ""}`;
+  const m = s.match(/\(x\s*(\d+)\)|\bx\s*(\d+)\b/i);
+  const n = Number(m?.[1] || m?.[2]);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+}
+
+function countKindsInNode(node, kind) {
+  let total = 0;
+
+  function walk(n) {
+    if (!n) return;
+
+    if (n.kind === kind) {
+      total += getMultiplier(n);
+    }
+
+    if (Array.isArray(n.children)) {
+      n.children.forEach(walk);
+    }
+  }
+
+  walk(node);
+  return total;
+}
+
+      
       function deepClone(obj) {
         return JSON.parse(JSON.stringify(obj));
       }
@@ -1038,6 +1066,7 @@
                 trainerId: "cody",
                 name: "Prospect Qualification Agents ×9",
                 title: "Fit Validation",
+                count: 9,
                 avatarUrl: AV.QualAgent,
                 responsibilities: "Research new prospects to validate fit before outreach.",
                 bio: "Filters to high-likelihood accounts."
@@ -1047,6 +1076,7 @@
                 kind: "agent",
                 trainerId: "cody",
                 name: "Research Agents ×27",
+                count: 27,
                 title: "Buying Signals",
                 avatarUrl: AV.ResearchAgent,
                 responsibilities: "Find buying intent signals to improve outreach and sales strategy.",
@@ -1079,6 +1109,7 @@
                 kind: "agent",
                 trainerId: "cody",
                 name: "Play Agents ×5",
+                count: 5,
                 title: "Outreach Drafting",
                 avatarUrl: AV.PlayAgent,
                 responsibilities:
