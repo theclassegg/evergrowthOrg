@@ -13,29 +13,82 @@
     />
 
     <style>
+      /* ==========================
+         THEME (default = LIGHT)
+         Toggle sets: <html data-theme="dark">
+         ========================== */
       :root {
+        /* Layout */
+        --radius: 14px;
+        --deptGap: 120px;
+        --nodeGap: 34px;
+        --levelGap: 52px;
+
+        /* Wires */
+        --wireRadius: 24; /* ✅ more rounded corners */
+        --wireDash: 6 6;
+
+        /* Accents */
+        --accent: #6ee7ff;
+        --agent: #a855f7;
+
+        /* Light theme colors (default) */
+        --bg: #fefefe;
+        --text: #0f172a;
+        --muted: #475569;
+
+        --headerBg: rgba(254, 254, 254, 0.72);
+        --headerBorder: rgba(15, 23, 42, 0.08);
+
+        --panelBg1: rgba(15, 23, 42, 0.03);
+        --panelBg2: rgba(15, 23, 42, 0.015);
+        --panelBorder: rgba(15, 23, 42, 0.10);
+        --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+
+        --uiBg: rgba(15, 23, 42, 0.05);
+        --uiBorder: rgba(15, 23, 42, 0.10);
+
+        --cardBg: rgba(255, 255, 255, 0.92);
+        --cardBorder: rgba(15, 23, 42, 0.12);
+
+        --deptPillBg: rgba(15, 23, 42, 0.06); /* ✅ light grey pills */
+        --deptPillBorder: rgba(15, 23, 42, 0.12);
+
+        --tooltipBg: rgba(255, 255, 255, 0.96);
+        --tooltipBorder: rgba(15, 23, 42, 0.14);
+        --tooltipShadow: 0 16px 40px rgba(15, 23, 42, 0.18);
+
+        --wire: rgba(15, 23, 42, 0.28);
+      }
+
+      html[data-theme="dark"] {
         --bg: #0b0c10;
         --text: #e8eaf0;
         --muted: #a9afbf;
 
-        --wireRadius: 14;
+        --headerBg: rgba(11, 12, 16, 0.65);
+        --headerBorder: rgba(255, 255, 255, 0.06);
 
-        --card: #141824;
-        --card2: rgba(20, 24, 36, 0.96);
-        --border: #2b3244;
+        --panelBg1: rgba(255, 255, 255, 0.05);
+        --panelBg2: rgba(255, 255, 255, 0.02);
+        --panelBorder: rgba(255, 255, 255, 0.08);
+        --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 
-        --accent: #6ee7ff;
-        --agent: #a855f7;
+        --uiBg: rgba(255, 255, 255, 0.06);
+        --uiBorder: rgba(255, 255, 255, 0.08);
+
+        --cardBg: rgba(20, 24, 36, 0.96);
+        --cardBorder: #2b3244;
+
+        /* ✅ dark pills: brighter than before so they stand out more */
+        --deptPillBg: rgba(255, 255, 255, 0.08);
+        --deptPillBorder: rgba(255, 255, 255, 0.14);
+
+        --tooltipBg: rgba(18, 20, 27, 0.95);
+        --tooltipBorder: rgba(255, 255, 255, 0.10);
+        --tooltipShadow: 0 16px 40px rgba(0, 0, 0, 0.45);
 
         --wire: rgba(170, 180, 200, 0.38);
-        --wireDash: 6 6;
-
-        --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-        --radius: 14px;
-
-        --deptGap: 120px;
-        --nodeGap: 34px;
-        --levelGap: 52px;
       }
 
       * {
@@ -58,8 +111,8 @@
         top: 0;
         z-index: 10;
         backdrop-filter: blur(10px);
-        background: rgba(11, 12, 16, 0.65);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background: var(--headerBg);
+        border-bottom: 1px solid var(--headerBorder);
       }
 
       .wrap {
@@ -68,10 +121,18 @@
         padding: 18px 18px;
       }
 
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
       .brand {
         display: flex;
         align-items: center;
         gap: 12px;
+        min-width: 0;
       }
 
       .brand img {
@@ -84,6 +145,7 @@
         font-size: 18px;
         margin: 0;
         letter-spacing: 0.2px;
+        white-space: nowrap;
       }
 
       .toolbar {
@@ -98,8 +160,8 @@
       /* Segmented control */
       .seg {
         display: inline-flex;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--uiBg);
+        border: 1px solid var(--uiBorder);
         border-radius: 999px;
         padding: 4px;
         gap: 4px;
@@ -127,9 +189,9 @@
       }
 
       .seg button[aria-pressed="true"] {
-        background: rgba(110, 231, 255, 0.14);
+        background: rgba(110, 231, 255, 0.16);
         color: var(--text);
-        box-shadow: inset 0 0 0 1px rgba(110, 231, 255, 0.25);
+        box-shadow: inset 0 0 0 1px rgba(110, 231, 255, 0.28);
       }
 
       .legend {
@@ -141,14 +203,30 @@
         flex-wrap: wrap;
       }
 
-      .pill {
+      .pill,
+      .theme-toggle {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--uiBg);
+        border: 1px solid var(--uiBorder);
         border-radius: 999px;
         padding: 6px 10px;
+        color: var(--muted);
+      }
+
+      .theme-toggle {
+        cursor: pointer;
+        user-select: none;
+        transition: transform 0.05s ease, background 0.15s ease, color 0.15s ease;
+      }
+
+      .theme-toggle:hover {
+        color: var(--text);
+      }
+
+      .theme-toggle:active {
+        transform: translateY(1px);
       }
 
       .dot {
@@ -170,8 +248,8 @@
       }
 
       .board {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, var(--panelBg1), var(--panelBg2));
+        border: 1px solid var(--panelBorder);
         border-radius: var(--radius);
         box-shadow: var(--shadow);
         padding: 18px;
@@ -240,11 +318,11 @@
       }
 
       .dept[data-dept="dept-sales"] {
-        min-width: 420px; /* extra separation from CS */
+        min-width: 420px;
       }
 
       .dept[data-dept="dept-cs"] {
-        min-width: 380px; /* extra separation from Sales */
+        min-width: 380px;
       }
 
       .dept-pill {
@@ -252,19 +330,18 @@
         align-items: center;
         justify-content: center;
 
-        padding: 8px 14px;
+        padding: 9px 14px;
         border-radius: 999px;
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.9);
-        background: rgba(20, 24, 36, 0.78);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--text);
+        background: var(--deptPillBg);
+        border: 1px solid var(--deptPillBorder);
 
-        /* ✅ allow multi-line wrapping to prevent clipping */
+        /* Multi-line wrapping to prevent clipping */
         white-space: normal;
         text-align: center;
         line-height: 1.2;
         max-width: 240px;
-        padding-block: 9px;
         height: auto;
         overflow: visible;
 
@@ -292,22 +369,30 @@
         gap: 18px;
       }
 
-      /* Person/agent card */
+      /* Card */
       .node {
         width: 240px;
-        background: var(--card2);
-        border: 1px solid var(--border);
+        background: var(--cardBg);
+        border: 1px solid var(--cardBorder);
         border-radius: 14px;
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
         padding: 12px 12px;
         transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
         cursor: default;
         backdrop-filter: blur(8px);
       }
 
+      html[data-theme="dark"] .node {
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+      }
+
       .node:hover {
         transform: translateY(-2px);
         border-color: rgba(110, 231, 255, 0.45);
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+      }
+
+      html[data-theme="dark"] .node:hover {
         box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
       }
 
@@ -320,15 +405,14 @@
         width: auto;
         padding: 7px 12px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px dashed rgba(255, 255, 255, 0.18);
+        background: var(--uiBg);
+        border: 1px dashed var(--uiBorder);
         box-shadow: none;
       }
 
       .node.label:hover {
         transform: none;
         box-shadow: none;
-        border-color: rgba(255, 255, 255, 0.22);
       }
 
       .row {
@@ -353,6 +437,13 @@
         user-select: none;
       }
 
+      html[data-theme="light"] .avatar {
+        border: 1px solid rgba(15, 23, 42, 0.14);
+        background:
+          radial-gradient(12px 12px at 30% 25%, rgba(15, 23, 42, 0.06), transparent 60%),
+          rgba(15, 23, 42, 0.03);
+      }
+
       .avatar img {
         width: 100%;
         height: 100%;
@@ -364,7 +455,7 @@
         font-weight: 700;
         font-size: 12px;
         letter-spacing: 0.3px;
-        color: rgba(255, 255, 255, 0.85);
+        color: var(--text);
       }
 
       .avatar.agent {
@@ -412,10 +503,10 @@
         gap: 6px;
         border-radius: 999px;
         padding: 4px 9px;
-        border: 1px solid rgba(255, 255, 255, 0.10);
-        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--uiBorder);
+        background: var(--uiBg);
         font-size: 11px;
-        color: rgba(255, 255, 255, 0.78);
+        color: var(--muted);
       }
 
       .badge .mini {
@@ -437,14 +528,15 @@
         z-index: 1000;
         pointer-events: none;
         max-width: 360px;
-        background: rgba(18, 20, 27, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.10);
+        background: var(--tooltipBg);
+        border: 1px solid var(--tooltipBorder);
         border-radius: 14px;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+        box-shadow: var(--tooltipShadow);
         padding: 12px 12px;
         transform: translate(12px, 12px);
         opacity: 0;
         transition: opacity 0.12s ease;
+        color: var(--text);
       }
 
       .tooltip.show {
@@ -464,19 +556,21 @@
       }
 
       .tooltip .tt-label {
-        color: rgba(255, 255, 255, 0.85);
+        color: var(--text);
         font-size: 11px;
         letter-spacing: 0.18px;
         text-transform: uppercase;
         margin: 10px 0 4px 0;
+        opacity: 0.9;
       }
 
       .tooltip .tt-body {
         margin: 0;
-        color: rgba(255, 255, 255, 0.85);
+        color: var(--text);
         font-size: 12px;
         line-height: 1.45;
         white-space: pre-line;
+        opacity: 0.92;
       }
     </style>
   </head>
@@ -484,12 +578,19 @@
   <body>
     <header>
       <div class="wrap">
-        <div class="brand">
-          <img
-            src="https://cdn.prod.website-files.com/67de9a786ff9ec4a82a4453a/68c4096ff34c77991c90b139_EvergrowthLogoWhite.png"
-            alt="Evergrowth logo"
-          />
-          <h1>Evergrowth Org Chart</h1>
+        <div class="topbar">
+          <div class="brand">
+            <img
+              src="https://cdn.prod.website-files.com/67de9a786ff9ec4a82a4453a/68c4096ff34c77991c90b139_EvergrowthLogoWhite.png"
+              alt="Evergrowth logo"
+            />
+            <h1>Evergrowth Org Chart</h1>
+          </div>
+
+          <!-- ✅ Theme toggle -->
+          <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">
+            <span id="themeLabel">Light mode</span>
+          </button>
         </div>
 
         <div class="toolbar">
@@ -525,9 +626,34 @@
     <script>
       /**
        * ==========================
+       * THEME TOGGLE (default = LIGHT)
+       * ==========================
+       */
+      const themeToggle = document.getElementById("themeToggle");
+      const themeLabel = document.getElementById("themeLabel");
+
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("egTheme", theme);
+        themeToggle.setAttribute("aria-pressed", theme === "dark");
+        themeLabel.textContent = theme === "dark" ? "Dark mode" : "Light mode";
+
+        // Re-draw wires to ensure visuals are crisp after style changes
+        scheduleWires();
+      }
+
+      const storedTheme = localStorage.getItem("egTheme");
+      applyTheme(storedTheme || "light"); // ✅ default light on first load
+
+      themeToggle.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "light";
+        applyTheme(current === "dark" ? "light" : "dark");
+      });
+
+      /**
+       * ==========================
        * AVATAR URL HELPERS
        * ==========================
-       * NOTE: GitHub "blob" links won't render as images. Convert to "raw" URLs.
        */
       function ghRaw(url) {
         return url
@@ -574,15 +700,15 @@
           diana: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana%20Agent.png"),
           onboarding: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/JBAgent.png"),
           mert: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/MertAgent.png")
+          monika: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/MonikaAgent.png")
         }
       };
 
       /**
        * ==========================
-       * DATA — EDIT THIS SECTION
+       * DATA
        * ==========================
        */
-
       const HUMANS = {
         ceo: {
           id: "ceo",
@@ -827,7 +953,7 @@
                     kind: "agent",
                     name: "New Request Titler",
                     title: "Feature Title Generator",
-                    avatarUrl: AVATARS.agents.diana, /* placeholder agent avatar */
+                    avatarUrl: AVATARS.agents.monika,
                     responsibilities:
                       "Ingests the full Slack feature discussion thread and outputs a succinct feature/update title.",
                     bio: "Turns messy threads into crisp, consistent titles."
@@ -837,7 +963,7 @@
                     kind: "agent",
                     name: "New Idea Scorer",
                     title: "Scoring + Fit Assessment",
-                    avatarUrl: AVATARS.agents.diana, /* placeholder agent avatar */
+                    avatarUrl: AVATARS.agents.monika,
                     responsibilities:
                       "Scores ideas (out of 5) on: ease of build, strategic alignment, revenue retention impact, new revenue impact.",
                     bio: "Provides a repeatable scoring rubric for prioritization."
@@ -847,7 +973,7 @@
                     kind: "agent",
                     name: "PRD Drafter",
                     title: "PRD + JTBD + User Stories",
-                    avatarUrl: AVATARS.agents.diana, /* placeholder agent avatar */
+                    avatarUrl: AVATARS.agents.monika,
                     responsibilities:
                       "Drafts PRD scope, build requirements, JTBD, and user stories from the initial request context.",
                     bio: "Accelerates discovery → spec quality."
@@ -857,7 +983,7 @@
                     kind: "agent",
                     name: "QA Assistant",
                     title: "In-App QA Test Writer",
-                    avatarUrl: AVATARS.agents.diana, /* placeholder agent avatar */
+                    avatarUrl: AVATARS.agents.monika,
                     responsibilities:
                       "For each shipped feature, scans product structure, infers impacted areas, and drafts in-app QA tests to catch regressions.",
                     bio: "Reduces inadvertent changes by generating smart regression checks."
@@ -1163,7 +1289,7 @@
 
         sizeSvgToContent();
         requestAnimationFrame(() => requestAnimationFrame(drawWires));
-        setTimeout(drawWires, 0); /* helps when pill wraps change height */
+        setTimeout(drawWires, 0);
       }
 
       function renderSubtree(node, edges) {
@@ -1284,7 +1410,7 @@
         });
 
         const cssR = getComputedStyle(document.documentElement).getPropertyValue("--wireRadius").trim();
-        const baseR = Number(cssR) || 14;
+        const baseR = Number(cssR) || 24;
 
         for (const [fromId, toId] of chart.__edges) {
           const a = idToEl[fromId];
