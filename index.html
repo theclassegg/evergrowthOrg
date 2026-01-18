@@ -20,7 +20,7 @@
         --levelGap: 52px;
 
         /* Wires */
-        --wireRadius: 40; /* ✅ more rounded corners */
+        --wireRadius: 44; /* rounder corners */
         --wireDash: 6 6;
 
         /* Accents */
@@ -155,7 +155,6 @@
         flex-wrap: wrap;
       }
 
-      /* Segmented control */
       .seg {
         display: inline-flex;
         background: var(--uiBg);
@@ -269,10 +268,7 @@
         stroke-dasharray: var(--wireDash);
       }
 
-      .dept-pill, .node {
-        position: relative;
-        z-index: 2;
-      }
+      .dept-pill, .node { position: relative; z-index: 2; }
 
       .level-0 {
         display: flex;
@@ -298,30 +294,30 @@
         flex: 0 0 auto;
       }
 
-      /* Slight extra space so Mert + Justas don't collide */
-      .dept[data-dept="dept-cs"] { min-width: 420px; }
-      .dept[data-dept="dept-sales"] { min-width: 460px; }
+      /* Give CS + Sales more space */
+      .dept[data-dept="dept-cs"] { min-width: 440px; }
+      .dept[data-dept="dept-sales"] { min-width: 480px; }
 
+      /* ✅ dept pill wraps/clamps to 2 lines */
       .dept-pill {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-
         padding: 9px 14px;
         border-radius: 999px;
         font-size: 12px;
         color: var(--text);
         background: var(--deptPillBg);
         border: 1px solid var(--deptPillBorder);
-
-        /* ✅ wrap instead of clipping */
-        white-space: normal;
-        text-align: center;
-        line-height: 1.2;
-        max-width: 280px;
-
         margin-top: 10px;
         backdrop-filter: blur(6px);
+
+        max-width: 280px;
+        text-align: center;
+        line-height: 1.2;
+
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        word-break: break-word;
       }
 
       .node-wrap {
@@ -375,11 +371,19 @@
 
       .node.label {
         width: auto;
+        max-width: 280px;
         padding: 7px 12px;
         border-radius: 999px;
         background: var(--uiBg);
         border: 1px dashed var(--uiBorder);
         box-shadow: none;
+        text-align: center;
+
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        word-break: break-word;
       }
 
       .node.label:hover {
@@ -443,23 +447,34 @@
         gap: 6px;
       }
 
+      /* ✅ wrap/clamp name + title to 2 lines (fixes clipping) */
       .name {
         font-weight: 650;
         font-size: 13px;
         letter-spacing: 0.2px;
         line-height: 1.15;
-        white-space: nowrap;
+
+        white-space: normal;
         overflow: hidden;
-        text-overflow: ellipsis;
+        word-break: break-word;
+
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
       }
 
       .title {
         color: var(--muted);
         font-size: 12px;
         line-height: 1.2;
-        white-space: nowrap;
+
+        white-space: normal;
         overflow: hidden;
-        text-overflow: ellipsis;
+        word-break: break-word;
+
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
       }
 
       .meta {
@@ -625,6 +640,10 @@
         return url;
       }
 
+      function makeNoAgentsLabel(id) {
+        return { id, kind: "label", name: "No agents yet" };
+      }
+
       // ==========================
       // AVATARS
       // ==========================
@@ -663,7 +682,7 @@
       };
 
       // ==========================
-      // DATA
+      // HUMANS
       // ==========================
       const HUMANS = {
         ceo: {
@@ -884,18 +903,13 @@
         ]
       };
 
-      // Agents view = department agents only (agents replace humans)
-      // Includes your latest spec + counts.
+      // ==========================
+      // AGENTS (Agents-only view)
+      // - No fabricated Exec Ops Agent
+      // - No fabricated BizOps agent (Ops shows "No agents yet")
+      // ==========================
       const AGENTS = {
-        ceo: {
-          id: "a-ceo",
-          kind: "agent",
-          name: "Exec Ops Agent",
-          title: "Company Orchestrator",
-          avatarUrl: AV.Onboarding, // closest visual you provided
-          responsibilities: "Summarizes metrics, surfaces risks, drafts exec updates.",
-          bio: "Supports leadership cadence and decision-making."
-        },
+        ceo: makeNoAgentsLabel("a-ceo-none"),
         departments: [
           {
             id: "a-dept-pe",
@@ -904,11 +918,11 @@
               {
                 id: "a-product-squad",
                 kind: "agent",
+                trainerId: "monika",
                 name: "Product Idea Squad",
                 title: "Monika-trained Agents",
-                avatarUrl: AV.MonikaSquad, /* ✅ your new image */
-                responsibilities:
-                  "Supports product discovery, prioritization, PRDs, and QA across releases.",
+                avatarUrl: AV.MonikaSquad,
+                responsibilities: "Supports discovery, prioritization, PRDs, and QA across releases.",
                 bio: "A squad of agents that amplifies product throughput.",
                 layout: "column",
                 children: [
@@ -938,8 +952,7 @@
                     name: "PRD Drafter",
                     title: "Spec",
                     avatarUrl: AV.MonikaSquad,
-                    responsibilities:
-                      "Drafts build requirements, JTBD, and user stories for new work.",
+                    responsibilities: "Drafts build requirements, JTBD, and user stories for new work.",
                     bio: "Accelerates delivery-ready specs."
                   },
                   {
@@ -959,51 +972,53 @@
           {
             id: "a-dept-ops",
             name: "Operations",
-            members: [
-              {
-                id: "a-bizops",
-                kind: "agent",
-                name: "BizOps Agent",
-                title: "Ops Support",
-                avatarUrl: AV.Onboarding,
-                responsibilities:
-                  "SOPs, policy drafts, vendor comparisons, and operational checklists.",
-                bio: "Keeps ops scalable."
-              }
-            ]
+            members: [makeNoAgentsLabel("a-ops-none")]
           },
           {
             id: "a-dept-cs",
             name: "Customer Success",
             members: [
               {
-                id: "a-redflag",
+                id: "a-cs-callintel",
                 kind: "agent",
-                name: "Red Flag Agent",
-                title: "Churn Risk",
+                trainerId: "diana",
+                name: "CS Call Intelligence",
+                title: "Diana-trained",
                 avatarUrl: AV.DianaAgents,
-                responsibilities:
-                  "Listens to customer calls and flags churn risks, adoption blockers, and issues for CS triage.",
-                bio: "Surfaces risks early."
+                responsibilities: "Flags churn risks and captures customer wins from calls.",
+                bio: "Keeps CS ahead of risk and amplifies wins.",
+                layout: "column",
+                children: [
+                  {
+                    id: "a-redflag",
+                    kind: "agent",
+                    name: "Red Flag Agent",
+                    title: "Churn Risk",
+                    avatarUrl: AV.DianaAgents,
+                    responsibilities:
+                      "Listens to customer calls and flags churn risks, adoption blockers, and issues for CS triage.",
+                    bio: "Surfaces risks early."
+                  },
+                  {
+                    id: "a-wins",
+                    kind: "agent",
+                    name: "Wins Agent",
+                    title: "Celebrations",
+                    avatarUrl: AV.DianaAgents,
+                    responsibilities:
+                      "Listens for direct praise and wins for CS to celebrate internally.",
+                    bio: "Captures positivity and momentum."
+                  }
+                ]
               },
               {
-                id: "a-wins",
+                id: "a-cs-solutions",
                 kind: "agent",
-                name: "Wins Agent",
-                title: "Celebrations",
-                avatarUrl: AV.DianaAgents,
-                responsibilities:
-                  "Listens for direct praise and wins for CS to celebrate internally.",
-                bio: "Captures positivity and momentum."
-              },
-              {
-                id: "a-mert-cluster",
-                kind: "agent",
-                name: "Solutions / Consulting Agents",
+                trainerId: "mert",
+                name: "Solutions Support Agents",
                 title: "Mert-trained",
                 avatarUrl: AV.PostMeeting,
-                responsibilities:
-                  "Supports onboarding, meetings, and customer request intake for professional services.",
+                responsibilities: "Supports onboarding, meetings, and services request intake.",
                 bio: "Improves throughput for solutions & services.",
                 layout: "column",
                 children: [
@@ -1023,8 +1038,7 @@
                     name: "Post-Meeting Assistant",
                     title: "Notes & Tasks",
                     avatarUrl: AV.PostMeeting,
-                    responsibilities:
-                      "Creates meeting summaries and assigns to-do tasks to Mert.",
+                    responsibilities: "Creates meeting summaries and assigns to-do tasks to Mert.",
                     bio: "Cuts follow-up time."
                   },
                   {
@@ -1046,54 +1060,65 @@
             name: "Sales",
             members: [
               {
-                id: "a-qual",
+                id: "a-sales-squad",
                 kind: "agent",
-                name: "Prospect Qualification Agents ×9",
-                title: "Fit Validation",
-                avatarUrl: AV.QualAgent,
-                responsibilities:
-                  "Research new prospects to validate fit before outreach.",
-                bio: "Filters to high-likelihood accounts."
-              },
-              {
-                id: "a-research",
-                kind: "agent",
-                name: "Research Agents ×27",
-                title: "Buying Signals",
-                avatarUrl: AV.ResearchAgent,
-                responsibilities:
-                  "Find buying intent signals to improve outreach and sales strategy.",
-                bio: "Keeps outreach sharp and timely."
-              },
-              {
-                id: "a-account-plan",
-                kind: "agent",
-                name: "Account Planning Agent",
-                title: "Strategy",
-                avatarUrl: AV.AccountPlanning,
-                responsibilities:
-                  "Distills research + Evergrowth value prop to brief Cody & Magnus on the best approach.",
-                bio: "Accelerates account ramp-up."
-              },
-              {
-                id: "a-contact-finder",
-                kind: "agent",
-                name: "Contact Finder",
-                title: "Buyer Discovery",
-                avatarUrl: AV.ContactFinder,
-                responsibilities:
-                  "Finds ideal buyers at qualified prospects, including email and phone numbers.",
-                bio: "Cuts list-building time."
-              },
-              {
-                id: "a-play",
-                kind: "agent",
-                name: "Play Agents ×5",
-                title: "Outreach Drafting",
+                trainerId: "cody",
+                name: "Sales Agents",
+                title: "Cody-trained",
                 avatarUrl: AV.PlayAgent,
-                responsibilities:
-                  "Drafts emails, call talk tracks, and LinkedIn DMs weaving buying signals with Evergrowth messaging.",
-                bio: "Creates ready-to-send plays."
+                responsibilities: "Qualification, research, account planning, contacts, and outreach drafting.",
+                bio: "Scales sales execution.",
+                layout: "column",
+                children: [
+                  {
+                    id: "a-qual",
+                    kind: "agent",
+                    name: "Prospect Qualification Agents ×9",
+                    title: "Fit Validation",
+                    avatarUrl: AV.QualAgent,
+                    responsibilities: "Research new prospects to validate fit before outreach.",
+                    bio: "Filters to high-likelihood accounts."
+                  },
+                  {
+                    id: "a-research",
+                    kind: "agent",
+                    name: "Research Agents ×27",
+                    title: "Buying Signals",
+                    avatarUrl: AV.ResearchAgent,
+                    responsibilities: "Find buying intent signals to improve outreach and sales strategy.",
+                    bio: "Keeps outreach sharp and timely."
+                  },
+                  {
+                    id: "a-account-plan",
+                    kind: "agent",
+                    name: "Account Planning Agent",
+                    title: "Strategy",
+                    avatarUrl: AV.AccountPlanning,
+                    responsibilities:
+                      "Distills research + value prop to brief Cody & Magnus on the best approach.",
+                    bio: "Accelerates account ramp-up."
+                  },
+                  {
+                    id: "a-contact-finder",
+                    kind: "agent",
+                    name: "Contact Finder",
+                    title: "Buyer Discovery",
+                    avatarUrl: AV.ContactFinder,
+                    responsibilities:
+                      "Finds ideal buyers at qualified prospects, including email and phone numbers.",
+                    bio: "Cuts list-building time."
+                  },
+                  {
+                    id: "a-play",
+                    kind: "agent",
+                    name: "Play Agents ×5",
+                    title: "Outreach Drafting",
+                    avatarUrl: AV.PlayAgent,
+                    responsibilities:
+                      "Drafts emails, talk tracks, and LinkedIn DMs weaving buying signals with Evergrowth messaging.",
+                    bio: "Creates ready-to-send plays."
+                  }
+                ]
               }
             ]
           },
@@ -1102,50 +1127,66 @@
             name: "Marketing",
             members: [
               {
-                id: "a-release",
+                id: "a-pmm-squad",
                 kind: "agent",
-                name: "New Release Planner",
-                title: "Launch Ops",
+                trainerId: "james",
+                name: "PMM Agents",
+                title: "James-trained",
                 avatarUrl: AV.JamesAgents,
-                responsibilities:
-                  "Ingests release tasks and breaks out PMM steps based on tier (video, KB, socials, enablement).",
-                bio: "Turns features into launch plans."
-              },
-              {
-                id: "a-case-study",
-                kind: "agent",
-                name: "Case Study Scout",
-                title: "Customer Proof",
-                avatarUrl: AV.JamesAgents,
-                responsibilities:
-                  "Listens to calls for quotes indicating good fits for customer interview & case study.",
-                bio: "Identifies strong stories."
-              },
-              {
-                id: "a-quote-bank",
-                kind: "agent",
-                name: "Quote Bank",
-                title: "Praise Capture",
-                avatarUrl: AV.JamesAgents,
-                responsibilities:
-                  "Logs explicit praise + realized benefits into a Google Sheet quote bank.",
-                bio: "Builds a proof library."
-              },
-              {
-                id: "a-comp-quotes",
-                kind: "agent",
-                name: "Competitor Quote Bank",
-                title: "Competitive Intel",
-                avatarUrl: AV.JamesAgents,
-                responsibilities:
-                  "Logs explicit competitor frustrations and denigrations into a separate quote bank.",
-                bio: "Strengthens competitive messaging."
+                responsibilities: "Release planning, case study scouting, quote banks, competitive quotes.",
+                bio: "Turns shipping into go-to-market momentum.",
+                layout: "column",
+                children: [
+                  {
+                    id: "a-release",
+                    kind: "agent",
+                    name: "New Release Planner",
+                    title: "Launch Ops",
+                    avatarUrl: AV.JamesAgents,
+                    responsibilities:
+                      "Ingests release tasks and breaks out PMM steps based on tier (video, KB, socials, enablement).",
+                    bio: "Turns features into launch plans."
+                  },
+                  {
+                    id: "a-case-study",
+                    kind: "agent",
+                    name: "Case Study Scout",
+                    title: "Customer Proof",
+                    avatarUrl: AV.JamesAgents,
+                    responsibilities:
+                      "Listens to calls for quotes indicating good fits for customer interview & case study.",
+                    bio: "Identifies strong stories."
+                  },
+                  {
+                    id: "a-quote-bank",
+                    kind: "agent",
+                    name: "Quote Bank",
+                    title: "Praise Capture",
+                    avatarUrl: AV.JamesAgents,
+                    responsibilities:
+                      "Logs explicit praise + realized benefits into a Google Sheet quote bank.",
+                    bio: "Builds a proof library."
+                  },
+                  {
+                    id: "a-comp-quotes",
+                    kind: "agent",
+                    name: "Competitor Quote Bank",
+                    title: "Competitive Intel",
+                    avatarUrl: AV.JamesAgents,
+                    responsibilities:
+                      "Logs explicit competitor frustrations and denigrations into a separate quote bank.",
+                    bio: "Strengthens competitive messaging."
+                  }
+                ]
               }
             ]
           }
         ]
       };
 
+      // ==========================
+      // Combined view build
+      // ==========================
       const COMBINED = deepClone(HUMANS);
       injectAgentsIntoCombined(COMBINED, AGENTS);
 
@@ -1168,10 +1209,9 @@
       const VIEWS = { humans: HUMANS, agents: AGENTS, combined: COMBINED };
       let currentView = "humans";
 
-      // ✅ define raf BEFORE any calls that might schedule wires
       let raf = null;
 
-      // Default theme: LIGHT (no attribute needed)
+      // Default theme: LIGHT
       setTheme("light");
 
       btnHumans.addEventListener("click", () => setView("humans"));
@@ -1194,7 +1234,6 @@
           themeToggle.setAttribute("aria-pressed", "false");
         }
 
-        // redraw after styles apply
         requestAnimationFrame(() => {
           sizeSvgToContent();
           drawWires();
@@ -1234,7 +1273,13 @@
         for (const dept of model.departments) {
           const deptEl = document.createElement("div");
           deptEl.className = "dept";
-          deptEl.dataset.dept = dept.id;
+
+          // map human dept ids so we keep spacing tweaks
+          // (agents view has a-dept-*, so use name mapping)
+          const humanDeptId =
+            dept.id.startsWith("a-") ? nameToHumanDeptId(dept.name) : dept.id;
+
+          deptEl.dataset.dept = humanDeptId || dept.id;
 
           const pill = document.createElement("div");
           pill.className = "dept-pill";
@@ -1247,7 +1292,7 @@
           const members = document.createElement("div");
           members.className = "children";
 
-          for (const m of dept.members) {
+          for (const m of dept.members || []) {
             members.appendChild(renderSubtree(m, edges));
             edges.push([dept.id, m.id]);
 
@@ -1266,13 +1311,23 @@
 
         chart.__edges = edges;
 
-        // Let layout settle, then draw.
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             sizeSvgToContent();
             drawWires();
           });
         });
+      }
+
+      function nameToHumanDeptId(name) {
+        const map = {
+          "Product & Engineering": "dept-pe",
+          "Operations": "dept-ops",
+          "Customer Success": "dept-cs",
+          "Sales": "dept-sales",
+          "Marketing": "dept-mktg"
+        };
+        return map[name] || null;
       }
 
       function renderSubtree(node, edges) {
@@ -1391,7 +1446,7 @@
         });
 
         const cssR = getComputedStyle(document.documentElement).getPropertyValue("--wireRadius").trim();
-        const baseR = Number(cssR) || 40;
+        const baseR = Number(cssR) || 44;
 
         for (const [fromId, toId] of chart.__edges) {
           const a = idToEl[fromId];
@@ -1505,30 +1560,65 @@
       }
 
       // ==========================
-      // Combined injection
+      // Combined injection (fixed)
       // ==========================
       function injectAgentsIntoCombined(humans, agents) {
-        const deptByName = new Map();
-        for (const d of agents.departments) deptByName.set(d.name, d);
+        const index = new Map();
 
+        // index CEO + all members recursively
+        index.set(humans.ceo.id, humans.ceo);
         for (const dept of humans.departments) {
-          const aDept = deptByName.get(dept.name);
-          if (!aDept || !aDept.members?.length) continue;
+          for (const m of dept.members || []) {
+            walk(m);
+          }
+        }
 
-          const lead = dept.members[0];
-          if (!lead) continue;
+        function walk(node) {
+          index.set(node.id, node);
+          if (node.children) node.children.forEach(walk);
+        }
 
-          lead.children = lead.children || [];
+        // Attach each agent dept member under trainerId (or fallback)
+        for (const aDept of agents.departments || []) {
+          for (const aNode of aDept.members || []) {
+            const trainerId = aNode.trainerId || null;
 
-          lead.children.push({
-            id: `${lead.id}-agents-label`,
-            kind: "label",
-            name: "Agents",
-            layout: "row",
-            children: aDept.members
-          });
+            // Fallback: attach to first member (dept lead)
+            const fallbackLead = (humans.departments.find((d) => d.name === aDept.name)?.members || [])[0];
+            const targetId = (trainerId && index.has(trainerId)) ? trainerId : (fallbackLead ? fallbackLead.id : null);
+            if (!targetId || !index.has(targetId)) continue;
 
-          lead.layout = lead.layout || "row";
+            const target = index.get(targetId);
+
+            // If this is literally "No agents yet", attach directly and stop.
+            if (aNode.kind === "label" && (aNode.name || "").toLowerCase().includes("no agents")) {
+              target.children = target.children || [];
+              target.children.push(aNode);
+              target.layout = target.layout || "column";
+              continue;
+            }
+
+            // Ensure "Agents" label container
+            target.children = target.children || [];
+            let label = target.children.find((c) => c.kind === "label" && c.__isAgentsBucket);
+            if (!label) {
+              label = {
+                id: `${target.id}__agents_bucket`,
+                kind: "label",
+                name: "Agents",
+                layout: "row",
+                children: [],
+                __isAgentsBucket: true
+              };
+              target.children.push(label);
+            }
+
+            label.children = label.children || [];
+            label.children.push(aNode);
+
+            // Encourage a sensible layout
+            target.layout = target.layout || "column";
+          }
         }
       }
     </script>
