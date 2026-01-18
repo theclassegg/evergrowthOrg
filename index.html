@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Evergrowth Org Chart</title>
 
-    <!-- Favicon -->
     <link
       rel="icon"
       href="https://cdn.prod.website-files.com/67de9a786ff9ec4a82a4453a/67f6be889df4d0a86c22e5d1_favicon.svg"
@@ -13,32 +12,28 @@
     />
 
     <style>
-      /* ==========================
-         THEME (default = LIGHT)
-         Toggle sets: <html data-theme="dark">
-         ========================== */
       :root {
         /* Layout */
         --radius: 14px;
-        --deptGap: 120px;
+        --deptGap: 130px;
         --nodeGap: 34px;
         --levelGap: 52px;
 
         /* Wires */
-        --wireRadius: 24; /* ✅ more rounded corners */
+        --wireRadius: 40; /* ✅ more rounded corners */
         --wireDash: 6 6;
 
         /* Accents */
-        --accent: #6ee7ff;
+        --accent: #2dd4ff;
         --agent: #a855f7;
 
-        /* Light theme colors (default) */
+        /* Light theme (default) */
         --bg: #fefefe;
         --text: #0f172a;
         --muted: #475569;
 
-        --headerBg: rgba(254, 254, 254, 0.72);
-        --headerBorder: rgba(15, 23, 42, 0.08);
+        --headerBg: rgba(254, 254, 254, 0.82);
+        --headerBorder: rgba(15, 23, 42, 0.10);
 
         --panelBg1: rgba(15, 23, 42, 0.03);
         --panelBg2: rgba(15, 23, 42, 0.015);
@@ -46,19 +41,22 @@
         --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 
         --uiBg: rgba(15, 23, 42, 0.05);
-        --uiBorder: rgba(15, 23, 42, 0.10);
+        --uiBorder: rgba(15, 23, 42, 0.12);
 
-        --cardBg: rgba(255, 255, 255, 0.92);
-        --cardBorder: rgba(15, 23, 42, 0.12);
+        --cardBg: rgba(255, 255, 255, 0.96);
+        --cardBorder: rgba(15, 23, 42, 0.14);
 
-        --deptPillBg: rgba(15, 23, 42, 0.06); /* ✅ light grey pills */
-        --deptPillBorder: rgba(15, 23, 42, 0.12);
+        --deptPillBg: rgba(15, 23, 42, 0.06);
+        --deptPillBorder: rgba(15, 23, 42, 0.14);
 
-        --tooltipBg: rgba(255, 255, 255, 0.96);
+        --tooltipBg: rgba(255, 255, 255, 0.98);
         --tooltipBorder: rgba(15, 23, 42, 0.14);
         --tooltipShadow: 0 16px 40px rgba(15, 23, 42, 0.18);
 
         --wire: rgba(15, 23, 42, 0.28);
+
+        /* Make the white logo visible in light mode */
+        --logoFilter: invert(1) saturate(0) contrast(1.1);
       }
 
       html[data-theme="dark"] {
@@ -75,12 +73,11 @@
         --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 
         --uiBg: rgba(255, 255, 255, 0.06);
-        --uiBorder: rgba(255, 255, 255, 0.08);
+        --uiBorder: rgba(255, 255, 255, 0.10);
 
         --cardBg: rgba(20, 24, 36, 0.96);
         --cardBorder: #2b3244;
 
-        /* ✅ dark pills: brighter than before so they stand out more */
         --deptPillBg: rgba(255, 255, 255, 0.08);
         --deptPillBorder: rgba(255, 255, 255, 0.14);
 
@@ -89,11 +86,11 @@
         --tooltipShadow: 0 16px 40px rgba(0, 0, 0, 0.45);
 
         --wire: rgba(170, 180, 200, 0.38);
+
+        --logoFilter: none;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       body {
         margin: 0;
@@ -139,6 +136,7 @@
         height: 22px;
         width: auto;
         display: block;
+        filter: var(--logoFilter);
       }
 
       h1 {
@@ -180,16 +178,11 @@
         white-space: nowrap;
       }
 
-      .seg button:hover {
-        color: var(--text);
-      }
-
-      .seg button:active {
-        transform: translateY(1px);
-      }
+      .seg button:hover { color: var(--text); }
+      .seg button:active { transform: translateY(1px); }
 
       .seg button[aria-pressed="true"] {
-        background: rgba(110, 231, 255, 0.16);
+        background: rgba(110, 231, 255, 0.18);
         color: var(--text);
         box-shadow: inset 0 0 0 1px rgba(110, 231, 255, 0.28);
       }
@@ -203,8 +196,7 @@
         flex-wrap: wrap;
       }
 
-      .pill,
-      .theme-toggle {
+      .pill, .theme-toggle {
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -221,13 +213,8 @@
         transition: transform 0.05s ease, background 0.15s ease, color 0.15s ease;
       }
 
-      .theme-toggle:hover {
-        color: var(--text);
-      }
-
-      .theme-toggle:active {
-        transform: translateY(1px);
-      }
+      .theme-toggle:hover { color: var(--text); }
+      .theme-toggle:active { transform: translateY(1px); }
 
       .dot {
         width: 10px;
@@ -257,7 +244,6 @@
         overscroll-behavior: contain;
       }
 
-      /* Chart container */
       .chart {
         position: relative;
         width: max-content;
@@ -265,7 +251,6 @@
         padding: 18px 22px 28px;
       }
 
-      /* SVG wires layer */
       .wires {
         position: absolute;
         inset: 0;
@@ -284,21 +269,17 @@
         stroke-dasharray: var(--wireDash);
       }
 
-      /* Ensure UI blocks mask wires behind them */
-      .dept-pill,
-      .node {
+      .dept-pill, .node {
         position: relative;
         z-index: 2;
       }
 
-      /* Level: CEO */
       .level-0 {
         display: flex;
         justify-content: center;
         margin-bottom: var(--levelGap);
       }
 
-      /* Departments row */
       .departments {
         display: flex;
         justify-content: space-between;
@@ -317,13 +298,9 @@
         flex: 0 0 auto;
       }
 
-      .dept[data-dept="dept-sales"] {
-        min-width: 420px;
-      }
-
-      .dept[data-dept="dept-cs"] {
-        min-width: 380px;
-      }
+      /* Slight extra space so Mert + Justas don't collide */
+      .dept[data-dept="dept-cs"] { min-width: 420px; }
+      .dept[data-dept="dept-sales"] { min-width: 460px; }
 
       .dept-pill {
         display: inline-flex;
@@ -337,19 +314,16 @@
         background: var(--deptPillBg);
         border: 1px solid var(--deptPillBorder);
 
-        /* Multi-line wrapping to prevent clipping */
+        /* ✅ wrap instead of clipping */
         white-space: normal;
         text-align: center;
         line-height: 1.2;
-        max-width: 240px;
-        height: auto;
-        overflow: visible;
+        max-width: 280px;
 
         margin-top: 10px;
         backdrop-filter: blur(6px);
       }
 
-      /* Node + subtree */
       .node-wrap {
         display: flex;
         flex-direction: column;
@@ -369,13 +343,12 @@
         gap: 18px;
       }
 
-      /* Card */
       .node {
         width: 240px;
         background: var(--cardBg);
         border: 1px solid var(--cardBorder);
         border-radius: 14px;
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
         padding: 12px 12px;
         transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
         cursor: default;
@@ -389,7 +362,7 @@
       .node:hover {
         transform: translateY(-2px);
         border-color: rgba(110, 231, 255, 0.45);
-        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
       }
 
       html[data-theme="dark"] .node:hover {
@@ -400,7 +373,6 @@
         border-color: rgba(168, 85, 247, 0.55);
       }
 
-      /* Label node */
       .node.label {
         width: auto;
         padding: 7px 12px;
@@ -421,15 +393,14 @@
         gap: 10px;
       }
 
-      /* Avatar */
       .avatar {
         width: 44px;
         height: 44px;
         border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(15, 23, 42, 0.14);
         background:
-          radial-gradient(12px 12px at 30% 25%, rgba(255, 255, 255, 0.12), transparent 60%),
-          rgba(255, 255, 255, 0.05);
+          radial-gradient(12px 12px at 30% 25%, rgba(15, 23, 42, 0.06), transparent 60%),
+          rgba(15, 23, 42, 0.03);
         overflow: hidden;
         display: grid;
         place-items: center;
@@ -437,11 +408,11 @@
         user-select: none;
       }
 
-      html[data-theme="light"] .avatar {
-        border: 1px solid rgba(15, 23, 42, 0.14);
+      html[data-theme="dark"] .avatar {
+        border: 1px solid rgba(255, 255, 255, 0.14);
         background:
-          radial-gradient(12px 12px at 30% 25%, rgba(15, 23, 42, 0.06), transparent 60%),
-          rgba(15, 23, 42, 0.03);
+          radial-gradient(12px 12px at 30% 25%, rgba(255, 255, 255, 0.12), transparent 60%),
+          rgba(255, 255, 255, 0.05);
       }
 
       .avatar img {
@@ -522,7 +493,6 @@
         box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
       }
 
-      /* Tooltip */
       .tooltip {
         position: fixed;
         z-index: 1000;
@@ -539,9 +509,7 @@
         color: var(--text);
       }
 
-      .tooltip.show {
-        opacity: 1;
-      }
+      .tooltip.show { opacity: 1; }
 
       .tooltip h3 {
         margin: 0 0 6px 0;
@@ -556,12 +524,11 @@
       }
 
       .tooltip .tt-label {
-        color: var(--text);
+        color: var(--muted);
         font-size: 11px;
         letter-spacing: 0.18px;
         text-transform: uppercase;
         margin: 10px 0 4px 0;
-        opacity: 0.9;
       }
 
       .tooltip .tt-body {
@@ -570,7 +537,6 @@
         font-size: 12px;
         line-height: 1.45;
         white-space: pre-line;
-        opacity: 0.92;
       }
     </style>
   </head>
@@ -587,9 +553,8 @@
             <h1>Evergrowth Org Chart</h1>
           </div>
 
-          <!-- ✅ Theme toggle -->
           <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">
-            <span id="themeLabel">Light mode</span>
+            Dark mode
           </button>
         </div>
 
@@ -624,98 +589,89 @@
     <div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
 
     <script>
-      /**
-       * ==========================
-       * THEME TOGGLE (default = LIGHT)
-       * ==========================
-       */
-      const themeToggle = document.getElementById("themeToggle");
-      const themeLabel = document.getElementById("themeLabel");
-
-      function applyTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("egTheme", theme);
-        themeToggle.setAttribute("aria-pressed", theme === "dark");
-        themeLabel.textContent = theme === "dark" ? "Dark mode" : "Light mode";
-
-        // Re-draw wires to ensure visuals are crisp after style changes
-        scheduleWires();
+      // ==========================
+      // Helpers
+      // ==========================
+      function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
       }
 
-      const storedTheme = localStorage.getItem("egTheme");
-      applyTheme(storedTheme || "light"); // ✅ default light on first load
-
-      themeToggle.addEventListener("click", () => {
-        const current = document.documentElement.getAttribute("data-theme") || "light";
-        applyTheme(current === "dark" ? "light" : "dark");
-      });
-
-      /**
-       * ==========================
-       * AVATAR URL HELPERS
-       * ==========================
-       */
-      function ghRaw(url) {
-        return url
-          .replace("https://github.com/", "https://raw.githubusercontent.com/")
-          .replace("/blob/", "/");
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
       }
 
-      const AVATARS = {
-        humans: {
-          ceo: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/JB.png"),
-          nauris: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Nauris.jpeg"),
-          monika: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Monika.png"),
-          chirag: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Chirag.png"),
-          marks: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Mark.jpeg"),
-          donatas: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Donatas.jpeg"),
-          edvinas: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Edvinas.jpeg"),
-          cosmin: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Cosmin.png"),
-          beatrise: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Beatrice.png"),
-          ruta: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Ruta.jpeg"),
-          diana: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana.png"),
-          mert: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Mert.png"),
-          rudolfs: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Rudolfs.jpeg"),
-          suleman: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Suleman.png"),
-          justin: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Justas.jpeg"),
-          james: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/James.png"),
-          cody: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Cody.png"),
-          magnus: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Magnus.jpeg")
-        },
-        agents: {
-          qualification: ghRaw(
-            "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Qualification-Clody.png"
-          ),
-          research: ghRaw(
-            "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Research-Cody2.png"
-          ),
-          accountPlanning: ghRaw(
-            "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-AccountPlanningCody.png"
-          ),
-          contactFinder: ghRaw(
-            "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Contactfinder-Cody.png"
-          ),
-          play: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-PlayAgent-Cody.png"),
-          james: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/James%20Agent.png"),
-          diana: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana%20Agent.png"),
-          onboarding: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/JBAgent.png"),
-          mert: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/MertAgent.png"),
-          monika: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/MonikaAgent.png")
+      function initials(name) {
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return "•";
+        const first = parts[0][0] || "";
+        const last = parts.length > 1 ? parts[parts.length - 1][0] || "" : "";
+        return (first + last).toUpperCase();
+      }
+
+      // Convert GitHub "blob" URLs to raw URLs (required for <img src>)
+      function toRawGitHub(url) {
+        if (!url) return url;
+        if (url.includes("raw.githubusercontent.com")) return url;
+        if (url.includes("github.com") && url.includes("/blob/")) {
+          return url
+            .replace("https://github.com/", "https://raw.githubusercontent.com/")
+            .replace("/blob/", "/");
         }
+        return url;
+      }
+
+      // ==========================
+      // AVATARS
+      // ==========================
+      const AV = {
+        // Humans
+        JB: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/JB.png"),
+        Nauris: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Nauris.jpeg"),
+        Monika: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Monika.png"),
+        Chirag: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Chirag.png"),
+        Mark: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Mark.jpeg"),
+        Donatas: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Donatas.jpeg"),
+        Edvinas: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Edvinas.jpeg"),
+        Cosmin: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Cosmin.png"),
+        Beatrice: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Beatrice.png"),
+        Ruta: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Ruta.jpeg"),
+        Diana: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana.png"),
+        Mert: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Mert.png"),
+        Rudolfs: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Rudolfs.jpeg"),
+        Suleman: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Suleman.png"),
+        Justas: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Justas.jpeg"),
+        James: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/James.png"),
+        Cody: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Cody.png"),
+        Magnus: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Magnus.jpeg"),
+
+        // Agents
+        MonikaSquad: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/MonikaAgent.png"),
+        JamesAgents: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/James%20Agent.png"),
+        DianaAgents: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana%20Agent.png"),
+        Onboarding: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/JBAgent.png"),
+        PostMeeting: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/MertAgent.png"),
+        QualAgent: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Qualification-Clody.png"),
+        ResearchAgent: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Research-Cody2.png"),
+        AccountPlanning: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-AccountPlanningCody.png"),
+        ContactFinder: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Contactfinder-Cody.png"),
+        PlayAgent: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-PlayAgent-Cody.png")
       };
 
-      /**
-       * ==========================
-       * DATA
-       * ==========================
-       */
+      // ==========================
+      // DATA
+      // ==========================
       const HUMANS = {
         ceo: {
           id: "ceo",
           kind: "human",
           name: "JB Daguené",
           title: "CEO",
-          avatarUrl: AVATARS.humans.ceo,
+          avatarUrl: AV.JB,
           responsibilities: "Company strategy, exec decisions, prioritization, hiring.",
           bio: "Founder/CEO. Owns vision and overall execution."
         },
@@ -729,7 +685,7 @@
                 kind: "human",
                 name: "Nauris Dorbe",
                 title: "CTO",
-                avatarUrl: AVATARS.humans.nauris,
+                avatarUrl: AV.Nauris,
                 responsibilities: "Engineering leadership, technical strategy, architecture.",
                 bio: "Leads Product & Engineering delivery and technical direction.",
                 layout: "column",
@@ -739,7 +695,7 @@
                     kind: "human",
                     name: "Donatas Mašlėktėnas",
                     title: "Front-end Engineer",
-                    avatarUrl: AVATARS.humans.donatas,
+                    avatarUrl: AV.Donatas,
                     responsibilities: "UI implementation, performance, component systems.",
                     bio: "Builds user-facing features and improves UX quality.",
                     layout: "column",
@@ -749,7 +705,7 @@
                         kind: "human",
                         name: "Marks Leidemans",
                         title: "Senior Software Engineer",
-                        avatarUrl: AVATARS.humans.marks,
+                        avatarUrl: AV.Mark,
                         responsibilities: "Backend systems, reliability, core services.",
                         bio: "Builds and maintains key platform capabilities.",
                         layout: "column",
@@ -759,7 +715,7 @@
                             kind: "human",
                             name: "Cosmin Romeo Tanase",
                             title: "Full-stack Engineer",
-                            avatarUrl: AVATARS.humans.cosmin,
+                            avatarUrl: AV.Cosmin,
                             responsibilities: "End-to-end feature delivery across stack.",
                             bio: "Ships features across frontend + backend.",
                             layout: "column",
@@ -769,7 +725,7 @@
                                 kind: "human",
                                 name: "Edvinas Rabikis",
                                 title: "Full Stack Engineer",
-                                avatarUrl: AVATARS.humans.edvinas,
+                                avatarUrl: AV.Edvinas,
                                 responsibilities: "Product features, integrations, platform improvements.",
                                 bio: "Delivers full-stack work across the product."
                               }
@@ -786,7 +742,7 @@
                 kind: "human",
                 name: "Monika Staponkutė",
                 title: "Head of Product",
-                avatarUrl: AVATARS.humans.monika,
+                avatarUrl: AV.Monika,
                 responsibilities: "Product strategy, roadmap, discovery, requirements.",
                 bio: "Owns the product direction and cross-functional alignment.",
                 layout: "column",
@@ -796,7 +752,7 @@
                     kind: "human",
                     name: "Chirag Patel",
                     title: "UX Design Lead",
-                    avatarUrl: AVATARS.humans.chirag,
+                    avatarUrl: AV.Chirag,
                     responsibilities: "Design systems, user research, interaction design.",
                     bio: "Leads product design and user experience."
                   }
@@ -813,7 +769,7 @@
                 kind: "human",
                 name: "Beatrise Pociute-Daguené",
                 title: "Head of Business Operations",
-                avatarUrl: AVATARS.humans.beatrise,
+                avatarUrl: AV.Beatrice,
                 responsibilities: "Company ops, finance ops, systems/processes.",
                 bio: "Keeps the business running smoothly.",
                 layout: "column",
@@ -823,7 +779,7 @@
                     kind: "human",
                     name: "Rūta Dorofejevaitė",
                     title: "Senior Accountant",
-                    avatarUrl: AVATARS.humans.ruta,
+                    avatarUrl: AV.Ruta,
                     responsibilities: "Accounting operations, close, reporting, compliance.",
                     bio: "Owns day-to-day accounting and financial hygiene."
                   }
@@ -840,7 +796,7 @@
                 kind: "human",
                 name: "Diana Heisler",
                 title: "Head of CS",
-                avatarUrl: AVATARS.humans.diana,
+                avatarUrl: AV.Diana,
                 responsibilities: "Customer onboarding, renewals, support, outcomes.",
                 bio: "Owns customer success and retention motions."
               },
@@ -849,7 +805,7 @@
                 kind: "human",
                 name: "Mert Gencer",
                 title: "Solutions Engineer",
-                avatarUrl: AVATARS.humans.mert,
+                avatarUrl: AV.Mert,
                 responsibilities: "Technical onboarding, implementations, support escalation.",
                 bio: "Bridges product + customer technical needs.",
                 layout: "column",
@@ -859,7 +815,7 @@
                     kind: "human",
                     name: "Suleman Mahmud",
                     title: "GTM Ops",
-                    avatarUrl: AVATARS.humans.suleman,
+                    avatarUrl: AV.Suleman,
                     responsibilities: "Rev ops support, systems, reporting, process.",
                     bio: "Keeps GTM operations tight and measurable."
                   },
@@ -868,7 +824,7 @@
                     kind: "human",
                     name: "Rudolfs Selga",
                     title: "GTM Ops",
-                    avatarUrl: AVATARS.humans.rudolfs,
+                    avatarUrl: AV.Rudolfs,
                     responsibilities: "Ops support, tooling, data hygiene, process.",
                     bio: "Supports GTM systems and execution."
                   }
@@ -886,7 +842,7 @@
                 kind: "human",
                 name: "Justas Rodzevičius",
                 title: "Head of RevOps and Client Consulting",
-                avatarUrl: AVATARS.humans.justin,
+                avatarUrl: AV.Justas,
                 responsibilities: "RevOps strategy, client consulting delivery, enablement.",
                 bio: "Owns RevOps + consulting engagements."
               },
@@ -895,7 +851,7 @@
                 kind: "human",
                 name: "Cody Ayres",
                 title: "Head of GTM",
-                avatarUrl: AVATARS.humans.cody,
+                avatarUrl: AV.Cody,
                 responsibilities: "GTM strategy, pipeline, sales execution.",
                 bio: "Owns revenue outcomes and GTM performance."
               },
@@ -904,7 +860,7 @@
                 kind: "human",
                 name: "Magnus Thomsen",
                 title: "Senior AE",
-                avatarUrl: AVATARS.humans.magnus,
+                avatarUrl: AV.Magnus,
                 responsibilities: "Pipeline creation, deal execution, customer development.",
                 bio: "Drives new business and expansions."
               }
@@ -919,7 +875,7 @@
                 kind: "human",
                 name: "James Ince",
                 title: "Head of Product Marketing",
-                avatarUrl: AVATARS.humans.james,
+                avatarUrl: AV.James,
                 responsibilities: "Messaging, positioning, launches, enablement, competitive.",
                 bio: "Owns product marketing strategy and execution."
               }
@@ -928,13 +884,16 @@
         ]
       };
 
+      // Agents view = department agents only (agents replace humans)
+      // Includes your latest spec + counts.
       const AGENTS = {
         ceo: {
           id: "a-ceo",
           kind: "agent",
           name: "Exec Ops Agent",
           title: "Company Orchestrator",
-          responsibilities: "Drafts exec updates, summarizes key metrics, surfaces risks and decisions.",
+          avatarUrl: AV.Onboarding, // closest visual you provided
+          responsibilities: "Summarizes metrics, surfaces risks, drafts exec updates.",
           bio: "Supports leadership cadence and decision-making."
         },
         departments: [
@@ -943,50 +902,55 @@
             name: "Product & Engineering",
             members: [
               {
-                id: "a-prod-squad",
-                kind: "label",
+                id: "a-product-squad",
+                kind: "agent",
                 name: "Product Idea Squad",
+                title: "Monika-trained Agents",
+                avatarUrl: AV.MonikaSquad, /* ✅ your new image */
+                responsibilities:
+                  "Supports product discovery, prioritization, PRDs, and QA across releases.",
+                bio: "A squad of agents that amplifies product throughput.",
                 layout: "column",
                 children: [
                   {
-                    id: "a-new-request-titler",
+                    id: "a-req-title",
                     kind: "agent",
                     name: "New Request Titler",
-                    title: "Feature Title Generator",
-                    avatarUrl: AVATARS.agents.monika,
+                    title: "Intake",
+                    avatarUrl: AV.MonikaSquad,
                     responsibilities:
-                      "Ingests the full Slack feature discussion thread and outputs a succinct feature/update title.",
-                    bio: "Turns messy threads into crisp, consistent titles."
+                      "Ingests the feature discussion thread from Slack and generates a succinct feature/update title.",
+                    bio: "Turns messy threads into crisp titles."
                   },
                   {
-                    id: "a-new-idea-scorer",
+                    id: "a-idea-score",
                     kind: "agent",
                     name: "New Idea Scorer",
-                    title: "Scoring + Fit Assessment",
-                    avatarUrl: AVATARS.agents.monika,
+                    title: "Scoring",
+                    avatarUrl: AV.MonikaSquad,
                     responsibilities:
-                      "Scores ideas (out of 5) on: ease of build, strategic alignment, revenue retention impact, new revenue impact.",
-                    bio: "Provides a repeatable scoring rubric for prioritization."
+                      "Scores ideas (out of 5): ease of build, strategic alignment, revenue retention impact, new revenue impact.",
+                    bio: "Adds consistency to prioritization."
                   },
                   {
-                    id: "a-prd-drafter",
+                    id: "a-prd",
                     kind: "agent",
                     name: "PRD Drafter",
-                    title: "PRD + JTBD + User Stories",
-                    avatarUrl: AVATARS.agents.monika,
+                    title: "Spec",
+                    avatarUrl: AV.MonikaSquad,
                     responsibilities:
-                      "Drafts PRD scope, build requirements, JTBD, and user stories from the initial request context.",
-                    bio: "Accelerates discovery → spec quality."
+                      "Drafts build requirements, JTBD, and user stories for new work.",
+                    bio: "Accelerates delivery-ready specs."
                   },
                   {
                     id: "a-qa-assistant",
                     kind: "agent",
                     name: "QA Assistant",
-                    title: "In-App QA Test Writer",
-                    avatarUrl: AVATARS.agents.monika,
+                    title: "Quality",
+                    avatarUrl: AV.MonikaSquad,
                     responsibilities:
-                      "For each shipped feature, scans product structure, infers impacted areas, and drafts in-app QA tests to catch regressions.",
-                    bio: "Reduces inadvertent changes by generating smart regression checks."
+                      "Infers impacted areas from product structure and drafts in-app QA tests to catch regressions.",
+                    bio: "Helps ensure releases don’t break adjacent surfaces."
                   }
                 ]
               }
@@ -997,11 +961,14 @@
             name: "Operations",
             members: [
               {
-                id: "a-ops-none",
-                kind: "label",
-                name: "No agents yet",
-                layout: "row",
-                children: []
+                id: "a-bizops",
+                kind: "agent",
+                name: "BizOps Agent",
+                title: "Ops Support",
+                avatarUrl: AV.Onboarding,
+                responsibilities:
+                  "SOPs, policy drafts, vendor comparisons, and operational checklists.",
+                bio: "Keeps ops scalable."
               }
             ]
           },
@@ -1010,68 +977,65 @@
             name: "Customer Success",
             members: [
               {
-                id: "a-cs-callintel",
-                kind: "label",
-                name: "Call Intelligence",
-                layout: "row",
-                children: [
-                  {
-                    id: "a-red-flag",
-                    kind: "agent",
-                    name: "Red Flag Agent",
-                    title: "Churn + Adoption Risk",
-                    avatarUrl: AVATARS.agents.diana,
-                    responsibilities:
-                      "Listens to customer calls and flags churn risks, adoption blockers, and other issues for CS triage.",
-                    bio: "Surfaces risk early so CS can act fast."
-                  },
-                  {
-                    id: "a-wins",
-                    kind: "agent",
-                    name: "Wins Agent",
-                    title: "Praise + Momentum",
-                    avatarUrl: AVATARS.agents.diana,
-                    responsibilities:
-                      "Listens to customer calls for direct praise and highlights wins for internal celebration.",
-                    bio: "Captures positive moments to reinforce what’s working."
-                  }
-                ]
+                id: "a-redflag",
+                kind: "agent",
+                name: "Red Flag Agent",
+                title: "Churn Risk",
+                avatarUrl: AV.DianaAgents,
+                responsibilities:
+                  "Listens to customer calls and flags churn risks, adoption blockers, and issues for CS triage.",
+                bio: "Surfaces risks early."
               },
               {
-                id: "a-cs-solutions",
-                kind: "label",
-                name: "Solutions & Services",
+                id: "a-wins",
+                kind: "agent",
+                name: "Wins Agent",
+                title: "Celebrations",
+                avatarUrl: AV.DianaAgents,
+                responsibilities:
+                  "Listens for direct praise and wins for CS to celebrate internally.",
+                bio: "Captures positivity and momentum."
+              },
+              {
+                id: "a-mert-cluster",
+                kind: "agent",
+                name: "Solutions / Consulting Agents",
+                title: "Mert-trained",
+                avatarUrl: AV.PostMeeting,
+                responsibilities:
+                  "Supports onboarding, meetings, and customer request intake for professional services.",
+                bio: "Improves throughput for solutions & services.",
                 layout: "column",
                 children: [
                   {
-                    id: "a-onboarding-agent",
+                    id: "a-onboarding",
                     kind: "agent",
                     name: "Onboarding Agent",
-                    title: "Tenant Setup + Strategy",
-                    avatarUrl: AVATARS.agents.onboarding,
+                    title: "Tenant Setup",
+                    avatarUrl: AV.Onboarding,
                     responsibilities:
-                      "Works with GTM Ops to generate value props, ecosystems, verticals, qualification, research plans, and ideal persona definitions for new tenants.",
-                    bio: "Speeds time-to-value for new customers."
+                      "Works with GTM Ops to generate value props, ecosystems, verticals, qualification, research agents, and persona definitions for new tenants.",
+                    bio: "Speeds time-to-value."
                   },
                   {
-                    id: "a-mert-assistant",
+                    id: "a-postmeeting",
                     kind: "agent",
                     name: "Post-Meeting Assistant",
-                    title: "Summaries + Tasks for Mert",
-                    avatarUrl: AVATARS.agents.mert,
+                    title: "Notes & Tasks",
+                    avatarUrl: AV.PostMeeting,
                     responsibilities:
-                      "Creates meeting summaries and assigns to-do tasks to Mert after customer meetings.",
-                    bio: "Turns calls into clean next steps."
+                      "Creates meeting summaries and assigns to-do tasks to Mert.",
+                    bio: "Cuts follow-up time."
                   },
                   {
-                    id: "a-request-triager",
+                    id: "a-triage",
                     kind: "agent",
                     name: "Customer Request Triager",
-                    title: "Services Intake Routing",
-                    avatarUrl: AVATARS.agents.diana,
+                    title: "Services Intake",
+                    avatarUrl: AV.DianaAgents,
                     responsibilities:
                       "Estimates effort for professional services requests and assigns to the relevant GTM Ops consultant.",
-                    bio: "Keeps services work scoped and routed correctly."
+                    bio: "Keeps services work organized."
                   }
                 ]
               }
@@ -1082,61 +1046,54 @@
             name: "Sales",
             members: [
               {
-                id: "a-sales-squad",
-                kind: "label",
-                name: "Sales Agents",
-                layout: "column",
-                children: [
-                  {
-                    id: "a-prospect-qual-9",
-                    kind: "agent",
-                    name: "Prospect Qualification Agents (x9)",
-                    title: "Fit Validation",
-                    avatarUrl: AVATARS.agents.qualification,
-                    responsibilities: "Research new prospects to validate if they’re a strong fit to pursue.",
-                    bio: "Filters pipeline toward high-probability accounts."
-                  },
-                  {
-                    id: "a-research-27",
-                    kind: "agent",
-                    name: "Research Agents (x27)",
-                    title: "Buying Intent Signals",
-                    avatarUrl: AVATARS.agents.research,
-                    responsibilities:
-                      "Research prospects for buying intent signals to use in outreach and sales approach.",
-                    bio: "Feeds outreach with real triggers and context."
-                  },
-                  {
-                    id: "a-account-planning",
-                    kind: "agent",
-                    name: "Account Planning Agents",
-                    title: "Strategy Briefs",
-                    avatarUrl: AVATARS.agents.accountPlanning,
-                    responsibilities:
-                      "Distill prospect research + Evergrowth value prop into a best strategy brief for Cody & Magnus.",
-                    bio: "Gets AEs up to speed fast with a tight plan."
-                  },
-                  {
-                    id: "a-contact-finder",
-                    kind: "agent",
-                    name: "Contact Finder",
-                    title: "Buyer Discovery",
-                    avatarUrl: AVATARS.agents.contactFinder,
-                    responsibilities:
-                      "Finds ideal buyers at qualified prospects, including email & phone numbers.",
-                    bio: "Builds the buyer list and contact paths."
-                  },
-                  {
-                    id: "a-play-agents-5",
-                    kind: "agent",
-                    name: "Play Agents (x5)",
-                    title: "Outreach Drafting",
-                    avatarUrl: AVATARS.agents.play,
-                    responsibilities:
-                      "Drafts outreach using buying signals + Evergrowth messaging (emails, call talk tracks, LinkedIn DMs).",
-                    bio: "Generates channel-ready messaging tied to intent."
-                  }
-                ]
+                id: "a-qual",
+                kind: "agent",
+                name: "Prospect Qualification Agents ×9",
+                title: "Fit Validation",
+                avatarUrl: AV.QualAgent,
+                responsibilities:
+                  "Research new prospects to validate fit before outreach.",
+                bio: "Filters to high-likelihood accounts."
+              },
+              {
+                id: "a-research",
+                kind: "agent",
+                name: "Research Agents ×27",
+                title: "Buying Signals",
+                avatarUrl: AV.ResearchAgent,
+                responsibilities:
+                  "Find buying intent signals to improve outreach and sales strategy.",
+                bio: "Keeps outreach sharp and timely."
+              },
+              {
+                id: "a-account-plan",
+                kind: "agent",
+                name: "Account Planning Agent",
+                title: "Strategy",
+                avatarUrl: AV.AccountPlanning,
+                responsibilities:
+                  "Distills research + Evergrowth value prop to brief Cody & Magnus on the best approach.",
+                bio: "Accelerates account ramp-up."
+              },
+              {
+                id: "a-contact-finder",
+                kind: "agent",
+                name: "Contact Finder",
+                title: "Buyer Discovery",
+                avatarUrl: AV.ContactFinder,
+                responsibilities:
+                  "Finds ideal buyers at qualified prospects, including email and phone numbers.",
+                bio: "Cuts list-building time."
+              },
+              {
+                id: "a-play",
+                kind: "agent",
+                name: "Play Agents ×5",
+                title: "Outreach Drafting",
+                avatarUrl: AV.PlayAgent,
+                responsibilities:
+                  "Drafts emails, call talk tracks, and LinkedIn DMs weaving buying signals with Evergrowth messaging.",
+                bio: "Creates ready-to-send plays."
               }
             ]
           },
@@ -1145,52 +1102,44 @@
             name: "Marketing",
             members: [
               {
-                id: "a-pmm-squad",
-                kind: "label",
-                name: "Product Marketing Agents",
-                layout: "column",
-                children: [
-                  {
-                    id: "a-release-planner",
-                    kind: "agent",
-                    name: "New Release Planner",
-                    title: "PMM Execution Planner",
-                    avatarUrl: AVATARS.agents.james,
-                    responsibilities:
-                      "Ingests release tasks and breaks down PMM steps based on feature tier (videos, KB, social, enablement).",
-                    bio: "Turns releases into a repeatable launch checklist."
-                  },
-                  {
-                    id: "a-case-study-scout",
-                    kind: "agent",
-                    name: "Case Study Scout",
-                    title: "Interview Candidate Finder",
-                    avatarUrl: AVATARS.agents.james,
-                    responsibilities:
-                      "Listens to customer/prospect calls for quotes indicating strong case study potential.",
-                    bio: "Finds stories worth turning into assets."
-                  },
-                  {
-                    id: "a-quote-bank",
-                    kind: "agent",
-                    name: "Quote Bank",
-                    title: "Praise Logger",
-                    avatarUrl: AVATARS.agents.james,
-                    responsibilities:
-                      "Listens to calls for explicit praise/realized benefits and logs them to a Google Sheet quote bank.",
-                    bio: "Builds a searchable proof library."
-                  },
-                  {
-                    id: "a-competitor-quote-bank",
-                    kind: "agent",
-                    name: "Competitor Quote Bank",
-                    title: "Competitive Intel Logger",
-                    avatarUrl: AVATARS.agents.james,
-                    responsibilities:
-                      "Logs explicit competitor frustrations/denigrations from calls into a separate quote bank.",
-                    bio: "Creates a goldmine of competitive messaging ammo."
-                  }
-                ]
+                id: "a-release",
+                kind: "agent",
+                name: "New Release Planner",
+                title: "Launch Ops",
+                avatarUrl: AV.JamesAgents,
+                responsibilities:
+                  "Ingests release tasks and breaks out PMM steps based on tier (video, KB, socials, enablement).",
+                bio: "Turns features into launch plans."
+              },
+              {
+                id: "a-case-study",
+                kind: "agent",
+                name: "Case Study Scout",
+                title: "Customer Proof",
+                avatarUrl: AV.JamesAgents,
+                responsibilities:
+                  "Listens to calls for quotes indicating good fits for customer interview & case study.",
+                bio: "Identifies strong stories."
+              },
+              {
+                id: "a-quote-bank",
+                kind: "agent",
+                name: "Quote Bank",
+                title: "Praise Capture",
+                avatarUrl: AV.JamesAgents,
+                responsibilities:
+                  "Logs explicit praise + realized benefits into a Google Sheet quote bank.",
+                bio: "Builds a proof library."
+              },
+              {
+                id: "a-comp-quotes",
+                kind: "agent",
+                name: "Competitor Quote Bank",
+                title: "Competitive Intel",
+                avatarUrl: AV.JamesAgents,
+                responsibilities:
+                  "Logs explicit competitor frustrations and denigrations into a separate quote bank.",
+                bio: "Strengthens competitive messaging."
               }
             ]
           }
@@ -1200,11 +1149,9 @@
       const COMBINED = deepClone(HUMANS);
       injectAgentsIntoCombined(COMBINED, AGENTS);
 
-      /**
-       * ==========================
-       * RENDERING
-       * ==========================
-       */
+      // ==========================
+      // Mounts + state
+      // ==========================
       const ceoMount = document.getElementById("ceoMount");
       const deptMount = document.getElementById("deptMount");
       const wires = document.getElementById("wires");
@@ -1216,12 +1163,43 @@
       const btnAgents = document.getElementById("btn-agents");
       const btnCombined = document.getElementById("btn-combined");
 
+      const themeToggle = document.getElementById("themeToggle");
+
       const VIEWS = { humans: HUMANS, agents: AGENTS, combined: COMBINED };
       let currentView = "humans";
+
+      // ✅ define raf BEFORE any calls that might schedule wires
+      let raf = null;
+
+      // Default theme: LIGHT (no attribute needed)
+      setTheme("light");
 
       btnHumans.addEventListener("click", () => setView("humans"));
       btnAgents.addEventListener("click", () => setView("agents"));
       btnCombined.addEventListener("click", () => setView("combined"));
+
+      themeToggle.addEventListener("click", () => {
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        setTheme(isDark ? "light" : "dark");
+      });
+
+      function setTheme(theme) {
+        if (theme === "dark") {
+          document.documentElement.setAttribute("data-theme", "dark");
+          themeToggle.textContent = "Light mode";
+          themeToggle.setAttribute("aria-pressed", "true");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+          themeToggle.textContent = "Dark mode";
+          themeToggle.setAttribute("aria-pressed", "false");
+        }
+
+        // redraw after styles apply
+        requestAnimationFrame(() => {
+          sizeSvgToContent();
+          drawWires();
+        });
+      }
 
       function setView(view) {
         currentView = view;
@@ -1233,15 +1211,17 @@
 
       render(VIEWS[currentView]);
 
-      window.addEventListener("resize", () => scheduleWires());
-      board.addEventListener("scroll", () => scheduleWires(), { passive: true });
+      window.addEventListener("resize", scheduleWires);
+      board.addEventListener("scroll", scheduleWires, { passive: true });
 
-      let raf = null;
       function scheduleWires() {
         if (raf) cancelAnimationFrame(raf);
         raf = requestAnimationFrame(drawWires);
       }
 
+      // ==========================
+      // Render
+      // ==========================
       function render(model) {
         ceoMount.innerHTML = "";
         deptMount.innerHTML = "";
@@ -1269,7 +1249,6 @@
 
           for (const m of dept.members) {
             members.appendChild(renderSubtree(m, edges));
-
             edges.push([dept.id, m.id]);
 
             if (Array.isArray(m.extraDeptIds)) {
@@ -1287,9 +1266,13 @@
 
         chart.__edges = edges;
 
-        sizeSvgToContent();
-        requestAnimationFrame(() => requestAnimationFrame(drawWires));
-        setTimeout(drawWires, 0);
+        // Let layout settle, then draw.
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            sizeSvgToContent();
+            drawWires();
+          });
+        });
       }
 
       function renderSubtree(node, edges) {
@@ -1384,11 +1367,9 @@
         return card;
       }
 
-      /**
-       * ==========================
-       * WIRES (SVG)
-       * ==========================
-       */
+      // ==========================
+      // Wires
+      // ==========================
       function sizeSvgToContent() {
         const w = chart.scrollWidth;
         const h = chart.scrollHeight;
@@ -1410,7 +1391,7 @@
         });
 
         const cssR = getComputedStyle(document.documentElement).getPropertyValue("--wireRadius").trim();
-        const baseR = Number(cssR) || 24;
+        const baseR = Number(cssR) || 40;
 
         for (const [fromId, toId] of chart.__edges) {
           const a = idToEl[fromId];
@@ -1429,7 +1410,7 @@
           const isNodeCard = b.classList && b.classList.contains("node") && !b.classList.contains("label");
 
           const endPad = isDeptPill ? 18 : isNodeCard ? 14 : 0;
-          const y2 = br.top - endPad - chartRect.top;
+          const y2 = br.top - chartRect.top - endPad;
 
           const preferredBus = y1 + 28;
           const avoidTarget = y2 - 36;
@@ -1466,7 +1447,7 @@
 
           if (endPad > 0) {
             const drop = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            const yTop = br.top - endPad - chartRect.top;
+            const yTop = br.top - chartRect.top - endPad;
             const yEdge = br.top - chartRect.top;
             drop.setAttribute("d", `M ${x2} ${yTop} V ${yEdge}`);
             wires.appendChild(drop);
@@ -1474,11 +1455,9 @@
         }
       }
 
-      /**
-       * ==========================
-       * TOOLTIPS
-       * ==========================
-       */
+      // ==========================
+      // Tooltips
+      // ==========================
       function bindTooltips() {
         chart.querySelectorAll(".node:not(.label)").forEach((el) => {
           el.addEventListener("mouseenter", (e) => showTooltip(e.currentTarget, e));
@@ -1498,15 +1477,10 @@
         tooltip.innerHTML = `
           <h3>${escapeHtml(name)}</h3>
           ${title ? `<div class="tt-title">${escapeHtml(title)}</div>` : ""}
-          ${
-            responsibilities
-              ? `<div class="tt-label">Responsibilities</div><p class="tt-body">${escapeHtml(
-                  responsibilities
-                )}</p>`
-              : ""
-          }
+          ${responsibilities ? `<div class="tt-label">Responsibilities</div><p class="tt-body">${escapeHtml(responsibilities)}</p>` : ""}
           ${bio ? `<div class="tt-label">Bio</div><p class="tt-body">${escapeHtml(bio)}</p>` : ""}
         `;
+
         tooltip.classList.add("show");
         tooltip.setAttribute("aria-hidden", "false");
         moveTooltip(e);
@@ -1530,87 +1504,32 @@
         tooltip.setAttribute("aria-hidden", "true");
       }
 
-      /**
-       * ==========================
-       * COMBINED VIEW (inject agents)
-       * ==========================
-       */
+      // ==========================
+      // Combined injection
+      // ==========================
       function injectAgentsIntoCombined(humans, agents) {
-        function findInTree(node, id) {
-          if (!node) return null;
-          if (node.id === id) return node;
-          if (node.children) {
-            for (const c of node.children) {
-              const found = findInTree(c, id);
-              if (found) return found;
-            }
-          }
-          return null;
+        const deptByName = new Map();
+        for (const d of agents.departments) deptByName.set(d.name, d);
+
+        for (const dept of humans.departments) {
+          const aDept = deptByName.get(dept.name);
+          if (!aDept || !aDept.members?.length) continue;
+
+          const lead = dept.members[0];
+          if (!lead) continue;
+
+          lead.children = lead.children || [];
+
+          lead.children.push({
+            id: `${lead.id}-agents-label`,
+            kind: "label",
+            name: "Agents",
+            layout: "row",
+            children: aDept.members
+          });
+
+          lead.layout = lead.layout || "row";
         }
-
-        function findHumanNodeById(id) {
-          const fromCeo = findInTree(humans.ceo, id);
-          if (fromCeo) return fromCeo;
-
-          for (const dept of humans.departments) {
-            for (const m of dept.members) {
-              const found = findInTree(m, id);
-              if (found) return found;
-            }
-          }
-          return null;
-        }
-
-        function findAgentMemberById(id) {
-          for (const dept of agents.departments) {
-            for (const m of dept.members) {
-              const found = findInTree(m, id);
-              if (found) return found;
-            }
-          }
-          return null;
-        }
-
-        function attach(humanId, agentMemberId) {
-          const human = findHumanNodeById(humanId);
-          const agentNode = findAgentMemberById(agentMemberId);
-          if (!human || !agentNode) return;
-
-          human.children = human.children || [];
-          human.children.push(deepClone(agentNode));
-        }
-
-        attach("monika", "a-prod-squad");
-        attach("diana", "a-cs-callintel");
-        attach("mert", "a-cs-solutions");
-        attach("james", "a-pmm-squad");
-        attach("cody", "a-sales-squad");
-      }
-
-      /**
-       * ==========================
-       * UTIL
-       * ==========================
-       */
-      function deepClone(obj) {
-        return JSON.parse(JSON.stringify(obj));
-      }
-
-      function escapeHtml(str) {
-        return String(str)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function initials(name) {
-        const parts = name.trim().split(/\s+/).filter(Boolean);
-        if (!parts.length) return "•";
-        const first = parts[0][0] || "";
-        const last = parts.length > 1 ? parts[parts.length - 1][0] || "" : "";
-        return (first + last).toUpperCase();
       }
     </script>
   </body>
