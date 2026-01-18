@@ -20,7 +20,7 @@
         --levelGap: 52px;
 
         /* Wires */
-        --wireRadius: 44; /* rounder corners */
+        --wireRadius: 44;
         --wireDash: 6 6;
 
         /* Accents */
@@ -294,11 +294,9 @@
         flex: 0 0 auto;
       }
 
-      /* Give CS + Sales more space */
       .dept[data-dept="dept-cs"] { min-width: 440px; }
       .dept[data-dept="dept-sales"] { min-width: 480px; }
 
-      /* ✅ dept pill wraps/clamps to 2 lines */
       .dept-pill {
         padding: 9px 14px;
         border-radius: 999px;
@@ -365,9 +363,7 @@
         box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
       }
 
-      .node.agent:hover {
-        border-color: rgba(168, 85, 247, 0.55);
-      }
+      .node.agent:hover { border-color: rgba(168, 85, 247, 0.55); }
 
       .node.label {
         width: auto;
@@ -384,11 +380,6 @@
         -webkit-line-clamp: 2;
         overflow: hidden;
         word-break: break-word;
-      }
-
-      .node.label:hover {
-        transform: none;
-        box-shadow: none;
       }
 
       .row {
@@ -447,7 +438,6 @@
         gap: 6px;
       }
 
-      /* ✅ wrap/clamp name + title to 2 lines (fixes clipping) */
       .name {
         font-weight: 650;
         font-size: 13px;
@@ -904,9 +894,7 @@
       };
 
       // ==========================
-      // AGENTS (Agents-only view)
-      // - No fabricated Exec Ops Agent
-      // - No fabricated BizOps agent (Ops shows "No agents yet")
+      // AGENTS (flat lists, no wrapper “squad” nodes)
       // ==========================
       const AGENTS = {
         ceo: makeNoAgentsLabel("a-ceo-none"),
@@ -916,56 +904,47 @@
             name: "Product & Engineering",
             members: [
               {
-                id: "a-product-squad",
+                id: "a-req-title",
                 kind: "agent",
                 trainerId: "monika",
-                name: "Product Idea Squad",
-                title: "Monika-trained Agents",
+                name: "New Request Titler",
+                title: "Intake",
                 avatarUrl: AV.MonikaSquad,
-                responsibilities: "Supports discovery, prioritization, PRDs, and QA across releases.",
-                bio: "A squad of agents that amplifies product throughput.",
-                layout: "column",
-                children: [
-                  {
-                    id: "a-req-title",
-                    kind: "agent",
-                    name: "New Request Titler",
-                    title: "Intake",
-                    avatarUrl: AV.MonikaSquad,
-                    responsibilities:
-                      "Ingests the feature discussion thread from Slack and generates a succinct feature/update title.",
-                    bio: "Turns messy threads into crisp titles."
-                  },
-                  {
-                    id: "a-idea-score",
-                    kind: "agent",
-                    name: "New Idea Scorer",
-                    title: "Scoring",
-                    avatarUrl: AV.MonikaSquad,
-                    responsibilities:
-                      "Scores ideas (out of 5): ease of build, strategic alignment, revenue retention impact, new revenue impact.",
-                    bio: "Adds consistency to prioritization."
-                  },
-                  {
-                    id: "a-prd",
-                    kind: "agent",
-                    name: "PRD Drafter",
-                    title: "Spec",
-                    avatarUrl: AV.MonikaSquad,
-                    responsibilities: "Drafts build requirements, JTBD, and user stories for new work.",
-                    bio: "Accelerates delivery-ready specs."
-                  },
-                  {
-                    id: "a-qa-assistant",
-                    kind: "agent",
-                    name: "QA Assistant",
-                    title: "Quality",
-                    avatarUrl: AV.MonikaSquad,
-                    responsibilities:
-                      "Infers impacted areas from product structure and drafts in-app QA tests to catch regressions.",
-                    bio: "Helps ensure releases don’t break adjacent surfaces."
-                  }
-                ]
+                responsibilities:
+                  "Ingests the feature discussion thread from Slack and generates a succinct feature/update title.",
+                bio: "Turns messy threads into crisp titles."
+              },
+              {
+                id: "a-idea-score",
+                kind: "agent",
+                trainerId: "monika",
+                name: "New Idea Scorer",
+                title: "Scoring",
+                avatarUrl: AV.MonikaSquad,
+                responsibilities:
+                  "Scores ideas (out of 5): ease of build, strategic alignment, revenue retention impact, new revenue impact.",
+                bio: "Adds consistency to prioritization."
+              },
+              {
+                id: "a-prd",
+                kind: "agent",
+                trainerId: "monika",
+                name: "PRD Drafter",
+                title: "Spec",
+                avatarUrl: AV.MonikaSquad,
+                responsibilities: "Drafts build requirements, JTBD, and user stories for new work.",
+                bio: "Accelerates delivery-ready specs."
+              },
+              {
+                id: "a-qa-assistant",
+                kind: "agent",
+                trainerId: "monika",
+                name: "QA Assistant",
+                title: "Quality",
+                avatarUrl: AV.MonikaSquad,
+                responsibilities:
+                  "Infers impacted areas from product structure and drafts in-app QA tests to catch regressions.",
+                bio: "Helps ensure releases don’t break adjacent surfaces."
               }
             ]
           },
@@ -979,79 +958,57 @@
             name: "Customer Success",
             members: [
               {
-                id: "a-cs-callintel",
+                id: "a-redflag",
                 kind: "agent",
                 trainerId: "diana",
-                name: "CS Call Intelligence",
-                title: "Diana-trained",
+                name: "Red Flag Agent",
+                title: "Churn Risk",
                 avatarUrl: AV.DianaAgents,
-                responsibilities: "Flags churn risks and captures customer wins from calls.",
-                bio: "Keeps CS ahead of risk and amplifies wins.",
-                layout: "column",
-                children: [
-                  {
-                    id: "a-redflag",
-                    kind: "agent",
-                    name: "Red Flag Agent",
-                    title: "Churn Risk",
-                    avatarUrl: AV.DianaAgents,
-                    responsibilities:
-                      "Listens to customer calls and flags churn risks, adoption blockers, and issues for CS triage.",
-                    bio: "Surfaces risks early."
-                  },
-                  {
-                    id: "a-wins",
-                    kind: "agent",
-                    name: "Wins Agent",
-                    title: "Celebrations",
-                    avatarUrl: AV.DianaAgents,
-                    responsibilities:
-                      "Listens for direct praise and wins for CS to celebrate internally.",
-                    bio: "Captures positivity and momentum."
-                  }
-                ]
+                responsibilities:
+                  "Listens to customer calls and flags churn risks, adoption blockers, and issues for CS triage.",
+                bio: "Surfaces risks early."
               },
               {
-                id: "a-cs-solutions",
+                id: "a-wins",
+                kind: "agent",
+                trainerId: "diana",
+                name: "Wins Agent",
+                title: "Celebrations",
+                avatarUrl: AV.DianaAgents,
+                responsibilities: "Listens for direct praise and wins for CS to celebrate internally.",
+                bio: "Captures positivity and momentum."
+              },
+              {
+                id: "a-onboarding",
                 kind: "agent",
                 trainerId: "mert",
-                name: "Solutions Support Agents",
-                title: "Mert-trained",
+                name: "Onboarding Agent",
+                title: "Tenant Setup",
+                avatarUrl: AV.Onboarding,
+                responsibilities:
+                  "Works with GTM Ops to generate value props, ecosystems, verticals, qualification, research agents, and persona definitions for new tenants.",
+                bio: "Speeds time-to-value."
+              },
+              {
+                id: "a-postmeeting",
+                kind: "agent",
+                trainerId: "mert",
+                name: "Post-Meeting Assistant",
+                title: "Notes & Tasks",
                 avatarUrl: AV.PostMeeting,
-                responsibilities: "Supports onboarding, meetings, and services request intake.",
-                bio: "Improves throughput for solutions & services.",
-                layout: "column",
-                children: [
-                  {
-                    id: "a-onboarding",
-                    kind: "agent",
-                    name: "Onboarding Agent",
-                    title: "Tenant Setup",
-                    avatarUrl: AV.Onboarding,
-                    responsibilities:
-                      "Works with GTM Ops to generate value props, ecosystems, verticals, qualification, research agents, and persona definitions for new tenants.",
-                    bio: "Speeds time-to-value."
-                  },
-                  {
-                    id: "a-postmeeting",
-                    kind: "agent",
-                    name: "Post-Meeting Assistant",
-                    title: "Notes & Tasks",
-                    avatarUrl: AV.PostMeeting,
-                    responsibilities: "Creates meeting summaries and assigns to-do tasks to Mert.",
-                    bio: "Cuts follow-up time."
-                  },
-                  {
-                    id: "a-triage",
-                    kind: "agent",
-                    name: "Customer Request Triager",
-                    title: "Services Intake",
-                    avatarUrl: AV.DianaAgents,
-                    responsibilities:
-                      "Estimates effort for professional services requests and assigns to the relevant GTM Ops consultant.",
-                    bio: "Keeps services work organized."
-                  }
-                ]
+                responsibilities: "Creates meeting summaries and assigns to-do tasks to Mert.",
+                bio: "Cuts follow-up time."
+              },
+              {
+                id: "a-triage",
+                kind: "agent",
+                trainerId: "mert",
+                name: "Customer Request Triager",
+                title: "Services Intake",
+                avatarUrl: AV.DianaAgents,
+                responsibilities:
+                  "Estimates effort for professional services requests and assigns to the relevant GTM Ops consultant.",
+                bio: "Keeps services work organized."
               }
             ]
           },
@@ -1060,65 +1017,57 @@
             name: "Sales",
             members: [
               {
-                id: "a-sales-squad",
+                id: "a-qual",
                 kind: "agent",
                 trainerId: "cody",
-                name: "Sales Agents",
-                title: "Cody-trained",
+                name: "Prospect Qualification Agents ×9",
+                title: "Fit Validation",
+                avatarUrl: AV.QualAgent,
+                responsibilities: "Research new prospects to validate fit before outreach.",
+                bio: "Filters to high-likelihood accounts."
+              },
+              {
+                id: "a-research",
+                kind: "agent",
+                trainerId: "cody",
+                name: "Research Agents ×27",
+                title: "Buying Signals",
+                avatarUrl: AV.ResearchAgent,
+                responsibilities: "Find buying intent signals to improve outreach and sales strategy.",
+                bio: "Keeps outreach sharp and timely."
+              },
+              {
+                id: "a-account-plan",
+                kind: "agent",
+                trainerId: "cody",
+                name: "Account Planning Agent",
+                title: "Strategy",
+                avatarUrl: AV.AccountPlanning,
+                responsibilities:
+                  "Distills research + value prop to brief Cody & Magnus on the best approach.",
+                bio: "Accelerates account ramp-up."
+              },
+              {
+                id: "a-contact-finder",
+                kind: "agent",
+                trainerId: "cody",
+                name: "Contact Finder",
+                title: "Buyer Discovery",
+                avatarUrl: AV.ContactFinder,
+                responsibilities:
+                  "Finds ideal buyers at qualified prospects, including email and phone numbers.",
+                bio: "Cuts list-building time."
+              },
+              {
+                id: "a-play",
+                kind: "agent",
+                trainerId: "cody",
+                name: "Play Agents ×5",
+                title: "Outreach Drafting",
                 avatarUrl: AV.PlayAgent,
-                responsibilities: "Qualification, research, account planning, contacts, and outreach drafting.",
-                bio: "Scales sales execution.",
-                layout: "column",
-                children: [
-                  {
-                    id: "a-qual",
-                    kind: "agent",
-                    name: "Prospect Qualification Agents ×9",
-                    title: "Fit Validation",
-                    avatarUrl: AV.QualAgent,
-                    responsibilities: "Research new prospects to validate fit before outreach.",
-                    bio: "Filters to high-likelihood accounts."
-                  },
-                  {
-                    id: "a-research",
-                    kind: "agent",
-                    name: "Research Agents ×27",
-                    title: "Buying Signals",
-                    avatarUrl: AV.ResearchAgent,
-                    responsibilities: "Find buying intent signals to improve outreach and sales strategy.",
-                    bio: "Keeps outreach sharp and timely."
-                  },
-                  {
-                    id: "a-account-plan",
-                    kind: "agent",
-                    name: "Account Planning Agent",
-                    title: "Strategy",
-                    avatarUrl: AV.AccountPlanning,
-                    responsibilities:
-                      "Distills research + value prop to brief Cody & Magnus on the best approach.",
-                    bio: "Accelerates account ramp-up."
-                  },
-                  {
-                    id: "a-contact-finder",
-                    kind: "agent",
-                    name: "Contact Finder",
-                    title: "Buyer Discovery",
-                    avatarUrl: AV.ContactFinder,
-                    responsibilities:
-                      "Finds ideal buyers at qualified prospects, including email and phone numbers.",
-                    bio: "Cuts list-building time."
-                  },
-                  {
-                    id: "a-play",
-                    kind: "agent",
-                    name: "Play Agents ×5",
-                    title: "Outreach Drafting",
-                    avatarUrl: AV.PlayAgent,
-                    responsibilities:
-                      "Drafts emails, talk tracks, and LinkedIn DMs weaving buying signals with Evergrowth messaging.",
-                    bio: "Creates ready-to-send plays."
-                  }
-                ]
+                responsibilities:
+                  "Drafts emails, talk tracks, and LinkedIn DMs weaving buying signals with Evergrowth messaging.",
+                bio: "Creates ready-to-send plays."
               }
             ]
           },
@@ -1127,57 +1076,47 @@
             name: "Marketing",
             members: [
               {
-                id: "a-pmm-squad",
+                id: "a-release",
                 kind: "agent",
                 trainerId: "james",
-                name: "PMM Agents",
-                title: "James-trained",
+                name: "New Release Planner",
+                title: "Launch Ops",
                 avatarUrl: AV.JamesAgents,
-                responsibilities: "Release planning, case study scouting, quote banks, competitive quotes.",
-                bio: "Turns shipping into go-to-market momentum.",
-                layout: "column",
-                children: [
-                  {
-                    id: "a-release",
-                    kind: "agent",
-                    name: "New Release Planner",
-                    title: "Launch Ops",
-                    avatarUrl: AV.JamesAgents,
-                    responsibilities:
-                      "Ingests release tasks and breaks out PMM steps based on tier (video, KB, socials, enablement).",
-                    bio: "Turns features into launch plans."
-                  },
-                  {
-                    id: "a-case-study",
-                    kind: "agent",
-                    name: "Case Study Scout",
-                    title: "Customer Proof",
-                    avatarUrl: AV.JamesAgents,
-                    responsibilities:
-                      "Listens to calls for quotes indicating good fits for customer interview & case study.",
-                    bio: "Identifies strong stories."
-                  },
-                  {
-                    id: "a-quote-bank",
-                    kind: "agent",
-                    name: "Quote Bank",
-                    title: "Praise Capture",
-                    avatarUrl: AV.JamesAgents,
-                    responsibilities:
-                      "Logs explicit praise + realized benefits into a Google Sheet quote bank.",
-                    bio: "Builds a proof library."
-                  },
-                  {
-                    id: "a-comp-quotes",
-                    kind: "agent",
-                    name: "Competitor Quote Bank",
-                    title: "Competitive Intel",
-                    avatarUrl: AV.JamesAgents,
-                    responsibilities:
-                      "Logs explicit competitor frustrations and denigrations into a separate quote bank.",
-                    bio: "Strengthens competitive messaging."
-                  }
-                ]
+                responsibilities:
+                  "Ingests release tasks and breaks out PMM steps based on tier (video, KB, socials, enablement).",
+                bio: "Turns features into launch plans."
+              },
+              {
+                id: "a-case-study",
+                kind: "agent",
+                trainerId: "james",
+                name: "Case Study Scout",
+                title: "Customer Proof",
+                avatarUrl: AV.JamesAgents,
+                responsibilities:
+                  "Listens to calls for quotes indicating good fits for customer interview & case study.",
+                bio: "Identifies strong stories."
+              },
+              {
+                id: "a-quote-bank",
+                kind: "agent",
+                trainerId: "james",
+                name: "Quote Bank",
+                title: "Praise Capture",
+                avatarUrl: AV.JamesAgents,
+                responsibilities: "Logs explicit praise + realized benefits into a Google Sheet quote bank.",
+                bio: "Builds a proof library."
+              },
+              {
+                id: "a-comp-quotes",
+                kind: "agent",
+                trainerId: "james",
+                name: "Competitor Quote Bank",
+                title: "Competitive Intel",
+                avatarUrl: AV.JamesAgents,
+                responsibilities:
+                  "Logs explicit competitor frustrations and denigrations into a separate quote bank.",
+                bio: "Strengthens competitive messaging."
               }
             ]
           }
@@ -1274,8 +1213,6 @@
           const deptEl = document.createElement("div");
           deptEl.className = "dept";
 
-          // map human dept ids so we keep spacing tweaks
-          // (agents view has a-dept-*, so use name mapping)
           const humanDeptId =
             dept.id.startsWith("a-") ? nameToHumanDeptId(dept.name) : dept.id;
 
@@ -1297,9 +1234,7 @@
             edges.push([dept.id, m.id]);
 
             if (Array.isArray(m.extraDeptIds)) {
-              for (const extraDeptId of m.extraDeptIds) {
-                edges.push([extraDeptId, m.id]);
-              }
+              for (const extraDeptId of m.extraDeptIds) edges.push([extraDeptId, m.id]);
             }
           }
 
@@ -1308,7 +1243,6 @@
         }
 
         bindTooltips();
-
         chart.__edges = edges;
 
         requestAnimationFrame(() => {
@@ -1339,12 +1273,10 @@
         if (node.children && node.children.length) {
           const kids = document.createElement("div");
           kids.className = "children" + (node.layout === "column" ? " column" : "");
-
           for (const child of node.children) {
             kids.appendChild(renderSubtree(child, edges));
             edges.push([node.id, child.id]);
           }
-
           wrap.appendChild(kids);
         }
 
@@ -1560,17 +1492,14 @@
       }
 
       // ==========================
-      // Combined injection (fixed)
+      // Combined injection (agents attach under trainer humans)
       // ==========================
       function injectAgentsIntoCombined(humans, agents) {
         const index = new Map();
 
-        // index CEO + all members recursively
         index.set(humans.ceo.id, humans.ceo);
         for (const dept of humans.departments) {
-          for (const m of dept.members || []) {
-            walk(m);
-          }
+          for (const m of dept.members || []) walk(m);
         }
 
         function walk(node) {
@@ -1578,19 +1507,22 @@
           if (node.children) node.children.forEach(walk);
         }
 
-        // Attach each agent dept member under trainerId (or fallback)
         for (const aDept of agents.departments || []) {
           for (const aNode of aDept.members || []) {
             const trainerId = aNode.trainerId || null;
-
-            // Fallback: attach to first member (dept lead)
             const fallbackLead = (humans.departments.find((d) => d.name === aDept.name)?.members || [])[0];
-            const targetId = (trainerId && index.has(trainerId)) ? trainerId : (fallbackLead ? fallbackLead.id : null);
+            const targetId =
+              trainerId && index.has(trainerId)
+                ? trainerId
+                : fallbackLead
+                  ? fallbackLead.id
+                  : null;
+
             if (!targetId || !index.has(targetId)) continue;
 
             const target = index.get(targetId);
 
-            // If this is literally "No agents yet", attach directly and stop.
+            // If it’s "No agents yet", attach directly
             if (aNode.kind === "label" && (aNode.name || "").toLowerCase().includes("no agents")) {
               target.children = target.children || [];
               target.children.push(aNode);
@@ -1598,7 +1530,7 @@
               continue;
             }
 
-            // Ensure "Agents" label container
+            // Ensure one Agents bucket per trainer
             target.children = target.children || [];
             let label = target.children.find((c) => c.kind === "label" && c.__isAgentsBucket);
             if (!label) {
@@ -1616,7 +1548,6 @@
             label.children = label.children || [];
             label.children.push(aNode);
 
-            // Encourage a sensible layout
             target.layout = target.layout || "column";
           }
         }
