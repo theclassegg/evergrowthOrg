@@ -236,19 +236,27 @@
       }
 
       .dept-pill {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 14px;
-        border-radius: 999px;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.9);
-        background: rgba(20, 24, 36, 0.78);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        white-space: nowrap;
-        margin-top: 10px;
-        backdrop-filter: blur(6px);
-      }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(20, 24, 36, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  /* ✅ allow multi-line */
+  white-space: normal;          /* was: nowrap */
+  text-align: center;
+  line-height: 1.2;
+  max-width: 220px;             /* tweak 200–260 */
+  padding-block: 9px;           /* a bit more vertical room */
+
+  backdrop-filter: blur(6px);
+}
+
 
       /* Node + subtree */
       .node-wrap {
