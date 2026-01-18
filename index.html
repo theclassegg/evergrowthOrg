@@ -68,6 +68,18 @@
         padding: 18px 18px;
       }
 
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand img {
+        height: 22px;
+        width: auto;
+        display: block;
+      }
+
       h1 {
         font-size: 18px;
         margin: 0;
@@ -228,35 +240,37 @@
       }
 
       .dept[data-dept="dept-sales"] {
-        min-width: 380px;
+        min-width: 420px; /* extra separation from CS */
       }
 
       .dept[data-dept="dept-cs"] {
-        min-width: 360px;
+        min-width: 380px; /* extra separation from Sales */
       }
 
       .dept-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(20, 24, 36, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(20, 24, 36, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.12);
 
-  /* ✅ allow multi-line */
-  white-space: normal;          /* was: nowrap */
-  text-align: center;
-  line-height: 1.2;
-  max-width: 220px;             /* tweak 200–260 */
-  padding-block: 9px;           /* a bit more vertical room */
+        /* ✅ allow multi-line wrapping to prevent clipping */
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+        max-width: 240px;
+        padding-block: 9px;
+        height: auto;
+        overflow: visible;
 
-  backdrop-filter: blur(6px);
-}
-
+        margin-top: 10px;
+        backdrop-filter: blur(6px);
+      }
 
       /* Node + subtree */
       .node-wrap {
@@ -323,7 +337,7 @@
         gap: 10px;
       }
 
-      /* Avatar placeholder */
+      /* Avatar */
       .avatar {
         width: 44px;
         height: 44px;
@@ -470,7 +484,13 @@
   <body>
     <header>
       <div class="wrap">
-        <h1>Evergrowth Org Chart</h1>
+        <div class="brand">
+          <img
+            src="https://cdn.prod.website-files.com/67de9a786ff9ec4a82a4453a/68c4096ff34c77991c90b139_EvergrowthLogoWhite.png"
+            alt="Evergrowth logo"
+          />
+          <h1>Evergrowth Org Chart</h1>
+        </div>
 
         <div class="toolbar">
           <div class="seg" role="group" aria-label="Org chart view toggle">
@@ -505,6 +525,60 @@
     <script>
       /**
        * ==========================
+       * AVATAR URL HELPERS
+       * ==========================
+       * NOTE: GitHub "blob" links won't render as images. Convert to "raw" URLs.
+       */
+      function ghRaw(url) {
+        return url
+          .replace("https://github.com/", "https://raw.githubusercontent.com/")
+          .replace("/blob/", "/");
+      }
+
+      const AVATARS = {
+        humans: {
+          ceo: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/JB.png"),
+          nauris: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Nauris.jpeg"),
+          monika: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Monika.png"),
+          chirag: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Chirag.png"),
+          marks: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Mark.jpeg"),
+          donatas: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Donatas.jpeg"),
+          edvinas: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Edvinas.jpeg"),
+          cosmin: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Cosmin.png"),
+          beatrise: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Beatrice.png"),
+          ruta: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Ruta.jpeg"),
+          diana: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana.png"),
+          mert: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Mert.png"),
+          rudolfs: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Rudolfs.jpeg"),
+          suleman: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Suleman.png"),
+          justin: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Justas.jpeg"),
+          james: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/James.png"),
+          cody: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Cody.png"),
+          magnus: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Magnus.jpeg")
+        },
+        agents: {
+          qualification: ghRaw(
+            "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Qualification-Clody.png"
+          ),
+          research: ghRaw(
+            "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Research-Cody2.png"
+          ),
+          accountPlanning: ghRaw(
+            "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-AccountPlanningCody.png"
+          ),
+          contactFinder: ghRaw(
+            "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Contactfinder-Cody.png"
+          ),
+          play: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-PlayAgent-Cody.png"),
+          james: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/James%20Agent.png"),
+          diana: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana%20Agent.png"),
+          onboarding: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/JBAgent.png"),
+          mert: ghRaw("https://github.com/theclassegg/evergrowthOrg/blob/main/MertAgent.png")
+        }
+      };
+
+      /**
+       * ==========================
        * DATA — EDIT THIS SECTION
        * ==========================
        */
@@ -515,6 +589,7 @@
           kind: "human",
           name: "JB Daguené",
           title: "CEO",
+          avatarUrl: AVATARS.humans.ceo,
           responsibilities: "Company strategy, exec decisions, prioritization, hiring.",
           bio: "Founder/CEO. Owns vision and overall execution."
         },
@@ -528,6 +603,7 @@
                 kind: "human",
                 name: "Nauris Dorbe",
                 title: "CTO",
+                avatarUrl: AVATARS.humans.nauris,
                 responsibilities: "Engineering leadership, technical strategy, architecture.",
                 bio: "Leads Product & Engineering delivery and technical direction.",
                 layout: "column",
@@ -537,6 +613,7 @@
                     kind: "human",
                     name: "Donatas Mašlėktėnas",
                     title: "Front-end Engineer",
+                    avatarUrl: AVATARS.humans.donatas,
                     responsibilities: "UI implementation, performance, component systems.",
                     bio: "Builds user-facing features and improves UX quality.",
                     layout: "column",
@@ -546,6 +623,7 @@
                         kind: "human",
                         name: "Marks Leidemans",
                         title: "Senior Software Engineer",
+                        avatarUrl: AVATARS.humans.marks,
                         responsibilities: "Backend systems, reliability, core services.",
                         bio: "Builds and maintains key platform capabilities.",
                         layout: "column",
@@ -555,6 +633,7 @@
                             kind: "human",
                             name: "Cosmin Romeo Tanase",
                             title: "Full-stack Engineer",
+                            avatarUrl: AVATARS.humans.cosmin,
                             responsibilities: "End-to-end feature delivery across stack.",
                             bio: "Ships features across frontend + backend.",
                             layout: "column",
@@ -564,6 +643,7 @@
                                 kind: "human",
                                 name: "Edvinas Rabikis",
                                 title: "Full Stack Engineer",
+                                avatarUrl: AVATARS.humans.edvinas,
                                 responsibilities: "Product features, integrations, platform improvements.",
                                 bio: "Delivers full-stack work across the product."
                               }
@@ -580,6 +660,7 @@
                 kind: "human",
                 name: "Monika Staponkutė",
                 title: "Head of Product",
+                avatarUrl: AVATARS.humans.monika,
                 responsibilities: "Product strategy, roadmap, discovery, requirements.",
                 bio: "Owns the product direction and cross-functional alignment.",
                 layout: "column",
@@ -589,6 +670,7 @@
                     kind: "human",
                     name: "Chirag Patel",
                     title: "UX Design Lead",
+                    avatarUrl: AVATARS.humans.chirag,
                     responsibilities: "Design systems, user research, interaction design.",
                     bio: "Leads product design and user experience."
                   }
@@ -605,6 +687,7 @@
                 kind: "human",
                 name: "Beatrise Pociute-Daguené",
                 title: "Head of Business Operations",
+                avatarUrl: AVATARS.humans.beatrise,
                 responsibilities: "Company ops, finance ops, systems/processes.",
                 bio: "Keeps the business running smoothly.",
                 layout: "column",
@@ -614,6 +697,7 @@
                     kind: "human",
                     name: "Rūta Dorofejevaitė",
                     title: "Senior Accountant",
+                    avatarUrl: AVATARS.humans.ruta,
                     responsibilities: "Accounting operations, close, reporting, compliance.",
                     bio: "Owns day-to-day accounting and financial hygiene."
                   }
@@ -630,6 +714,7 @@
                 kind: "human",
                 name: "Diana Heisler",
                 title: "Head of CS",
+                avatarUrl: AVATARS.humans.diana,
                 responsibilities: "Customer onboarding, renewals, support, outcomes.",
                 bio: "Owns customer success and retention motions."
               },
@@ -638,6 +723,7 @@
                 kind: "human",
                 name: "Mert Gencer",
                 title: "Solutions Engineer",
+                avatarUrl: AVATARS.humans.mert,
                 responsibilities: "Technical onboarding, implementations, support escalation.",
                 bio: "Bridges product + customer technical needs.",
                 layout: "column",
@@ -647,6 +733,7 @@
                     kind: "human",
                     name: "Suleman Mahmud",
                     title: "GTM Ops",
+                    avatarUrl: AVATARS.humans.suleman,
                     responsibilities: "Rev ops support, systems, reporting, process.",
                     bio: "Keeps GTM operations tight and measurable."
                   },
@@ -655,6 +742,7 @@
                     kind: "human",
                     name: "Rudolfs Selga",
                     title: "GTM Ops",
+                    avatarUrl: AVATARS.humans.rudolfs,
                     responsibilities: "Ops support, tooling, data hygiene, process.",
                     bio: "Supports GTM systems and execution."
                   }
@@ -672,6 +760,7 @@
                 kind: "human",
                 name: "Justas Rodzevičius",
                 title: "Head of RevOps and Client Consulting",
+                avatarUrl: AVATARS.humans.justin,
                 responsibilities: "RevOps strategy, client consulting delivery, enablement.",
                 bio: "Owns RevOps + consulting engagements."
               },
@@ -680,6 +769,7 @@
                 kind: "human",
                 name: "Cody Ayres",
                 title: "Head of GTM",
+                avatarUrl: AVATARS.humans.cody,
                 responsibilities: "GTM strategy, pipeline, sales execution.",
                 bio: "Owns revenue outcomes and GTM performance."
               },
@@ -688,6 +778,7 @@
                 kind: "human",
                 name: "Magnus Thomsen",
                 title: "Senior AE",
+                avatarUrl: AVATARS.humans.magnus,
                 responsibilities: "Pipeline creation, deal execution, customer development.",
                 bio: "Drives new business and expansions."
               }
@@ -702,6 +793,7 @@
                 kind: "human",
                 name: "James Ince",
                 title: "Head of Product Marketing",
+                avatarUrl: AVATARS.humans.james,
                 responsibilities: "Messaging, positioning, launches, enablement, competitive.",
                 bio: "Owns product marketing strategy and execution."
               }
@@ -735,6 +827,7 @@
                     kind: "agent",
                     name: "New Request Titler",
                     title: "Feature Title Generator",
+                    avatarUrl: AVATARS.agents.diana, /* placeholder agent avatar */
                     responsibilities:
                       "Ingests the full Slack feature discussion thread and outputs a succinct feature/update title.",
                     bio: "Turns messy threads into crisp, consistent titles."
@@ -744,6 +837,7 @@
                     kind: "agent",
                     name: "New Idea Scorer",
                     title: "Scoring + Fit Assessment",
+                    avatarUrl: AVATARS.agents.diana, /* placeholder agent avatar */
                     responsibilities:
                       "Scores ideas (out of 5) on: ease of build, strategic alignment, revenue retention impact, new revenue impact.",
                     bio: "Provides a repeatable scoring rubric for prioritization."
@@ -753,6 +847,7 @@
                     kind: "agent",
                     name: "PRD Drafter",
                     title: "PRD + JTBD + User Stories",
+                    avatarUrl: AVATARS.agents.diana, /* placeholder agent avatar */
                     responsibilities:
                       "Drafts PRD scope, build requirements, JTBD, and user stories from the initial request context.",
                     bio: "Accelerates discovery → spec quality."
@@ -762,6 +857,7 @@
                     kind: "agent",
                     name: "QA Assistant",
                     title: "In-App QA Test Writer",
+                    avatarUrl: AVATARS.agents.diana, /* placeholder agent avatar */
                     responsibilities:
                       "For each shipped feature, scans product structure, infers impacted areas, and drafts in-app QA tests to catch regressions.",
                     bio: "Reduces inadvertent changes by generating smart regression checks."
@@ -798,6 +894,7 @@
                     kind: "agent",
                     name: "Red Flag Agent",
                     title: "Churn + Adoption Risk",
+                    avatarUrl: AVATARS.agents.diana,
                     responsibilities:
                       "Listens to customer calls and flags churn risks, adoption blockers, and other issues for CS triage.",
                     bio: "Surfaces risk early so CS can act fast."
@@ -807,6 +904,7 @@
                     kind: "agent",
                     name: "Wins Agent",
                     title: "Praise + Momentum",
+                    avatarUrl: AVATARS.agents.diana,
                     responsibilities:
                       "Listens to customer calls for direct praise and highlights wins for internal celebration.",
                     bio: "Captures positive moments to reinforce what’s working."
@@ -824,6 +922,7 @@
                     kind: "agent",
                     name: "Onboarding Agent",
                     title: "Tenant Setup + Strategy",
+                    avatarUrl: AVATARS.agents.onboarding,
                     responsibilities:
                       "Works with GTM Ops to generate value props, ecosystems, verticals, qualification, research plans, and ideal persona definitions for new tenants.",
                     bio: "Speeds time-to-value for new customers."
@@ -833,6 +932,7 @@
                     kind: "agent",
                     name: "Post-Meeting Assistant",
                     title: "Summaries + Tasks for Mert",
+                    avatarUrl: AVATARS.agents.mert,
                     responsibilities:
                       "Creates meeting summaries and assigns to-do tasks to Mert after customer meetings.",
                     bio: "Turns calls into clean next steps."
@@ -842,6 +942,7 @@
                     kind: "agent",
                     name: "Customer Request Triager",
                     title: "Services Intake Routing",
+                    avatarUrl: AVATARS.agents.diana,
                     responsibilities:
                       "Estimates effort for professional services requests and assigns to the relevant GTM Ops consultant.",
                     bio: "Keeps services work scoped and routed correctly."
@@ -865,6 +966,7 @@
                     kind: "agent",
                     name: "Prospect Qualification Agents (x9)",
                     title: "Fit Validation",
+                    avatarUrl: AVATARS.agents.qualification,
                     responsibilities: "Research new prospects to validate if they’re a strong fit to pursue.",
                     bio: "Filters pipeline toward high-probability accounts."
                   },
@@ -873,6 +975,7 @@
                     kind: "agent",
                     name: "Research Agents (x27)",
                     title: "Buying Intent Signals",
+                    avatarUrl: AVATARS.agents.research,
                     responsibilities:
                       "Research prospects for buying intent signals to use in outreach and sales approach.",
                     bio: "Feeds outreach with real triggers and context."
@@ -882,6 +985,7 @@
                     kind: "agent",
                     name: "Account Planning Agents",
                     title: "Strategy Briefs",
+                    avatarUrl: AVATARS.agents.accountPlanning,
                     responsibilities:
                       "Distill prospect research + Evergrowth value prop into a best strategy brief for Cody & Magnus.",
                     bio: "Gets AEs up to speed fast with a tight plan."
@@ -891,6 +995,7 @@
                     kind: "agent",
                     name: "Contact Finder",
                     title: "Buyer Discovery",
+                    avatarUrl: AVATARS.agents.contactFinder,
                     responsibilities:
                       "Finds ideal buyers at qualified prospects, including email & phone numbers.",
                     bio: "Builds the buyer list and contact paths."
@@ -900,6 +1005,7 @@
                     kind: "agent",
                     name: "Play Agents (x5)",
                     title: "Outreach Drafting",
+                    avatarUrl: AVATARS.agents.play,
                     responsibilities:
                       "Drafts outreach using buying signals + Evergrowth messaging (emails, call talk tracks, LinkedIn DMs).",
                     bio: "Generates channel-ready messaging tied to intent."
@@ -923,6 +1029,7 @@
                     kind: "agent",
                     name: "New Release Planner",
                     title: "PMM Execution Planner",
+                    avatarUrl: AVATARS.agents.james,
                     responsibilities:
                       "Ingests release tasks and breaks down PMM steps based on feature tier (videos, KB, social, enablement).",
                     bio: "Turns releases into a repeatable launch checklist."
@@ -932,6 +1039,7 @@
                     kind: "agent",
                     name: "Case Study Scout",
                     title: "Interview Candidate Finder",
+                    avatarUrl: AVATARS.agents.james,
                     responsibilities:
                       "Listens to customer/prospect calls for quotes indicating strong case study potential.",
                     bio: "Finds stories worth turning into assets."
@@ -941,6 +1049,7 @@
                     kind: "agent",
                     name: "Quote Bank",
                     title: "Praise Logger",
+                    avatarUrl: AVATARS.agents.james,
                     responsibilities:
                       "Listens to calls for explicit praise/realized benefits and logs them to a Google Sheet quote bank.",
                     bio: "Builds a searchable proof library."
@@ -950,6 +1059,7 @@
                     kind: "agent",
                     name: "Competitor Quote Bank",
                     title: "Competitive Intel Logger",
+                    avatarUrl: AVATARS.agents.james,
                     responsibilities:
                       "Logs explicit competitor frustrations/denigrations from calls into a separate quote bank.",
                     bio: "Creates a goldmine of competitive messaging ammo."
@@ -1013,10 +1123,8 @@
 
         const edges = [];
 
-        // CEO node
         ceoMount.appendChild(renderNode(model.ceo));
 
-        // Departments row
         for (const dept of model.departments) {
           const deptEl = document.createElement("div");
           deptEl.className = "dept";
@@ -1028,7 +1136,6 @@
           pill.dataset.nodeId = dept.id;
           deptEl.appendChild(pill);
 
-          // CEO -> dept pill edge
           edges.push([model.ceo.id, dept.id]);
 
           const members = document.createElement("div");
@@ -1037,10 +1144,8 @@
           for (const m of dept.members) {
             members.appendChild(renderSubtree(m, edges));
 
-            // Primary dept pill -> member edge
             edges.push([dept.id, m.id]);
 
-            // Extra dept pill(s) -> member edge(s)
             if (Array.isArray(m.extraDeptIds)) {
               for (const extraDeptId of m.extraDeptIds) {
                 edges.push([extraDeptId, m.id]);
@@ -1058,6 +1163,7 @@
 
         sizeSvgToContent();
         requestAnimationFrame(() => requestAnimationFrame(drawWires));
+        setTimeout(drawWires, 0); /* helps when pill wraps change height */
       }
 
       function renderSubtree(node, edges) {
@@ -1188,7 +1294,6 @@
           const ar = a.getBoundingClientRect();
           const br = b.getBoundingClientRect();
 
-          // chart-local anchors
           const x1 = (ar.left + ar.right) / 2 - chartRect.left;
           const y1 = ar.bottom - chartRect.top;
 
@@ -1200,8 +1305,6 @@
           const endPad = isDeptPill ? 18 : isNodeCard ? 14 : 0;
           const y2 = br.top - endPad - chartRect.top;
 
-          // Bus placement:
-          // Keep it close to source, but avoid landing behind the target card/pill.
           const preferredBus = y1 + 28;
           const avoidTarget = y2 - 36;
           let midY = Math.min(preferredBus, avoidTarget);
@@ -1235,7 +1338,6 @@
           path.setAttribute("d", d);
           wires.appendChild(path);
 
-          // Drop line onto the element's top edge (dept pill OR node card)
           if (endPad > 0) {
             const drop = document.createElementNS("http://www.w3.org/2000/svg", "path");
             const yTop = br.top - endPad - chartRect.top;
@@ -1306,12 +1408,6 @@
        * ==========================
        * COMBINED VIEW (inject agents)
        * ==========================
-       * Places squads under specific humans:
-       * - Product squad under Monika
-       * - CS Call Intel under Diana
-       * - CS Solutions/Services under Mert
-       * - PMM squad under James
-       * - Sales squad under Cody
        */
       function injectAgentsIntoCombined(humans, agents) {
         function findInTree(node, id) {
@@ -1327,11 +1423,9 @@
         }
 
         function findHumanNodeById(id) {
-          // Search CEO
           const fromCeo = findInTree(humans.ceo, id);
           if (fromCeo) return fromCeo;
 
-          // Search departments
           for (const dept of humans.departments) {
             for (const m of dept.members) {
               const found = findInTree(m, id);
