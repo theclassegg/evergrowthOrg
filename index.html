@@ -121,7 +121,7 @@
       .topbar {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         gap: 12px;
       }
 
@@ -349,9 +349,7 @@
         backdrop-filter: blur(8px);
       }
 
-      html[data-theme="dark"] .node {
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
-      }
+      html[data-theme="dark"] .node { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22); }
 
       .node:hover {
         transform: translateY(-2px);
@@ -359,9 +357,7 @@
         box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
       }
 
-      html[data-theme="dark"] .node:hover {
-        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
-      }
+      html[data-theme="dark"] .node:hover { box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35); }
 
       .node.agent:hover { border-color: rgba(168, 85, 247, 0.55); }
 
@@ -557,23 +553,22 @@
             />
             <h1>Evergrowth Org Chart</h1>
           </div>
-
-          <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">
-            Dark mode
-          </button>
         </div>
 
         <div class="toolbar">
           <div class="seg" role="group" aria-label="Org chart view toggle">
-            <button id="btn-humans" aria-pressed="true">1 — Humans only</button>
-            <button id="btn-agents" aria-pressed="false">2 — Agents only</button>
-            <button id="btn-combined" aria-pressed="false">3 — Combined</button>
+            <button id="btn-humans" aria-pressed="true"></button>
+            <button id="btn-agents" aria-pressed="false"></button>
+            <button id="btn-combined" aria-pressed="false"></button>
           </div>
 
           <div class="legend" aria-label="Legend">
             <span class="pill"><span class="dot"></span> Human</span>
             <span class="pill"><span class="dot agent"></span> Agent</span>
             <span class="pill">Tip: Hover nodes</span>
+            <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">
+              Dark mode
+            </button>
           </div>
         </div>
       </div>
@@ -618,7 +613,6 @@
         return (first + last).toUpperCase();
       }
 
-      // Convert GitHub "blob" URLs to raw URLs (required for <img src>)
       function toRawGitHub(url) {
         if (!url) return url;
         if (url.includes("raw.githubusercontent.com")) return url;
@@ -632,6 +626,32 @@
 
       function makeNoAgentsLabel(id) {
         return { id, kind: "label", name: "No agents yet" };
+      }
+
+      function countKindsInNode(node, kindsSet) {
+        if (!node) return 0;
+
+        let count = 0;
+        const kind = node.kind || "human";
+        if (kindsSet.has(kind)) count += 1;
+
+        if (Array.isArray(node.children)) {
+          for (const c of node.children) count += countKindsInNode(c, kindsSet);
+        }
+        return count;
+      }
+
+      function countChartKinds(model, allowedKinds) {
+        const kindsSet = new Set(allowedKinds);
+        let total = 0;
+
+        total += countKindsInNode(model.ceo, kindsSet);
+
+        for (const dept of model.departments || []) {
+          for (const m of dept.members || []) total += countKindsInNode(m, kindsSet);
+        }
+
+        return total;
       }
 
       // ==========================
@@ -894,7 +914,7 @@
       };
 
       // ==========================
-      // AGENTS (flat lists, no wrapper “squad” nodes)
+      // AGENTS (flat lists)
       // ==========================
       const AGENTS = {
         ceo: makeNoAgentsLabel("a-ceo-none"),
@@ -948,11 +968,7 @@
               }
             ]
           },
-          {
-            id: "a-dept-ops",
-            name: "Operations",
-            members: [makeNoAgentsLabel("a-ops-none")]
-          },
+          { id: "a-dept-ops", name: "Operations", members: [makeNoAgentsLabel("a-ops-none")] },
           {
             id: "a-dept-cs",
             name: "Customer Success",
@@ -1147,11 +1163,13 @@
 
       const VIEWS = { humans: HUMANS, agents: AGENTS, combined: COMBINED };
       let currentView = "humans";
-
       let raf = null;
 
       // Default theme: LIGHT
       setTheme("light");
+
+      // Set button labels with counts (and no “—”)
+      updateViewButtonLabels();
 
       btnHumans.addEventListener("click", () => setView("humans"));
       btnAgents.addEventListener("click", () => setView("agents"));
@@ -1177,6 +1195,16 @@
           sizeSvgToContent();
           drawWires();
         });
+      }
+
+      function updateViewButtonLabels() {
+        const humansCount = countChartKinds(HUMANS, ["human"]);
+        const agentsCount = countChartKinds(AGENTS, ["agent"]);
+        const combinedCount = countChartKinds(COMBINED, ["human", "agent"]);
+
+        btnHumans.textContent = `1 Humans only (${humansCount})`;
+        btnAgents.textContent = `2 Agents only (${agentsCount})`;
+        btnCombined.textContent = `3 Combined (${combinedCount})`;
       }
 
       function setView(view) {
@@ -1522,7 +1550,6 @@
 
             const target = index.get(targetId);
 
-            // If it’s "No agents yet", attach directly
             if (aNode.kind === "label" && (aNode.name || "").toLowerCase().includes("no agents")) {
               target.children = target.children || [];
               target.children.push(aNode);
@@ -1530,7 +1557,6 @@
               continue;
             }
 
-            // Ensure one Agents bucket per trainer
             target.children = target.children || [];
             let label = target.children.find((c) => c.kind === "label" && c.__isAgentsBucket);
             if (!label) {
