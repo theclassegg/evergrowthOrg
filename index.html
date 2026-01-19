@@ -90,7 +90,9 @@
         --logoFilter: none;
       }
 
-      * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
 
       body {
         margin: 0;
@@ -177,8 +179,12 @@
         white-space: nowrap;
       }
 
-      .seg button:hover { color: var(--text); }
-      .seg button:active { transform: translateY(1px); }
+      .seg button:hover {
+        color: var(--text);
+      }
+      .seg button:active {
+        transform: translateY(1px);
+      }
 
       .seg button[aria-pressed="true"] {
         background: rgba(110, 231, 255, 0.18);
@@ -195,7 +201,8 @@
         flex-wrap: wrap;
       }
 
-      .pill, .theme-toggle {
+      .pill,
+      .theme-toggle {
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -212,8 +219,12 @@
         transition: transform 0.05s ease, background 0.15s ease, color 0.15s ease;
       }
 
-      .theme-toggle:hover { color: var(--text); }
-      .theme-toggle:active { transform: translateY(1px); }
+      .theme-toggle:hover {
+        color: var(--text);
+      }
+      .theme-toggle:active {
+        transform: translateY(1px);
+      }
 
       .dot {
         width: 10px;
@@ -268,7 +279,11 @@
         stroke-dasharray: var(--wireDash);
       }
 
-      .dept-pill, .node { position: relative; z-index: 2; }
+      .dept-pill,
+      .node {
+        position: relative;
+        z-index: 2;
+      }
 
       .level-0 {
         display: flex;
@@ -294,8 +309,12 @@
         flex: 0 0 auto;
       }
 
-      .dept[data-dept="dept-cs"] { min-width: 440px; }
-      .dept[data-dept="dept-sales"] { min-width: 480px; }
+      .dept[data-dept="dept-cs"] {
+        min-width: 440px;
+      }
+      .dept[data-dept="dept-sales"] {
+        min-width: 480px;
+      }
 
       .dept-pill {
         padding: 9px 14px;
@@ -349,7 +368,9 @@
         backdrop-filter: blur(8px);
       }
 
-      html[data-theme="dark"] .node { box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22); }
+      html[data-theme="dark"] .node {
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+      }
 
       .node:hover {
         transform: translateY(-2px);
@@ -357,9 +378,13 @@
         box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
       }
 
-      html[data-theme="dark"] .node:hover { box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35); }
+      html[data-theme="dark"] .node:hover {
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
+      }
 
-      .node.agent:hover { border-color: rgba(168, 85, 247, 0.55); }
+      .node.agent:hover {
+        border-color: rgba(168, 85, 247, 0.55);
+      }
 
       .node.label {
         width: auto;
@@ -389,8 +414,11 @@
         height: 44px;
         border-radius: 999px;
         border: 1px solid rgba(15, 23, 42, 0.14);
-        background:
-          radial-gradient(12px 12px at 30% 25%, rgba(15, 23, 42, 0.06), transparent 60%),
+        background: radial-gradient(
+            12px 12px at 30% 25%,
+            rgba(15, 23, 42, 0.06),
+            transparent 60%
+          ),
           rgba(15, 23, 42, 0.03);
         overflow: hidden;
         display: grid;
@@ -401,8 +429,11 @@
 
       html[data-theme="dark"] .avatar {
         border: 1px solid rgba(255, 255, 255, 0.14);
-        background:
-          radial-gradient(12px 12px at 30% 25%, rgba(255, 255, 255, 0.12), transparent 60%),
+        background: radial-gradient(
+            12px 12px at 30% 25%,
+            rgba(255, 255, 255, 0.12),
+            transparent 60%
+          ),
           rgba(255, 255, 255, 0.05);
       }
 
@@ -422,8 +453,11 @@
 
       .avatar.agent {
         border-color: rgba(168, 85, 247, 0.25);
-        background:
-          radial-gradient(12px 12px at 30% 25%, rgba(168, 85, 247, 0.18), transparent 60%),
+        background: radial-gradient(
+            12px 12px at 30% 25%,
+            rgba(168, 85, 247, 0.18),
+            transparent 60%
+          ),
           rgba(168, 85, 247, 0.10);
       }
 
@@ -510,7 +544,9 @@
         color: var(--text);
       }
 
-      .tooltip.show { opacity: 1; }
+      .tooltip.show {
+        opacity: 1;
+      }
 
       .tooltip h3 {
         margin: 0 0 6px 0;
@@ -593,33 +629,6 @@
       // Helpers
       // ==========================
 
-      function getMultiplier(node) {
-  const s = `${node.name || ""} ${node.title || ""}`;
-  const m = s.match(/\(x\s*(\d+)\)|\bx\s*(\d+)\b/i);
-  const n = Number(m?.[1] || m?.[2]);
-  return Number.isFinite(n) && n > 0 ? n : 1;
-}
-
-function countKindsInNode(node, kind) {
-  let total = 0;
-
-  function walk(n) {
-    if (!n) return;
-
-    if (n.kind === kind) {
-      total += getMultiplier(n);
-    }
-
-    if (Array.isArray(n.children)) {
-      n.children.forEach(walk);
-    }
-  }
-
-  walk(node);
-  return total;
-}
-
-      
       function deepClone(obj) {
         return JSON.parse(JSON.stringify(obj));
       }
@@ -656,17 +665,37 @@ function countKindsInNode(node, kind) {
         return { id, kind: "label", name: "No agents yet" };
       }
 
-      function countKindsInNode(node, kindsSet) {
-        if (!node) return 0;
+      /**
+       * COUNTING
+       * - Uses explicit node.count when present (for grouped agents like ×27)
+       * - Falls back to parsing "x27" or "×27" from name/title
+       * - Always traverses children (labels can contain agents in Combined view)
+       */
+      function agentMultiplier(node) {
+        const explicit = Number(node.count);
+        if (Number.isFinite(explicit) && explicit > 0) return explicit;
 
-        let count = 0;
+        const s = `${node.name || ""} ${node.title || ""}`;
+        const m = s.match(/(?:\(|\b)(?:x|×)\s*(\d+)\b\)?/i);
+        const parsed = Number(m?.[1]);
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+      }
+
+      function countKindsInNode(node, allowedKindsSet) {
+        if (!node || typeof node !== "object") return 0;
+
+        let total = 0;
         const kind = node.kind || "human";
-        if (kindsSet.has(kind)) count += 1;
+
+        if (allowedKindsSet.has(kind)) {
+          total += kind === "agent" ? agentMultiplier(node) : 1;
+        }
 
         if (Array.isArray(node.children)) {
-          for (const c of node.children) count += countKindsInNode(c, kindsSet);
+          for (const c of node.children) total += countKindsInNode(c, allowedKindsSet);
         }
-        return count;
+
+        return total;
       }
 
       function countChartKinds(model, allowedKinds) {
@@ -712,10 +741,18 @@ function countKindsInNode(node, kind) {
         DianaAgents: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana%20Agent.png"),
         Onboarding: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/JBAgent.png"),
         PostMeeting: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/MertAgent.png"),
-        QualAgent: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Qualification-Clody.png"),
-        ResearchAgent: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Research-Cody2.png"),
-        AccountPlanning: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-AccountPlanningCody.png"),
-        ContactFinder: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Contactfinder-Cody.png"),
+        QualAgent: toRawGitHub(
+          "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Qualification-Clody.png"
+        ),
+        ResearchAgent: toRawGitHub(
+          "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Research-Cody2.png"
+        ),
+        AccountPlanning: toRawGitHub(
+          "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-AccountPlanningCody.png"
+        ),
+        ContactFinder: toRawGitHub(
+          "https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-Contactfinder-Cody.png"
+        ),
         PlayAgent: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Coloured-PlayAgent-Cody.png")
       };
 
@@ -1089,8 +1126,7 @@ function countKindsInNode(node, kind) {
                 name: "Account Planning Agent",
                 title: "Strategy",
                 avatarUrl: AV.AccountPlanning,
-                responsibilities:
-                  "Distills research + value prop to brief Cody & Magnus on the best approach.",
+                responsibilities: "Distills research + value prop to brief Cody & Magnus on the best approach.",
                 bio: "Accelerates account ramp-up."
               },
               {
@@ -1100,8 +1136,7 @@ function countKindsInNode(node, kind) {
                 name: "Contact Finder",
                 title: "Buyer Discovery",
                 avatarUrl: AV.ContactFinder,
-                responsibilities:
-                  "Finds ideal buyers at qualified prospects, including email and phone numbers.",
+                responsibilities: "Finds ideal buyers at qualified prospects, including email and phone numbers.",
                 bio: "Cuts list-building time."
               },
               {
@@ -1272,8 +1307,7 @@ function countKindsInNode(node, kind) {
           const deptEl = document.createElement("div");
           deptEl.className = "dept";
 
-          const humanDeptId =
-            dept.id.startsWith("a-") ? nameToHumanDeptId(dept.name) : dept.id;
+          const humanDeptId = dept.id.startsWith("a-") ? nameToHumanDeptId(dept.name) : dept.id;
 
           deptEl.dataset.dept = humanDeptId || dept.id;
 
@@ -1436,7 +1470,9 @@ function countKindsInNode(node, kind) {
           idToEl[el.dataset.nodeId] = el;
         });
 
-        const cssR = getComputedStyle(document.documentElement).getPropertyValue("--wireRadius").trim();
+        const cssR = getComputedStyle(document.documentElement)
+          .getPropertyValue("--wireRadius")
+          .trim();
         const baseR = Number(cssR) || 44;
 
         for (const [fromId, toId] of chart.__edges) {
@@ -1523,8 +1559,18 @@ function countKindsInNode(node, kind) {
         tooltip.innerHTML = `
           <h3>${escapeHtml(name)}</h3>
           ${title ? `<div class="tt-title">${escapeHtml(title)}</div>` : ""}
-          ${responsibilities ? `<div class="tt-label">Responsibilities</div><p class="tt-body">${escapeHtml(responsibilities)}</p>` : ""}
-          ${bio ? `<div class="tt-label">Bio</div><p class="tt-body">${escapeHtml(bio)}</p>` : ""}
+          ${
+            responsibilities
+              ? `<div class="tt-label">Responsibilities</div><p class="tt-body">${escapeHtml(
+                  responsibilities
+                )}</p>`
+              : ""
+          }
+          ${
+            bio
+              ? `<div class="tt-label">Bio</div><p class="tt-body">${escapeHtml(bio)}</p>`
+              : ""
+          }
         `;
 
         tooltip.classList.add("show");
