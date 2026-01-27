@@ -725,7 +725,6 @@
         Edvinas: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Edvinas.jpeg"),
         Cosmin: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Cosmin.png"),
         Beatrice: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Beatrice.png"),
-        Ruta: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Ruta.jpeg"),
         Diana: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Diana.png"),
         Mert: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Mert.png"),
         Rudolfs: toRawGitHub("https://github.com/theclassegg/evergrowthOrg/blob/main/Rudolfs.jpeg"),
@@ -783,7 +782,7 @@
                 avatarUrl: AV.Nauris,
                 responsibilities: "Engineering leadership, technical strategy, architecture.",
                 bio: "Leads Product & Engineering delivery and technical direction.",
-                layout: "column",
+                // No `layout: "column"` here so children render as ROW lanes (engineering lane + product lane)
                 children: [
                   {
                     id: "donatas",
@@ -829,27 +828,27 @@
                         ]
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                id: "monika",
-                kind: "human",
-                name: "Monika Staponkutė",
-                title: "Head of Product",
-                avatarUrl: AV.Monika,
-                responsibilities: "Product strategy, roadmap, discovery, requirements.",
-                bio: "Owns the product direction and cross-functional alignment.",
-                layout: "column",
-                children: [
+                  },
                   {
-                    id: "chirag",
+                    id: "monika",
                     kind: "human",
-                    name: "Chirag Patel",
-                    title: "UX Design Lead",
-                    avatarUrl: AV.Chirag,
-                    responsibilities: "Design systems, user research, interaction design.",
-                    bio: "Leads product design and user experience."
+                    name: "Monika Staponkutė",
+                    title: "Head of Product",
+                    avatarUrl: AV.Monika,
+                    responsibilities: "Product strategy, roadmap, discovery, requirements.",
+                    bio: "Owns the product direction and cross-functional alignment.",
+                    layout: "column",
+                    children: [
+                      {
+                        id: "chirag",
+                        kind: "human",
+                        name: "Chirag Patel",
+                        title: "UX Design Lead",
+                        avatarUrl: AV.Chirag,
+                        responsibilities: "Design systems, user research, interaction design.",
+                        bio: "Leads product design and user experience."
+                      }
+                    ]
                   }
                 ]
               }
@@ -867,18 +866,7 @@
                 avatarUrl: AV.Beatrice,
                 responsibilities: "Company ops, finance ops, systems/processes.",
                 bio: "Keeps the business running smoothly.",
-                layout: "column",
-                children: [
-                  {
-                    id: "ruta",
-                    kind: "human",
-                    name: "Rūta Dorofejevaitė",
-                    title: "Senior Accountant",
-                    avatarUrl: AV.Ruta,
-                    responsibilities: "Accounting operations, close, reporting, compliance.",
-                    bio: "Owns day-to-day accounting and financial hygiene."
-                  }
-                ]
+                layout: "column"
               }
             ]
           },
@@ -1061,15 +1049,15 @@
                 bio: "Captures positivity and momentum."
               },
               {
-              id: "a-meeting-followup",
-              kind: "agent",
-              trainerId: "diana",
-              name: "Meeting-follow-up drafter",
-              title: "Follow-up Copywriter",
-              avatarUrl: AV.DianaCapAgent,
-              responsibilities:
-              "Drafts customer-facing meeting follow-up emails & slack-DMs with recap, action items, owners, deadlines, and clear next steps.",
-              bio: "Makes follow-ups fast, consistent, and thorough."
+                id: "a-meeting-followup",
+                kind: "agent",
+                trainerId: "diana",
+                name: "Meeting-follow-up drafter",
+                title: "Follow-up Copywriter",
+                avatarUrl: AV.DianaCapAgent,
+                responsibilities:
+                  "Drafts customer-facing meeting follow-up emails & slack-DMs with recap, action items, owners, deadlines, and clear next steps.",
+                bio: "Makes follow-ups fast, consistent, and thorough."
               },
               {
                 id: "a-onboarding",
